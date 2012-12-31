@@ -20,3 +20,8 @@ given frequency (default 50.0Hz).
 
 FRC-DriverStation-PC is the driver station implementation for PC. It uses the classes in Common and builds a GUI
 around it. The GUI is powered by Swing, currently using the Nimbus L&F.
+
+FRC-DriverStation-Android is the driver station implementation for Android. It also uses the classes in Common and builds
+an Android app around it. The app is targeted for 4.1.2 Jellybean (API 16) and has compliance down to 2.3.3 Gingerbread
+(API 9). It uses ActionBarSherlock to achieve a consistent look down to Gingerbread and android-joystick to provide onscreen
+joysticks.
