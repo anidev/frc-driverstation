@@ -19,4 +19,9 @@ public class PCDriverStation extends DriverStation {
 	protected void setElapsedTimeImpl() {
 		frame.setElapsedTime(elapsedTime);
 	}
+	
+	@Override
+	protected void setBatteryPercentImpl() {
+		frame.setBatteryPercent(batteryPercent);
+	}
 }

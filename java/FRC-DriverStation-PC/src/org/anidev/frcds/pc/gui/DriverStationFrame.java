@@ -44,4 +44,8 @@ public class DriverStationFrame extends JFrame {
 	public void setElapsedTime(double elapsedTime) {
 		operationPanel.setElapsedTime(elapsedTime);
 	}
+	
+	public void setBatteryPercent(double percent) {
+		operationPanel.setBatteryPercent(percent);
+	}
 }

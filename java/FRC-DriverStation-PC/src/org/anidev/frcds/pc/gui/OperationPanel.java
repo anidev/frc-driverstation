@@ -112,8 +112,8 @@ public class OperationPanel extends JPanel {
 		bottomControlPanel.add(batteryLabel,"1, 3");
 
 		batteryBar=new JProgressBar();
-		batteryBar.setString("Unavailable");
 		batteryBar.setStringPainted(true);
+		setBatteryPercent(-1.0);
 		bottomControlPanel.add(batteryBar,"3, 3");
 	}
 
@@ -125,5 +125,15 @@ public class OperationPanel extends JPanel {
 		String roundSecondsText=String.format("%02d",roundSeconds);
 		String text=minutes+":"+roundSecondsText+"."+deciSeconds;
 		elapsedTimeValue.setText(text);
+	}
+	
+	public void setBatteryPercent(double percent) {
+		if(percent<0) {
+			batteryBar.setValue(0);
+			batteryBar.setString("Unavailable");
+		} else {
+			batteryBar.setValue((int)Math.round(percent*100));
+			batteryBar.setString(null);
+		}
 	}
 }
