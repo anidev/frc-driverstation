@@ -3,6 +3,8 @@ FRC Driver Station
 
 Java implementation of the FRC driver station and communication protocol, initially in Java and later in other
 languages. Java was chosen because it can be ported easily to other platforms, with Android being the next goal.
+Each project can be compiled manually but no build scripts have been created yet. To build automatically, import the
+projects as Eclipse projects or use the entire repository as an Eclipse Workspace.
 
 Currently, FCDS-Java-Comm is the Java library for the communication protocol. It implements classes for encapsulating
 data that can be sent from the driver station to the robot (FRCCommonControl), and data that can be sent from the
@@ -19,7 +21,7 @@ dedicated loop and performs such actions as incrementing the elapsed time counte
 given frequency (default 50.0Hz).
 
 FRC-DriverStation-PC is the driver station implementation for PC. It uses the classes in Common and builds a GUI
-around it. The GUI is powered by Swing, currently using the Nimbus L&F.
+around it. The GUI is powered by Swing, currently using the Nimbus L&F. To compile, forms.jar (for FormLayout) and JNA libraries (jna.jar, platform.jar) must be in the build path.
 
 FRC-DriverStation-Android is the driver station implementation for Android. It also uses the classes in Common and builds
 an Android app around it. The app is targeted for 4.1.2 Jellybean (API 16) and has compliance down to 2.3.3 Gingerbread

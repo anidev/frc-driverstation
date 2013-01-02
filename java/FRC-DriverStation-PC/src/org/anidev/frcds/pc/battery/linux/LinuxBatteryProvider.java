@@ -1,4 +1,4 @@
-package org.anidev.frcds.pc.battery;
+package org.anidev.frcds.pc.battery.linux;
 
 import java.io.File;
 import java.io.FileNotFoundException;

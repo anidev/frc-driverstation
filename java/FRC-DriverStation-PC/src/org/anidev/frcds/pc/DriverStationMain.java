@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import org.anidev.frcds.common.DriverStation;
 import org.anidev.frcds.common.types.BatteryProvider;
-import org.anidev.frcds.pc.battery.LinuxBatteryProvider;
+import org.anidev.frcds.pc.battery.linux.LinuxBatteryProvider;
 import org.anidev.frcds.pc.gui.DriverStationFrame;
 
 public class DriverStationMain {
