@@ -5,3 +5,10 @@
 *.jar
 *.war
 *.ear
+
+# Eclipse stuff
+.project
+.classpath
+
+# Backup files
+*~
