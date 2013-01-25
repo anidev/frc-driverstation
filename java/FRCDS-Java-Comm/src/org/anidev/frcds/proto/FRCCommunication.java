@@ -111,8 +111,9 @@ public class FRCCommunication {
 
 	public void setTeamID(int teamID) {
 		checkClosed();
-		if(teamID<0) {
-			throw new IllegalArgumentException("Invalid team ID: "+teamID);
+		if(teamID<=0) {
+			robotAddress=null;
+			return;
 		}
 		int teamUpper=teamID/100;
 		int teamLower=teamID-teamUpper*100;
