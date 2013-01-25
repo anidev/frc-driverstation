@@ -14,6 +14,7 @@ public class EnabledLoop implements Runnable {
 	public void run() {
 		while(!Thread.interrupted()) {
 			doElapsedTime();
+			doSendData();
 			try {
 				Thread.sleep((long)delayMs);
 			} catch(InterruptedException e) {
@@ -24,5 +25,8 @@ public class EnabledLoop implements Runnable {
 	private void doElapsedTime() {
 		long elapsedTime=System.currentTimeMillis()-startTime;
 		ds.setElapsedTime(elapsedTime);
+	}
+	private void doSendData() {
+		ds.sendControlData();
 	}
 }

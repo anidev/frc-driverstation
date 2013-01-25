@@ -15,10 +15,13 @@ public abstract class DriverStation {
 	protected boolean enabled=false;
 	protected double elapsedTime=0.0;
 	protected double batteryPercent=-1.0;
+	protected int teamID=0;
 
 	protected abstract void setEnabledImpl();
 
 	protected abstract void setElapsedTimeImpl();
+	
+	protected abstract void setTeamIDImpl();
 	
 	protected abstract void setBatteryPercentImpl();
 	
@@ -68,6 +71,17 @@ public abstract class DriverStation {
 	public void setElapsedTime(double elapsedTime) {
 		this.elapsedTime=elapsedTime;
 		setElapsedTimeImpl();
+	}
+	
+	public int getTeamID() {
+		return teamID;
+	}
+	
+	public void setTeamID(int teamID) {
+		this.teamID=teamID;
+		dsControl.setTeamID(teamID);
+		frcComm.setTeamID(teamID);
+		setTeamIDImpl();
 	}
 	
 	public void refreshBattery() {

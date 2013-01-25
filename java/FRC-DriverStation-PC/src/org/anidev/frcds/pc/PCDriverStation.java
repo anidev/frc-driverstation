@@ -21,6 +21,11 @@ public class PCDriverStation extends DriverStation {
 	}
 	
 	@Override
+	protected void setTeamIDImpl() {
+		frame.setTeamID(teamID);
+	}
+	
+	@Override
 	protected void setBatteryPercentImpl() {
 		frame.setBatteryPercent(batteryPercent);
 	}

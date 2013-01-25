@@ -24,6 +24,7 @@ public class DriverStationMain {
 		dsFrame.setVisible(true);
 		ds=new PCDriverStation(dsFrame);
 		initBatteryProvider();
+		ds.setTeamID(612);
 	}
 	
 	public static DriverStationFrame getFrame() {

@@ -39,13 +39,27 @@ public class DriverStationFrame extends JFrame {
 
 		operationPanel=new OperationPanel();
 		tabbedPane.addTab("Operation",null,operationPanel,"Robot operation");
+		
+		setTeamID(0);
 	}
 
 	public void setElapsedTime(double elapsedTime) {
 		operationPanel.setElapsedTime(elapsedTime);
 	}
 	
+	public void setTeamID(int teamID) {
+		if(teamID<=0) {
+			setEnableAllowed(false);
+		} else {
+			setEnableAllowed(true);
+		}
+	}
+	
 	public void setBatteryPercent(double percent) {
 		operationPanel.setBatteryPercent(percent);
+	}
+	
+	private void setEnableAllowed(boolean allowed) {
+		enableDisablePanel.setEnableAllowed(allowed);
 	}
 }

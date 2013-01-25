@@ -1,7 +1,5 @@
 package org.anidev.frcds.common;
 
-import org.anidev.frcds.common.types.BatteryProvider;
-
 public class CommonLoop implements Runnable {
 	private final DriverStation ds;
 	private double hertz;
