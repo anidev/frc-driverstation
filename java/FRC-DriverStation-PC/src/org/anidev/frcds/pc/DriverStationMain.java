@@ -5,6 +5,7 @@ import javax.swing.UIManager;
 import org.anidev.frcds.common.DriverStation;
 import org.anidev.frcds.common.types.BatteryProvider;
 import org.anidev.frcds.pc.battery.linux.LinuxBatteryProvider;
+import org.anidev.frcds.pc.battery.win.WindowsBatteryProvider;
 import org.anidev.frcds.pc.gui.DriverStationFrame;
 
 public class DriverStationMain {
@@ -41,8 +42,11 @@ public class DriverStationMain {
 		if(os==null) {
 			return;
 		}
-		if("Linux".equalsIgnoreCase(os)) {
+		os=os.toLowerCase();
+		if(os.equals("linux")) {
 			provider=new LinuxBatteryProvider();
+		} else if(os.contains("windows")) {
+			provider=new WindowsBatteryProvider();
 		}
 		ds.setBatteryProvider(provider);
 	}
