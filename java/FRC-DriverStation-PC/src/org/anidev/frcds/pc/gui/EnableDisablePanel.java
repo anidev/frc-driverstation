@@ -88,6 +88,11 @@ public class EnableDisablePanel extends JPanel {
 		public void itemStateChanged(ItemEvent e) {
 			JToggleButton button=(JToggleButton)e.getSource();
 			boolean enabled=button.getActionCommand().equals("enable");
+			if(enabled) {
+				disableButton.requestFocusInWindow();
+			} else {
+				enableButton.requestFocusInWindow();
+			}
 			DriverStationMain.getDS().setEnabled(enabled);
 		}
 	}

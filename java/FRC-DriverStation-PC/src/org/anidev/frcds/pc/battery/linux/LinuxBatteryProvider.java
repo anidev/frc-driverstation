@@ -46,9 +46,9 @@ public class LinuxBatteryProvider implements BatteryProvider {
 			return;
 		}
 		for(File battery:batteryFiles) {
-			File fullCharge=new File(battery.getAbsolutePath()+"/charge_full");
-			File nowCharge=new File(battery.getAbsolutePath()+"/charge_now");
-			if(!fullCharge.exists()||!nowCharge.exists()) {
+			File fullFile=new File(battery.getAbsolutePath()+"/charge_full");
+			File nowFile=new File(battery.getAbsolutePath()+"/charge_now");
+			if(!fullFile.exists()||!nowFile.exists()) {
 				continue;
 			}
 			this.battery=battery;

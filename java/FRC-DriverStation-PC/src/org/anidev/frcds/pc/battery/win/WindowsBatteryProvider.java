@@ -18,17 +18,17 @@ public class WindowsBatteryProvider implements BatteryProvider {
 	@Override
 	public double getBatteryPercent() {
 		if(kernel32==null) {
-			return -1;
+			return -1.0;
 		}
 		PowerStatus status=new PowerStatus();
 		kernel32.GetSystemPowerStatus(status);
 		int flagByte=status.getBatteryFlag();
 		int percentByte=status.getBatteryLifePercent();
 		if(flagByte==128/*No battery*/||flagByte==255/*Unknown*/) {
-			return -1;
+			return -1.0;
 		}
 		if(percentByte==255/*Unknown*/) {
-			return -1;
+			return -1.0;
 		}
 		double percent=percentByte*1.0/100.0;
 		return percent;
