@@ -3,22 +3,14 @@ package org.anidev.frcds.pc.gui;
 import javax.swing.JPanel;
 import java.awt.Dimension;
 import javax.swing.JLabel;
-import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
 import java.awt.Component;
 import javax.swing.JFormattedTextField;
-import javax.swing.text.DefaultFormatter;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.NumberFormatter;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.text.NumberFormat;
 
 public class TeamIDPanel extends JPanel {
