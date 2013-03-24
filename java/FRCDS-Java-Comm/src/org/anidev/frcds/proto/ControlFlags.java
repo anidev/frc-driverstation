@@ -9,8 +9,8 @@ public class ControlFlags extends CommData {
 	private boolean autonomous=false;
 	private boolean fmsAttached=false;
 	private boolean resync=false;
-	private boolean cRIOChecksum=false;
-	private boolean fpgaChecksum=false;
+	private boolean test=false;
+	private boolean checkVersions=false;
 
 	public boolean isReset() {
 		return reset;
@@ -60,26 +60,26 @@ public class ControlFlags extends CommData {
 		this.resync=resync;
 	}
 
-	public boolean iscRIOChecksum() {
-		return cRIOChecksum;
+	public boolean isTest() {
+		return test;
 	}
 
-	public void setcRIOChecksum(boolean cRIOChecksum) {
-		this.cRIOChecksum=cRIOChecksum;
+	public void setTest(boolean test) {
+		this.test=test;
 	}
 
-	public boolean isFpgaChecksum() {
-		return fpgaChecksum;
+	public boolean isCheckVersions() {
+		return checkVersions;
 	}
 
-	public void setFpgaChecksum(boolean fpgaChecksum) {
-		this.fpgaChecksum=fpgaChecksum;
+	public void setCheckVersions(boolean checkVersions) {
+		this.checkVersions=checkVersions;
 	}
 
 	@Override
 	public byte[] serialize() {
 		int data=bitsToInts(new boolean[] {reset,notEStop,enabled,autonomous,
-				fmsAttached,resync,cRIOChecksum,fpgaChecksum})[0];
+				fmsAttached,resync,test,checkVersions})[0];
 		return new byte[] {(byte)data};
 	}
 
@@ -92,8 +92,8 @@ public class ControlFlags extends CommData {
 		autonomous=flags[3];
 		fmsAttached=flags[4];
 		resync=flags[5];
-		cRIOChecksum=flags[6];
-		fpgaChecksum=flags[7];
+		test=flags[6];
+		checkVersions=flags[7];
 	}
 
 	@Override
@@ -101,13 +101,13 @@ public class ControlFlags extends CommData {
 		final int prime=31;
 		int result=1;
 		result=prime*result+(autonomous?1231:1237);
-		result=prime*result+(cRIOChecksum?1231:1237);
+		result=prime*result+(checkVersions?1231:1237);
 		result=prime*result+(enabled?1231:1237);
 		result=prime*result+(fmsAttached?1231:1237);
-		result=prime*result+(fpgaChecksum?1231:1237);
 		result=prime*result+(notEStop?1231:1237);
 		result=prime*result+(reset?1231:1237);
 		result=prime*result+(resync?1231:1237);
+		result=prime*result+(test?1231:1237);
 		return result;
 	}
 
@@ -126,16 +126,13 @@ public class ControlFlags extends CommData {
 		if(autonomous!=other.autonomous) {
 			return false;
 		}
-		if(cRIOChecksum!=other.cRIOChecksum) {
+		if(checkVersions!=other.checkVersions) {
 			return false;
 		}
 		if(enabled!=other.enabled) {
 			return false;
 		}
 		if(fmsAttached!=other.fmsAttached) {
-			return false;
-		}
-		if(fpgaChecksum!=other.fpgaChecksum) {
 			return false;
 		}
 		if(notEStop!=other.notEStop) {
@@ -145,6 +142,9 @@ public class ControlFlags extends CommData {
 			return false;
 		}
 		if(resync!=other.resync) {
+			return false;
+		}
+		if(test!=other.test) {
 			return false;
 		}
 		return true;
