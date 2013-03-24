@@ -152,7 +152,7 @@ public class OperationPanel extends JPanel {
 	}
 	
 	public void setTeamID(int id) {
-		if(id<0) {
+		if(id<=0) {
 			teamIDText.setText("—");
 		} else {
 			teamIDText.setText(Integer.toString(id));

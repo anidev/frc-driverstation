@@ -60,6 +60,7 @@ public class DriverStationFrame extends JFrame {
 		} else {
 			setEnableAllowed(true);
 		}
+		operationPanel.setTeamID(teamID);
 	}
 	
 	public void setBatteryPercent(double percent) {

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import java.awt.Component;
 import javax.swing.JFormattedTextField;
+import org.anidev.frcds.pc.DriverStationMain;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -14,9 +15,7 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
 public class TeamIDPanel extends JPanel {
-	/**
-	 * Create the panel.
-	 */
+	private JFormattedTextField teamIDField;
 	public TeamIDPanel() {
 		setSize(new Dimension(170,40));
 		GridBagLayout gridBagLayout=new GridBagLayout();
@@ -40,7 +39,7 @@ public class TeamIDPanel extends JPanel {
 		format.setMaximumIntegerDigits(4);
 		format.setGroupingUsed(false);
 
-		JFormattedTextField teamIDField=new JFormattedTextField(format);
+		teamIDField=new JFormattedTextField(format);
 		teamIDField.setColumns(4);
 		GridBagConstraints gbc_teamIDField=new GridBagConstraints();
 		gbc_teamIDField.weightx=1.0;
@@ -53,9 +52,13 @@ public class TeamIDPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				KeyboardFocusManager.getCurrentKeyboardFocusManager()
 						.clearGlobalFocusOwner();
+				DriverStationMain.getDS().setTeamID(getTeamID());
 			}
 		});
 
 		add(teamIDField,gbc_teamIDField);
+	}
+	public int getTeamID() {
+		return ((Long)teamIDField.getValue()).intValue();
 	}
 }
