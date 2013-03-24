@@ -12,6 +12,8 @@ import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 
 public class TeamIDPanel extends JPanel {
@@ -46,12 +48,10 @@ public class TeamIDPanel extends JPanel {
 		gbc_teamIDField.fill=GridBagConstraints.HORIZONTAL;
 		gbc_teamIDField.gridx=1;
 		gbc_teamIDField.gridy=0;
-
-		teamIDField.addActionListener(new ActionListener() {
+		
+		teamIDField.addPropertyChangeListener("value",new PropertyChangeListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				KeyboardFocusManager.getCurrentKeyboardFocusManager()
-						.clearGlobalFocusOwner();
+			public void propertyChange(PropertyChangeEvent evt) {
 				DriverStationMain.getDS().setTeamID(getTeamID());
 			}
 		});
@@ -59,6 +59,11 @@ public class TeamIDPanel extends JPanel {
 		add(teamIDField,gbc_teamIDField);
 	}
 	public int getTeamID() {
-		return ((Long)teamIDField.getValue()).intValue();
+		Object value=teamIDField.getValue();
+		if(value!=null) {
+			return ((Long)value).intValue();
+		} else {
+			return 0;
+		}
 	}
 }
