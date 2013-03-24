@@ -14,6 +14,7 @@ public class DriverStationFrame extends JFrame {
 	private EnableDisablePanel enableDisablePanel;
 	private StatusPanel statusPanel;
 	private OperationPanel operationPanel;
+	private TeamIDPanel teamIDPanel;
 
 	public DriverStationFrame() {
 		super("FRC Driver Station");
@@ -24,18 +25,24 @@ public class DriverStationFrame extends JFrame {
 				.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("70px"),ColumnSpec.decode("170px"),
-				ColumnSpec.decode("5px"),ColumnSpec.decode("default:grow"),},
-				new RowSpec[] {RowSpec.decode("default:grow"),}));
+				ColumnSpec.decode("70px"),
+				ColumnSpec.decode("170px"),
+				ColumnSpec.decode("default:grow"),},
+			new RowSpec[] {
+				RowSpec.decode("40px"),
+				RowSpec.decode("default:grow"),}));
 
 		enableDisablePanel=new EnableDisablePanel();
-		contentPane.add(enableDisablePanel,"1, 1, fill, fill");
-
+		contentPane.add(enableDisablePanel,"1, 1, 1, 2, fill, fill");
+		
+		teamIDPanel = new TeamIDPanel();
+		contentPane.add(teamIDPanel, "2, 1, fill, fill");
+		
 		statusPanel=new StatusPanel();
-		contentPane.add(statusPanel,"2, 1, fill, fill");
+		contentPane.add(statusPanel,"2, 2, fill, fill");
 
 		JTabbedPane tabbedPane=new JTabbedPane(JTabbedPane.TOP);
-		contentPane.add(tabbedPane,"4, 1, fill, top");
+		contentPane.add(tabbedPane,"3, 1, 1, 2, fill, top");
 
 		operationPanel=new OperationPanel();
 		tabbedPane.addTab("Operation",null,operationPanel,"Robot operation");
