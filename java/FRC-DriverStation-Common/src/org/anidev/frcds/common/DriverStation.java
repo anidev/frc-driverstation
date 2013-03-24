@@ -1,6 +1,8 @@
 package org.anidev.frcds.common;
 
 import org.anidev.frcds.common.types.BatteryProvider;
+import org.anidev.frcds.common.types.OperationMode;
+import org.anidev.frcds.proto.ControlFlags;
 import org.anidev.frcds.proto.FRCCommunication;
 import org.anidev.frcds.proto.torobot.FRCCommonControl;
 
@@ -12,6 +14,7 @@ public abstract class DriverStation {
 	protected BatteryProvider batteryProvider=null;
 	protected Thread enabledLoop=null;
 	protected Thread commonLoop=null;
+	protected OperationMode mode=OperationMode.TELEOPERATED;
 	protected boolean enabled=false;
 	protected double elapsedTime=0.0;
 	protected double batteryPercent=-1.0;
@@ -24,6 +27,8 @@ public abstract class DriverStation {
 	protected abstract void setTeamIDImpl();
 	
 	protected abstract void setBatteryPercentImpl();
+	
+	protected abstract void setModeImpl();
 	
 	protected DriverStation() {
 		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ));
@@ -39,7 +44,20 @@ public abstract class DriverStation {
 	}
 
 	public void sendControlData() {
+		dsControl.setPacketIndex(dsControl.getPacketIndex()+1);
 		frcComm.sendToRobot(dsControl);
+	}
+
+	public OperationMode getMode() {
+		return mode;
+	}
+
+	public void setMode(OperationMode mode) {
+		this.mode=mode;
+		ControlFlags flags=dsControl.getControlFlags();
+		flags.setAutonomous(OperationMode.AUTONOMOUS.equals(mode));
+		flags.setTest(OperationMode.TEST.equals(mode));
+		dsControl.setControlFlags(flags);
 	}
 
 	public boolean isEnabled() {

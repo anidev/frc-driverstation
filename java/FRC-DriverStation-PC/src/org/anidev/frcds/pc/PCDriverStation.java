@@ -12,7 +12,6 @@ public class PCDriverStation extends DriverStation {
 	
 	@Override
 	protected void setEnabledImpl() {
-//		frame.setE
 	}
 
 	@Override
@@ -28,5 +27,9 @@ public class PCDriverStation extends DriverStation {
 	@Override
 	protected void setBatteryPercentImpl() {
 		frame.setBatteryPercent(batteryPercent);
+	}
+
+	@Override
+	protected void setModeImpl() {
 	}
 }
