@@ -26,6 +26,7 @@ public class OperationPanel extends JPanel {
 	private JLabel elapsedTimeValue;
 	private JComboBox teamStationBox;
 	private JProgressBar batteryBar;
+	private JLabel teamIDText;
 
 	public OperationPanel() {
 		setPreferredSize(new Dimension(600,240));
@@ -82,9 +83,13 @@ public class OperationPanel extends JPanel {
 		JPanel bottomControlPanel=new JPanel();
 		add(bottomControlPanel,"1, 3, fill, fill");
 		bottomControlPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.GLUE_COLSPEC,ColumnSpec.decode("5px"),
-				FormFactory.GLUE_COLSPEC,},new RowSpec[] {
-				FormFactory.GLUE_ROWSPEC,FormFactory.GLUE_ROWSPEC,
+				FormFactory.GLUE_COLSPEC,
+				ColumnSpec.decode("5px"),
+				FormFactory.GLUE_COLSPEC,},
+			new RowSpec[] {
+				FormFactory.GLUE_ROWSPEC,
+				FormFactory.GLUE_ROWSPEC,
+				FormFactory.GLUE_ROWSPEC,
 				FormFactory.GLUE_ROWSPEC,}));
 
 		JLabel elapsedTimeLabel=new JLabel("Elapsed Time");
@@ -98,23 +103,32 @@ public class OperationPanel extends JPanel {
 		elapsedTimeValue.setHorizontalAlignment(SwingConstants.LEFT);
 		setElapsedTime(0);
 		bottomControlPanel.add(elapsedTimeValue,"3, 1");
+		
+		JLabel teamIDLabel = new JLabel("Team ID");
+		teamIDLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		bottomControlPanel.add(teamIDLabel, "1, 2");
+		
+		teamIDText = new JLabel();
+		teamIDText.setHorizontalAlignment(SwingConstants.CENTER);
+		setTeamID(-1);
+		bottomControlPanel.add(teamIDText, "3, 2");
 
 		JLabel teamStationLabel=new JLabel("Team Station");
 		teamStationLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		bottomControlPanel.add(teamStationLabel,"1, 2");
+		bottomControlPanel.add(teamStationLabel,"1, 3");
 
 		teamStationBox=new JComboBox();
 		teamStationBox.setModel(new DefaultComboBoxModel(TeamStation.values()));
-		bottomControlPanel.add(teamStationBox,"3, 2, fill, default");
+		bottomControlPanel.add(teamStationBox,"3, 3, fill, default");
 
 		JLabel batteryLabel=new JLabel("PC Battery");
 		batteryLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		bottomControlPanel.add(batteryLabel,"1, 3");
+		bottomControlPanel.add(batteryLabel,"1, 4");
 
 		batteryBar=new JProgressBar();
 		batteryBar.setStringPainted(true);
 		setBatteryPercent(-1.0);
-		bottomControlPanel.add(batteryBar,"3, 3");
+		bottomControlPanel.add(batteryBar,"3, 4");
 	}
 
 	public void setElapsedTime(double elapsedTimeMs) {
@@ -134,6 +148,14 @@ public class OperationPanel extends JPanel {
 		} else {
 			batteryBar.setValue((int)Math.round(percent*100));
 			batteryBar.setString(null);
+		}
+	}
+	
+	public void setTeamID(int id) {
+		if(id<0) {
+			teamIDText.setText("—");
+		} else {
+			teamIDText.setText(Integer.toString(id));
 		}
 	}
 }
