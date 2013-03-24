@@ -12,8 +12,6 @@ import org.anidev.frcds.proto.CommData;
 import org.anidev.frcds.proto.FRCCommunication;
 import org.anidev.frcds.proto.FRCCommunicationListener;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
-import org.anidev.frcds.proto.torobot.AnalogInputs;
-import org.anidev.frcds.proto.torobot.DigitalInputs;
 import org.anidev.frcds.proto.torobot.FRCCommonControl;
 import org.anidev.frcds.proto.torobot.Joystick;
 
