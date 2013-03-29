@@ -254,6 +254,8 @@ public class FRCCommunication {
 				DatagramPacket dataPacket=new DatagramPacket(buffer,length);
 				try {
 					receiveFromRobotSocket.receive(dataPacket);
+				} catch(SocketException e) {
+					break;
 				} catch(IOException e) {
 					e.printStackTrace();
 				}
@@ -275,11 +277,16 @@ public class FRCCommunication {
 				DatagramPacket dataPacket=new DatagramPacket(buffer,length);
 				try {
 					receiveFromDSSocket.receive(dataPacket);
+				} catch(SocketException e) {
+					break;
 				} catch(IOException e) {
 					e.printStackTrace();
 				}
 				if(dsAddress==null) {
 					InetAddress packetAddress=dataPacket.getAddress();
+					if(closed) {
+						break;
+					}
 					setDsAddress(packetAddress);
 				}
 				FRCCommonControl controlData=new FRCCommonControl();
