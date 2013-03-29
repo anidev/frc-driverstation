@@ -10,7 +10,7 @@ import org.anidev.frcds.proto.Version;
 
 public class FRCRobotControl extends CommData {
 	public static final int SIZE=32;
-	public static final Version CURRENT_VERSION=new Version("11301100");
+	public static final Version CURRENT_VERSION=new Version("12191200");
 	private static int totalPackets=0;
 	private ControlFlags control=new ControlFlags();
 	private int batteryVolts=0;

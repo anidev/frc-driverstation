@@ -10,7 +10,7 @@ import org.anidev.frcds.proto.Version;
 
 public class FRCCommonControl extends CommData {
 	public static final int SIZE=80;
-	public static final Version CURRENT_VERSION=new Version("11301100");
+	public static final Version CURRENT_VERSION=new Version("12191200");
 	private static int totalPackets=0;
 	private int packetIndex=++totalPackets;
 	private ControlFlags control=new ControlFlags();
