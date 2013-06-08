@@ -4,12 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
+import java.util.zip.CRC32;
 import org.anidev.frcds.proto.CommData;
 import org.anidev.frcds.proto.ControlFlags;
 import org.anidev.frcds.proto.Version;
 
 public class FRCCommonControl extends CommData {
-	public static final int SIZE=80;
+	public static final int SIZE=1024;
 	public static final Version CURRENT_VERSION=new Version("12191200");
 	private static int totalPackets=0;
 	private int packetIndex=++totalPackets;
@@ -158,7 +159,21 @@ public class FRCCommonControl extends CommData {
 		byteStream.write(fpgaChecksumBytes,0,fpgaChecksumBytes.length);
 		byte[] versionBytes=version.serialize();
 		byteStream.write(versionBytes,0,versionBytes.length);
-		return byteStream.toByteArray();
+		byte[] highEnd=new byte[940];
+		Arrays.fill(highEnd,(byte)0);
+		byteStream.write(highEnd,0,highEnd.length);
+		byte[] crcBytes=new byte[4];
+		Arrays.fill(crcBytes,(byte)0);
+		byteStream.write(crcBytes,0,crcBytes.length);
+		byte[] data=byteStream.toByteArray();
+		CRC32 crc=new CRC32();
+		crc.update(data);
+		ByteBuffer crcBuffer=ByteBuffer.allocate(8);
+		crcBuffer.putLong(crc.getValue());
+		crcBytes=Arrays.copyOfRange(crcBuffer.array(),4,8);
+		System.arraycopy(crcBytes,0,data,data.length-4,4);
+		System.out.println(Arrays.toString(crcBytes));
+		return data;
 	}
 
 	@Override
