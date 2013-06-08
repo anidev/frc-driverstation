@@ -6,11 +6,14 @@ import org.anidev.frcds.analyze.gui.AnalyzerFrame;
 import org.anidev.frcds.proto.CommData;
 import org.anidev.frcds.proto.FRCCommunication;
 import org.anidev.frcds.proto.FRCCommunicationListener;
+import org.anidev.frcds.proto.Netconsole;
+import org.anidev.frcds.proto.NetconsoleListener;
 import org.anidev.frcds.proto.torobot.FRCCommonControl;
 
 public class AnalyzerProviderSelector {
 	private AnalyzerFrame frame=null;
 	private FRCCommunication frcComm=null;
+	private Netconsole netcon=null;
 	public void registerFrame(AnalyzerFrame frame) {
 		this.frame=frame;
 	}
@@ -25,11 +28,23 @@ public class AnalyzerProviderSelector {
 				frame.updateValues(control);
 			}
 		});
+		netcon=new Netconsole();
+		netcon.addNetconsoleListener(new NetconsoleListener() {
+			@Override
+			public void receivedData(String data) {
+				System.out.print(data);
+			}
+		});
+		netcon.sendData("asdf");
 	}
 	public void stopNetworkStream() {
 		if(frcComm!=null) {
 			frcComm.close();
 			frcComm=null;
+		}
+		if(netcon!=null) {
+			netcon.close();
+			netcon=null;
 		}
 	}
 	public void startFile(File file) {

@@ -1,5 +1,6 @@
 package org.anidev.frcds.analyze.gui;
 
+import java.io.File;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Dimension;
@@ -14,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
 import javax.swing.SpringLayout;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
@@ -23,17 +25,20 @@ import javax.swing.JLabel;
 import javax.swing.UIDefaults;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
 import javax.swing.JToggleButton;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.factories.FormFactory;
 import org.anidev.frcds.analyze.AnalyzerProviderSelector;
+import org.anidev.frcds.analyze.FileProvider;
 import org.anidev.frcds.proto.ControlFlags;
 import org.anidev.frcds.proto.torobot.*;
-import javax.swing.JCheckBox;
 
 public class AnalyzerFrame extends JFrame {
 	private AnalyzerProviderSelector selector;
@@ -68,7 +73,7 @@ public class AnalyzerFrame extends JFrame {
 		super("FRC Communication Analyzer");
 		this.selector=_selector;
 		selector.registerFrame(this);
-		setSize(new Dimension(500, 500));
+		setSize(new Dimension(500,500));
 		contentPane=new JPanel();
 		contentPane.setBorder(new EmptyBorder(5,5,5,5));
 		setContentPane(contentPane);
@@ -105,7 +110,7 @@ public class AnalyzerFrame extends JFrame {
 		streamStopButton=new JButton("Stop");
 		streamStopButton.setEnabled(false);
 		streamOptionsPanel.add(streamStopButton);
-		
+
 		ActionListener streamListener=new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -136,16 +141,37 @@ public class AnalyzerFrame extends JFrame {
 		fileNameField=new JTextField();
 		fileNameField.setEnabled(false);
 		fileOptionsPanel.add(fileNameField,"1, 1, fill, fill");
-		fileNameField.setColumns(10);
-
+		
 		fileSelectionButton=new JButton("Browse");
 		fileSelectionButton.setEnabled(false);
 		fileOptionsPanel.add(fileSelectionButton,"2, 1, fill, fill");
+		fileSelectionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				File packetFile=FileProvider.askForFile(AnalyzerFrame.this);
+				fileNameField.setText(packetFile.getAbsolutePath());
+			}
+		});
 
 		fileActivateButton=new JButton("Go");
 		fileActivateButton.setEnabled(false);
 		fileOptionsPanel.add(fileActivateButton,"3, 1");
-		
+		fileActivateButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				try {
+					selector.startFile(new File(fileNameField.getText()));
+				} catch(RuntimeException e) {
+					e.printStackTrace();
+					JOptionPane
+							.showMessageDialog(AnalyzerFrame.this,
+									"The selected file is invalid or corrupt.",
+									"Invalid or Corrupt File",
+									JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
 		ButtonGroup sourceGroup=new ButtonGroup();
 		sourceGroup.add(chooseStreamRadio);
 		sourceGroup.add(chooseFileRadio);
@@ -185,7 +211,7 @@ public class AnalyzerFrame extends JFrame {
 		miscStatusPanel.setLayout(new GridLayout(1,4,0,0));
 
 		JLabel pktnumLabel=new JLabel("Packet #");
-		FlowLayout flowLayout = (FlowLayout) pktnumPanel.getLayout();
+		FlowLayout flowLayout=(FlowLayout)pktnumPanel.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		miscStatusPanel.add(pktnumPanel);
 		pktnumPanel.add(pktnumLabel);
@@ -195,7 +221,7 @@ public class AnalyzerFrame extends JFrame {
 		pktnumText.setBorder(new EtchedBorder(EtchedBorder.LOWERED,null,null));
 
 		JLabel teamLabel=new JLabel("Team");
-		FlowLayout flowLayout_1 = (FlowLayout) teamPanel.getLayout();
+		FlowLayout flowLayout_1=(FlowLayout)teamPanel.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
 		miscStatusPanel.add(teamPanel);
 		teamPanel.add(teamLabel);
@@ -206,7 +232,7 @@ public class AnalyzerFrame extends JFrame {
 		teamText.setBorder(new EtchedBorder(EtchedBorder.LOWERED,null,null));
 
 		JLabel allianceLabel=new JLabel("Alliance");
-		FlowLayout flowLayout_2 = (FlowLayout) alliancePanel.getLayout();
+		FlowLayout flowLayout_2=(FlowLayout)alliancePanel.getLayout();
 		flowLayout_2.setAlignment(FlowLayout.LEFT);
 		miscStatusPanel.add(alliancePanel);
 		alliancePanel.add(allianceLabel);
@@ -217,7 +243,7 @@ public class AnalyzerFrame extends JFrame {
 				.setBorder(new EtchedBorder(EtchedBorder.LOWERED,null,null));
 
 		JLabel positionLabel=new JLabel("Position");
-		FlowLayout flowLayout_3 = (FlowLayout) positionPanel.getLayout();
+		FlowLayout flowLayout_3=(FlowLayout)positionPanel.getLayout();
 		flowLayout_3.setAlignment(FlowLayout.LEFT);
 		miscStatusPanel.add(positionPanel);
 		positionPanel.add(positionLabel);
@@ -226,43 +252,57 @@ public class AnalyzerFrame extends JFrame {
 		positionPanel.add(positionText);
 		positionText
 				.setBorder(new EtchedBorder(EtchedBorder.LOWERED,null,null));
-		
-		JPanel flagsPanel = new JPanel();
-		sl_contentPane.putConstraint(SpringLayout.NORTH, flagsPanel, 0, SpringLayout.SOUTH, miscStatusPanel);
-		sl_contentPane.putConstraint(SpringLayout.WEST, flagsPanel, 0, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, flagsPanel, 60, SpringLayout.SOUTH, miscStatusPanel);
-		sl_contentPane.putConstraint(SpringLayout.EAST, flagsPanel, 0, SpringLayout.EAST, contentPane);
+
+		JPanel flagsPanel=new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH,flagsPanel,0,
+				SpringLayout.SOUTH,miscStatusPanel);
+		sl_contentPane.putConstraint(SpringLayout.WEST,flagsPanel,0,
+				SpringLayout.WEST,contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH,flagsPanel,60,
+				SpringLayout.SOUTH,miscStatusPanel);
+		sl_contentPane.putConstraint(SpringLayout.EAST,flagsPanel,0,
+				SpringLayout.EAST,contentPane);
 		contentPane.add(flagsPanel);
-		
-		JPanel digitalPanel = new JPanel();
-		sl_contentPane.putConstraint(SpringLayout.NORTH, digitalPanel, 5, SpringLayout.SOUTH, flagsPanel);
-		sl_contentPane.putConstraint(SpringLayout.EAST, digitalPanel, 80, SpringLayout.WEST, contentPane);
-		digitalPanel.setBorder(new TitledBorder(null, "Digital", TitledBorder.LEFT, TitledBorder.TOP, null, null));
-		sl_contentPane.putConstraint(SpringLayout.WEST, digitalPanel, 0, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, digitalPanel, 0, SpringLayout.SOUTH, contentPane);
+
+		JPanel digitalPanel=new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH,digitalPanel,5,
+				SpringLayout.SOUTH,flagsPanel);
+		sl_contentPane.putConstraint(SpringLayout.EAST,digitalPanel,80,
+				SpringLayout.WEST,contentPane);
+		digitalPanel.setBorder(new TitledBorder(null,"Digital",
+				TitledBorder.LEFT,TitledBorder.TOP,null,null));
+		sl_contentPane.putConstraint(SpringLayout.WEST,digitalPanel,0,
+				SpringLayout.WEST,contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH,digitalPanel,0,
+				SpringLayout.SOUTH,contentPane);
 		contentPane.add(digitalPanel);
-		
-		JPanel analogPanel = new JPanel();
-		sl_contentPane.putConstraint(SpringLayout.NORTH, analogPanel, 5, SpringLayout.SOUTH, flagsPanel);
-		sl_contentPane.putConstraint(SpringLayout.WEST, analogPanel, -80, SpringLayout.EAST, contentPane);
-		analogPanel.setBorder(new TitledBorder(null, "Analog", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, analogPanel, 0, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, analogPanel, 0, SpringLayout.EAST, contentPane);
+
+		JPanel analogPanel=new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH,analogPanel,5,
+				SpringLayout.SOUTH,flagsPanel);
+		sl_contentPane.putConstraint(SpringLayout.WEST,analogPanel,-80,
+				SpringLayout.EAST,contentPane);
+		analogPanel.setBorder(new TitledBorder(null,"Analog",
+				TitledBorder.LEADING,TitledBorder.TOP,null,null));
+		sl_contentPane.putConstraint(SpringLayout.SOUTH,analogPanel,0,
+				SpringLayout.SOUTH,contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST,analogPanel,0,
+				SpringLayout.EAST,contentPane);
 		contentPane.add(analogPanel);
-		
-		digitalPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("right:min"),
-				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),}));
-		
+
+		digitalPanel
+				.setLayout(new FormLayout(new ColumnSpec[] {
+						ColumnSpec.decode("right:min"),
+						ColumnSpec.decode("default:grow"),},new RowSpec[] {
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),}));
+
 		for(int i=0;i<8;i++) {
 			String istr=new Integer(i+1).toString();
 			JLabel digLabel=new JLabel(istr);
@@ -272,19 +312,19 @@ public class AnalyzerFrame extends JFrame {
 			digFields[i]=digField;
 		}
 
-		analogPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("right:min"),
-				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),}));
-		
+		analogPanel
+				.setLayout(new FormLayout(new ColumnSpec[] {
+						ColumnSpec.decode("right:min"),
+						ColumnSpec.decode("default:grow"),},new RowSpec[] {
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow"),}));
+
 		for(int i=0;i<8;i++) {
 			String istr=new Integer(i+1).toString();
 			JLabel algLabel=new JLabel(istr);
@@ -296,73 +336,78 @@ public class AnalyzerFrame extends JFrame {
 			algFields[i]=algField;
 		}
 
-		JPanel joyPanelsContainer = new JPanel();
-		sl_contentPane.putConstraint(SpringLayout.NORTH, joyPanelsContainer, 5, SpringLayout.SOUTH, flagsPanel);
-		flagsPanel.setLayout(new GridLayout(2, 4, 0, 0));
-		
-		resetBox = new JCheckBox("Reset");
+		JPanel joyPanelsContainer=new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH,joyPanelsContainer,5,
+				SpringLayout.SOUTH,flagsPanel);
+		flagsPanel.setLayout(new GridLayout(2,4,0,0));
+
+		resetBox=new JCheckBox("Reset");
 		flagsPanel.add(resetBox);
-		
-		notEStopBox = new JCheckBox("Not E-Stop");
+
+		notEStopBox=new JCheckBox("Not E-Stop");
 		flagsPanel.add(notEStopBox);
-		
-		enabledBox = new JCheckBox("Enabled");
+
+		enabledBox=new JCheckBox("Enabled");
 		flagsPanel.add(enabledBox);
-		
-		autoBox = new JCheckBox("Autonomous");
+
+		autoBox=new JCheckBox("Autonomous");
 		flagsPanel.add(autoBox);
-		
-		fmsAttachedBox = new JCheckBox("FMS Attached");
+
+		fmsAttachedBox=new JCheckBox("FMS Attached");
 		flagsPanel.add(fmsAttachedBox);
-		
-		resyncBox = new JCheckBox("Resync");
+
+		resyncBox=new JCheckBox("Resync");
 		flagsPanel.add(resyncBox);
-		
-		testBox = new JCheckBox("Test Mode");
+
+		testBox=new JCheckBox("Test Mode");
 		flagsPanel.add(testBox);
-		
-		versionsBox = new JCheckBox("Check Versions");
+
+		versionsBox=new JCheckBox("Check Versions");
 		flagsPanel.add(versionsBox);
-		sl_contentPane.putConstraint(SpringLayout.WEST, joyPanelsContainer, 5, SpringLayout.EAST, digitalPanel);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, joyPanelsContainer, 0, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, joyPanelsContainer, -5, SpringLayout.WEST, analogPanel);
+		sl_contentPane.putConstraint(SpringLayout.WEST,joyPanelsContainer,5,
+				SpringLayout.EAST,digitalPanel);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH,joyPanelsContainer,0,
+				SpringLayout.SOUTH,contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST,joyPanelsContainer,-5,
+				SpringLayout.WEST,analogPanel);
 		contentPane.add(joyPanelsContainer);
-		
-		joyPanelsContainer.setLayout(new GridLayout(2, 2, 2, 2));
-		
+
+		joyPanelsContainer.setLayout(new GridLayout(2,2,2,2));
+
 		for(int i=0;i<4;i++) {
-			JPanel joyPanel = new JPanel();
+			JPanel joyPanel=new JPanel();
 			joyPanelsContainer.add(joyPanel);
-			joyPanel.setLayout(new BorderLayout(0, 0));
-			
-			JPanel joySticksPanel = new JPanel();
-			joyPanel.add(joySticksPanel, BorderLayout.CENTER);
-			joySticksPanel.setLayout(new GridLayout(1, 6, 0, 0));
+			joyPanel.setLayout(new BorderLayout(0,0));
+
+			JPanel joySticksPanel=new JPanel();
+			joyPanel.add(joySticksPanel,BorderLayout.CENTER);
+			joySticksPanel.setLayout(new GridLayout(1,6,0,0));
 
 			for(int j=0;j<6;j++) {
-				JProgressBar joyStick = new JProgressBar();
+				JProgressBar joyStick=new JProgressBar();
 				joyStick.setOrientation(SwingConstants.VERTICAL);
 				joyStick.setMinimum(-128);
 				joyStick.setMaximum(128);
 				joySticksPanel.add(joyStick);
 				joySticks[i][j]=joyStick;
 			}
-			
-			JPanel joyButtonsPanel = new JPanel();
-			joyPanel.add(joyButtonsPanel, BorderLayout.SOUTH);
-			joyButtonsPanel.setLayout(new GridLayout(2, 6, 0, 0));
-			
+
+			JPanel joyButtonsPanel=new JPanel();
+			joyPanel.add(joyButtonsPanel,BorderLayout.SOUTH);
+			joyButtonsPanel.setLayout(new GridLayout(2,6,0,0));
+
 			UIDefaults joyButtonUI=new UIDefaults();
 			joyButtonUI.put("ToggleButton.contentMargins",new Insets(2,2,2,2));
 			for(int j=0;j<12;j++) {
 				String jstr=new Integer(j).toString();
-				JToggleButton joyButton = new JToggleButton(jstr);
+				JToggleButton joyButton=new JToggleButton(jstr);
 				joyButton.putClientProperty("Nimbus.Overrides",joyButtonUI);
 				joyButtonsPanel.add(joyButton);
 				joyButtons[i][j]=joyButton;
 			}
 		}
 	}
+
 	public void updateValues(FRCCommonControl control) {
 		pktnumText.setText(new Integer(control.getPacketIndex()).toString());
 		teamText.setText(new Integer(control.getTeamID()).toString());
