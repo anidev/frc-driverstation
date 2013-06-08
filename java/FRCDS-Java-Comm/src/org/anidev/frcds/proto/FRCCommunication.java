@@ -39,6 +39,12 @@ public class FRCCommunication {
 		this(true,false);
 	}
 
+	/**
+	 * Will close if cannot open send socket.
+	 * 
+	 * @param rRobot
+	 * @param rDS
+	 */
 	public FRCCommunication(boolean rRobot,boolean rDS) {
 		try {
 			sendDataSocket=new DatagramSocket();
@@ -213,14 +219,10 @@ public class FRCCommunication {
 		checkClosed();
 		setReceivingFromRobot(false);
 		setReceivingFromDS(false);
-		if(robotListeners!=null) {
-			robotListeners.clear();
-			robotListeners=null;
-		}
-		if(dsListeners!=null) {
-			dsListeners.clear();
-			dsListeners=null;
-		}
+		robotListeners.clear();
+		robotListeners=null;
+		dsListeners.clear();
+		dsListeners=null;
 		if(sendDataSocket!=null) {
 			sendDataSocket.close();
 		}
@@ -248,7 +250,8 @@ public class FRCCommunication {
 	private class ReceiveFromRobotWorker implements Runnable {
 		@Override
 		public void run() {
-			while(!Thread.interrupted()&&!receiveFromRobotSocket.isClosed()) {
+			while(receiveFromRobotSocket!=null&&!Thread.interrupted()
+					&&!receiveFromRobotSocket.isClosed()) {
 				int length=FRCRobotControl.SIZE;
 				byte[] buffer=new byte[length];
 				DatagramPacket dataPacket=new DatagramPacket(buffer,length);
@@ -271,7 +274,8 @@ public class FRCCommunication {
 	private class ReceiveFromDSWorker implements Runnable {
 		@Override
 		public void run() {
-			while(!Thread.interrupted()&&!receiveFromDSSocket.isClosed()) {
+			while(receiveFromDSSocket!=null&&!Thread.interrupted()
+					&&!receiveFromDSSocket.isClosed()&&!closed) {
 				int length=FRCCommonControl.SIZE;
 				byte[] buffer=new byte[length];
 				DatagramPacket dataPacket=new DatagramPacket(buffer,length);
@@ -301,7 +305,8 @@ public class FRCCommunication {
 	private class SendToRobotWorker implements Runnable {
 		@Override
 		public void run() {
-			while(!Thread.interrupted()&&!sendDataSocket.isClosed()) {
+			while(sendDataSocket!=null&&!Thread.interrupted()
+					&&!sendDataSocket.isClosed()&&!closed) {
 				byte[] dsData=null;
 				try {
 					dsData=sendToRobotQueue.take();
@@ -324,7 +329,7 @@ public class FRCCommunication {
 	private class SendToDSWorker implements Runnable {
 		@Override
 		public void run() {
-			while(!Thread.interrupted()&&!sendDataSocket.isClosed()) {
+			while(!Thread.interrupted()&&!sendDataSocket.isClosed()&&!closed) {
 				byte[] robotData=null;
 				try {
 					robotData=sendToDSQueue.take();
