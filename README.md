@@ -6,7 +6,7 @@ languages. Java was chosen because it can be ported easily to other platforms, w
 Each project can be compiled manually but no build scripts have been created yet. To build automatically, import the
 projects as Eclipse projects or use the entire repository as an Eclipse Workspace.
 
-Currently, FCDS-Java-Comm is the Java library for the communication protocol. It implements classes for encapsulating
+Currently, FRCDS-Java-Comm is the Java library for the communication protocol. It implements classes for encapsulating
 data that can be sent from the driver station to the robot (FRCCommonControl), and data that can be sent from the
 robot to the driver station (FRCRobotControl) though that protocol hasn't been fully reversed yet. Each of these two
 classes contain fields for simple data and other classes for more complicated types of data, some of which are shared
