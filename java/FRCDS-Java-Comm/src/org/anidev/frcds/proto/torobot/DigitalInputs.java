@@ -5,17 +5,16 @@ import org.anidev.frcds.proto.CommData;
 
 public class DigitalInputs extends CommData {
 	public static final int SIZE=1;
-	private boolean[] inputs=new boolean[] {false,false,false,false,false,
-			false,false,false};
-	
+	private boolean[] inputs=new boolean[] {true,true,true,true,true,true,true,true};
+
 	public boolean getInput(int index) {
 		return inputs[index];
 	}
-	
+
 	public void setInput(int index,boolean value) {
 		inputs[index]=value;
 	}
-	
+
 	public int getNumInputs() {
 		return inputs.length;
 	}
