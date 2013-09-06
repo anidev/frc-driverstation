@@ -24,7 +24,7 @@ import org.anidev.frcds.common.types.TeamStation;
 public class OperationPanel extends JPanel {
 	private final ButtonGroup operationModeGroup=new ButtonGroup();
 	private JLabel elapsedTimeValue;
-	private JComboBox teamStationBox;
+	private JComboBox<TeamStation> teamStationBox;
 	private JProgressBar batteryBar;
 	private JLabel teamIDText;
 
@@ -117,8 +117,8 @@ public class OperationPanel extends JPanel {
 		teamStationLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		bottomControlPanel.add(teamStationLabel,"1, 3");
 
-		teamStationBox=new JComboBox();
-		teamStationBox.setModel(new DefaultComboBoxModel(TeamStation.values()));
+		teamStationBox=new JComboBox<TeamStation>();
+		teamStationBox.setModel(new DefaultComboBoxModel<TeamStation>(TeamStation.values()));
 		bottomControlPanel.add(teamStationBox,"3, 3, fill, default");
 
 		JLabel batteryLabel=new JLabel("PC Battery");
