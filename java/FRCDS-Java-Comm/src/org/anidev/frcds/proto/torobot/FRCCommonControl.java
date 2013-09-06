@@ -184,7 +184,7 @@ public class FRCCommonControl extends CommData {
 		byteBuffer.put(data[index++]).put(data[index++]);
 		byteBuffer.position(0);
 		ShortBuffer shortBuffer=byteBuffer.asShortBuffer();
-		packetIndex=shortBuffer.get(0);
+		packetIndex=shortBuffer.get(0)&0xFFFF;
 		control.deserialize(Arrays.copyOfRange(data,index,
 				index+=ControlFlags.SIZE));
 		digitalInputs.deserialize(Arrays.copyOfRange(data,index,
