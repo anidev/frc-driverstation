@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 
+@SuppressWarnings("unused")
 public class FileProvider {
 	private static final String KDIALOG="kdialog --getopenfilename ~";
 	private static final String ZENITY="zenity --file-selection";
@@ -33,6 +34,7 @@ public class FileProvider {
 			}
 			Scanner inputScanner=new Scanner(proc.getInputStream());
 			String filename=inputScanner.nextLine();
+			inputScanner.close();
 			return filename;
 		} catch(IOException e) {
 			e.printStackTrace();

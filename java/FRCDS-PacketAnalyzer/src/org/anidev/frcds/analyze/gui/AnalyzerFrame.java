@@ -25,8 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.UIDefaults;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
