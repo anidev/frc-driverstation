@@ -334,9 +334,6 @@ public class AnalyzerFrame extends JFrame {
 			algFields[i]=algField;
 		}
 
-		JPanel joyPanelsContainer=new JPanel();
-		sl_contentPane.putConstraint(SpringLayout.NORTH,joyPanelsContainer,5,
-				SpringLayout.SOUTH,flagsPanel);
 		flagsPanel.setLayout(new GridLayout(2,4,0,0));
 
 		resetBox=new JCheckBox("Reset");
@@ -362,6 +359,10 @@ public class AnalyzerFrame extends JFrame {
 
 		versionsBox=new JCheckBox("Check Versions");
 		flagsPanel.add(versionsBox);
+
+		JPanel joyPanelsContainer=new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH,joyPanelsContainer,5,
+				SpringLayout.SOUTH,flagsPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST,joyPanelsContainer,5,
 				SpringLayout.EAST,digitalPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH,joyPanelsContainer,0,
@@ -370,12 +371,15 @@ public class AnalyzerFrame extends JFrame {
 				SpringLayout.WEST,analogPanel);
 		contentPane.add(joyPanelsContainer);
 
-		joyPanelsContainer.setLayout(new GridLayout(2,2,2,2));
+		joyPanelsContainer.setLayout(new GridLayout(2,2,4,4));
 
 		for(int i=0;i<4;i++) {
 			JPanel joyPanel=new JPanel();
 			joyPanelsContainer.add(joyPanel);
 			joyPanel.setLayout(new BorderLayout(0,0));
+
+			JLabel joyLabel=new JLabel("Joystick "+(i+1));
+			joyPanel.add(joyLabel,BorderLayout.NORTH);
 
 			JPanel joySticksPanel=new JPanel();
 			joyPanel.add(joySticksPanel,BorderLayout.CENTER);
