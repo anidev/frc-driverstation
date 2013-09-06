@@ -41,8 +41,10 @@ public class Joystick extends CommData {
 		for(int i=0;i<axes.length;i++) {
 			data[i]=axes[i];
 		}
-		boolean[] buttons1=Arrays.copyOfRange(buttons,0,4);
-		boolean[] buttons2=Arrays.copyOfRange(buttons,4,12);
+		boolean[] buttons1=Arrays.copyOfRange(buttons,8,12);
+		boolean[] buttons2=Arrays.copyOfRange(buttons,0,8);
+		reverseBits(buttons1);
+		reverseBits(buttons2);
 		data[6]=(byte)(bitsToInts(buttons1)[0]>>4);
 		data[7]=(byte)bitsToInts(buttons2)[0];
 		return data;
@@ -55,6 +57,7 @@ public class Joystick extends CommData {
 		}
 		boolean[] buttonBits=intsToBits(new int[] {(int)data[6],(int)data[7]});
 		buttonBits=Arrays.copyOfRange(buttonBits,4,16);
+		reverseBits(buttonBits);
 		this.buttons=buttonBits;
 	}
 
@@ -86,5 +89,14 @@ public class Joystick extends CommData {
 			return false;
 		}
 		return true;
+	}
+
+	private static boolean[] reverseBits(boolean[] bits) {
+		for(int i=0;i<bits.length/2;i++) {
+			boolean temp=bits[i];
+			bits[i]=bits[bits.length-1-i];
+			bits[bits.length-1-i]=temp;
+		}
+		return bits;
 	}
 }

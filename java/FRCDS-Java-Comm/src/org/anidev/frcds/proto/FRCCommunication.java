@@ -295,6 +295,7 @@ public class FRCCommunication {
 				}
 				FRCCommonControl controlData=new FRCCommonControl();
 				controlData.deserialize(buffer);
+				//FIXME Use thread-safe array list
 				for(FRCCommunicationListener listener:dsListeners) {
 					listener.receivedData(controlData);
 				}
