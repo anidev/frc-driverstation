@@ -172,7 +172,6 @@ public class FRCCommonControl extends CommData {
 		crcBuffer.putLong(crc.getValue());
 		crcBytes=Arrays.copyOfRange(crcBuffer.array(),4,8);
 		System.arraycopy(crcBytes,0,data,data.length-4,4);
-		System.out.println(Arrays.toString(crcBytes));
 		return data;
 	}
 
