@@ -20,15 +20,26 @@ public abstract class DriverStation {
 	protected double batteryPercent=-1.0;
 	protected int teamID=0;
 
-	protected abstract void setEnabledImpl();
+	protected void setEnabledImpl() {
+	}
 
-	protected abstract void setElapsedTimeImpl();
+	protected void setElapsedTimeImpl() {
+	}
 	
-	protected abstract void setTeamIDImpl();
+	protected void setTeamIDImpl() {
+	}
 	
-	protected abstract void setBatteryPercentImpl();
+	protected void setBatteryPercentImpl() {
+	}
 	
-	protected abstract void setModeImpl();
+	protected void setModeImpl() {
+	}
+	
+	protected void doCommonLoop() {
+	}
+	
+	protected void doEnabledLoop() {
+	}
 	
 	protected DriverStation() {
 		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ));
