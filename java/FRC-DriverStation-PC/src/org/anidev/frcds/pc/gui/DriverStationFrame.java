@@ -1,8 +1,12 @@
 package org.anidev.frcds.pc.gui;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import org.anidev.frcds.pc.DriverStationMain;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Cursor;
 import com.jgoodies.forms.layout.FormLayout;
@@ -15,6 +19,7 @@ public class DriverStationFrame extends JFrame {
 	private StatusPanel statusPanel;
 	private OperationPanel operationPanel;
 	private TeamIDPanel teamIDPanel;
+	private NetconsolePanel netconsolePanel;
 
 	public DriverStationFrame() {
 		super("FRC Driver Station");
@@ -42,10 +47,17 @@ public class DriverStationFrame extends JFrame {
 		contentPane.add(statusPanel,"2, 2, fill, fill");
 
 		JTabbedPane tabbedPane=new JTabbedPane(JTabbedPane.TOP);
-		contentPane.add(tabbedPane,"3, 1, 1, 2, fill, top");
+		contentPane.add(tabbedPane,"3, 1, 1, 2, fill, fill");
 
 		operationPanel=new OperationPanel();
 		tabbedPane.addTab("Operation",null,operationPanel,"Robot operation");
+		
+		netconsolePanel = new NetconsolePanel();
+		tabbedPane.addTab("Netconsole", null, netconsolePanel, "Robot Console");
+		tabbedPane.setEnabledAt(1, true);
+		DriverStationMain.getDS().addNetconsolePanel(netconsolePanel);
+		DetachableTab netconsoleTab=new DetachableTab("Netconsole");
+		tabbedPane.setTabComponentAt(1,netconsoleTab);
 		
 		setTeamID(0);
 	}
@@ -69,5 +81,19 @@ public class DriverStationFrame extends JFrame {
 	
 	private void setEnableAllowed(boolean allowed) {
 		enableDisablePanel.setEnableAllowed(allowed);
+	}
+	
+	private class DetachableTab extends JPanel {
+		private String title;
+		private JButton detachButton;
+		
+		public DetachableTab(String title) {
+			super(new BorderLayout());
+			setOpaque(false);
+			this.title=title;
+			JLabel label=new JLabel(title);
+			add(label,BorderLayout.CENTER);
+			detachButton=new JButton();
+		}
 	}
 }
