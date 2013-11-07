@@ -9,7 +9,7 @@ import org.anidev.frcds.proto.torobot.FRCCommonControl;
 public abstract class DriverStation {
 	public static final double UPDATE_HERTZ=50.0;
 	public static final double SLOW_HERTZ=1.0;
-	private FRCCommunication frcComm=new FRCCommunication();
+	protected FRCCommunication frcComm=new FRCCommunication();
 	protected FRCCommonControl dsControl=new FRCCommonControl();
 	protected BatteryProvider batteryProvider=null;
 	protected Thread enabledLoop=null;
@@ -19,33 +19,7 @@ public abstract class DriverStation {
 	protected double elapsedTime=0.0;
 	protected double batteryPercent=-1.0;
 	protected int teamID=0;
-
-	protected void setEnabledImpl() {
-	}
-
-	protected void setElapsedTimeImpl() {
-	}
 	
-	protected void setTeamIDImpl() {
-	}
-	
-	protected void setBatteryPercentImpl() {
-	}
-	
-	protected void setModeImpl() {
-	}
-	
-	protected void doCommonLoop() {
-	}
-	
-	protected void doEnabledLoop() {
-	}
-	
-	protected DriverStation() {
-		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ));
-		commonLoop.start();
-	}
-
 	public void setBatteryProvider(BatteryProvider batteryProvider) {
 		this.batteryProvider=batteryProvider;
 	}
@@ -120,5 +94,31 @@ public abstract class DriverStation {
 			batteryPercent=batteryProvider.getBatteryPercent();
 		}
 		setBatteryPercentImpl();
+	}
+
+	protected void startLoops() {
+		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ));
+		commonLoop.start();
+	}
+
+	protected void setEnabledImpl() {
+	}
+
+	protected void setElapsedTimeImpl() {
+	}
+	
+	protected void setTeamIDImpl() {
+	}
+	
+	protected void setBatteryPercentImpl() {
+	}
+	
+	protected void setModeImpl() {
+	}
+	
+	protected void doCommonLoop() {
+	}
+	
+	protected void doEnabledLoop() {
 	}
 }
