@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -23,8 +25,10 @@ public class FRCCommunication {
 	private volatile InetAddress dsAddress=null;
 	private volatile boolean receivingFromRobot;
 	private volatile boolean receivingFromDS;
-	private volatile ArrayList<FRCCommunicationListener> robotListeners=new ArrayList<FRCCommunicationListener>();
-	private volatile ArrayList<FRCCommunicationListener> dsListeners=new ArrayList<FRCCommunicationListener>();
+	private volatile List<FRCCommunicationListener> robotListeners=Collections
+			.synchronizedList(new ArrayList<FRCCommunicationListener>());
+	private volatile List<FRCCommunicationListener> dsListeners=Collections
+			.synchronizedList(new ArrayList<FRCCommunicationListener>());
 	private DatagramSocket sendDataSocket=null;
 	private DatagramSocket receiveFromRobotSocket;
 	private DatagramSocket receiveFromDSSocket;
@@ -295,7 +299,7 @@ public class FRCCommunication {
 				}
 				FRCCommonControl controlData=new FRCCommonControl();
 				controlData.deserialize(buffer);
-				//FIXME Use thread-safe array list
+				// FIXME Use thread-safe array list
 				for(FRCCommunicationListener listener:dsListeners) {
 					listener.receivedData(controlData);
 				}

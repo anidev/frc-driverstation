@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -17,13 +19,14 @@ public class Netconsole {
 	private static final InetAddress broadcastAddress;
 	private volatile boolean closed=false;
 	private int queueTimeout=40;
-	private ArrayList<NetconsoleListener> listeners=new ArrayList<NetconsoleListener>();
+	private List<NetconsoleListener> listeners=Collections
+			.synchronizedList(new ArrayList<NetconsoleListener>());
 	private DatagramSocket sendDataSocket;
 	private DatagramSocket receiveDataSocket;
 	private Thread sendDataThread;
 	private Thread receiveDataThread;
 	private BlockingQueue<String> sendDataQueue;
-	
+
 	static {
 		InetAddress dummy=null;
 		try {
@@ -39,7 +42,7 @@ public class Netconsole {
 		initSockets();
 		initThreads();
 	}
-	
+
 	public void sendData(String data) {
 		checkClosed();
 		try {
@@ -48,20 +51,20 @@ public class Netconsole {
 			Thread.currentThread().interrupt();
 		}
 	}
-	
+
 	public int getQueueTimeout() {
 		return queueTimeout;
 	}
-	
+
 	public void setQueueTimeout(int queueTimeout) {
 		checkClosed();
 		this.queueTimeout=queueTimeout;
 	}
-	
+
 	public void addNetconsoleListener(NetconsoleListener listener) {
 		listeners.add(listener);
 	}
-	
+
 	public void close() {
 		checkClosed();
 		if(sendDataSocket!=null) {
@@ -86,7 +89,7 @@ public class Netconsole {
 		sendDataQueue=null;
 		closed=true;
 	}
-	
+
 	private void checkClosed() {
 		if(closed) {
 			throw new IllegalStateException("Communication has been closed");
@@ -147,7 +150,7 @@ public class Netconsole {
 			}
 		}
 	}
-	
+
 	private class ReceiveDataWorker implements Runnable {
 		@Override
 		public void run() {
@@ -162,7 +165,7 @@ public class Netconsole {
 				} catch(IOException e) {
 					e.printStackTrace();
 				}
-				String data=new String(buffer);
+				String data=new String(buffer,0,packet.getLength());
 				for(NetconsoleListener listener:listeners) {
 					listener.receivedData(data);
 				}
