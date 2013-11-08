@@ -13,3 +13,9 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Following is copyright information for resource files.
+
+arrow-up.png, arrow-down.png
+These icons are part of Oxygen Icons, used and distributed
+here under the terms of the GNU LGPL.
