@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -40,5 +41,8 @@ public class Utils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	public static Preferences getPrefs() {
+		return Preferences.userNodeForPackage(PCDriverStation.class);
 	}
 }
