@@ -5,10 +5,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.anidev.frcds.pc.DriverStationMain;
+import org.anidev.frcds.pc.Utils;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Cursor;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.prefs.Preferences;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
@@ -18,9 +23,20 @@ public class DriverStationFrame extends JFrame {
 	private DraggableTabbedPane tabbedPane;
 	private EnableDisablePanel enableDisablePanel;
 	private StatusPanel statusPanel;
-	private OperationPanel operationPanel;
 	private TeamIDPanel teamIDPanel;
+	private OperationPanel operationPanel;
 	private NetconsolePanel netconsolePanel;
+	private static final String OPERATION_TAB="Operation";
+	private static final String NETCONSOLE_TAB="Netconsole";
+	private static final String OPERATION_TIP="Robot Operation";
+	private static final String NETCONSOLE_TIP="Netconsole";
+	private static final String TAB_ORDER_PREF="tab_order";
+	private static final String SELECTED_TAB_PREF="selected_tab";
+	private static final String DEF_TAB_LIST;
+	private static final String DEF_SELECTED_TAB=OPERATION_TAB;
+	static {
+		DEF_TAB_LIST=initDefTabList();
+	}
 
 	public DriverStationFrame() {
 		super("FRC Driver Station");
@@ -48,8 +64,22 @@ public class DriverStationFrame extends JFrame {
 		contentPane.add(tabbedPane,"3, 1, 1, 2, fill, fill");
 		tabbedPane.addTabDragListener(new DraggableTabbedPane.Listener() {
 			@Override
+			public void tabMoved(int oldIndex,int newIndex,MouseEvent e) {
+				StringBuilder tabListBuilder=new StringBuilder();
+				int numTabs=tabbedPane.getTabCount();
+				for(int i=0;i<numTabs;i++) {
+					tabListBuilder.append(tabbedPane.getTitleAt(i));
+					if(i<numTabs-1) {
+						tabListBuilder.append(",");
+					}
+				}
+				String tabList=tabListBuilder.toString();
+				Utils.getPrefs().put(TAB_ORDER_PREF,tabList);
+			}
+
+			@Override
 			public void tabDetached(int index,MouseEvent e) {
-				if(tabbedPane.getTitleAt(index).equals("Netconsole")) {
+				if(tabbedPane.getTitleAt(index).equals(NETCONSOLE_TAB)) {
 					JFrame frame=new JFrame();
 					NetconsolePanel panel=new NetconsolePanel();
 					frame.setContentPane(panel);
@@ -61,14 +91,23 @@ public class DriverStationFrame extends JFrame {
 		});
 
 		operationPanel=new OperationPanel();
-		tabbedPane.addTab("Operation",null,operationPanel,"Robot operation");
 
 		netconsolePanel=new NetconsolePanel();
-		tabbedPane.addTab("Netconsole",null,netconsolePanel,"Robot Console");
-		tabbedPane.setEnabledAt(1,true);
 		DriverStationMain.getDS().addNetconsolePanel(netconsolePanel);
-		DetachableTab netconsoleTab=new DetachableTab("Netconsole");
-		tabbedPane.setTabComponentAt(1,netconsoleTab);
+		DetachableTab netconsoleTab=new DetachableTab(NETCONSOLE_TAB);
+
+		restoreTabOrder(operationPanel,netconsolePanel);
+		tabbedPane.setTabComponentAt(tabbedPane.indexOfTab(NETCONSOLE_TAB),
+				netconsoleTab);
+		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int selectedTabIndex=tabbedPane.getSelectedIndex();
+				String selectedTab=tabbedPane.getTitleAt(selectedTabIndex);
+				Utils.getPrefs().put(SELECTED_TAB_PREF,selectedTab);
+			}
+		});
 
 		setTeamID(0);
 	}
@@ -92,6 +131,46 @@ public class DriverStationFrame extends JFrame {
 
 	private void setEnableAllowed(boolean allowed) {
 		enableDisablePanel.setEnableAllowed(allowed);
+	}
+
+	private static String[] getTabOrderPref() {
+		Preferences prefs=Utils.getPrefs();
+		String tabOrderList=prefs.get(TAB_ORDER_PREF,DEF_TAB_LIST);
+		return tabOrderList.split(",");
+	}
+
+	private void restoreTabOrder(Component operationTab,Component netconsoleTab) {
+		String[] tabOrder=getTabOrderPref();
+		for(String tab:tabOrder) {
+			Component toAdd=null;
+			String tooltip=tab;
+			switch(tab) {
+			case OPERATION_TAB:
+				toAdd=operationTab;
+				tooltip=OPERATION_TIP;
+				break;
+			case NETCONSOLE_TAB:
+				toAdd=netconsoleTab;
+				tooltip=NETCONSOLE_TIP;
+				break;
+			}
+			if(toAdd!=null) {
+				tabbedPane.addTab(tab,null,toAdd,tooltip);
+			}
+		}
+		String selectedTab=Utils.getPrefs().get(SELECTED_TAB_PREF,DEF_SELECTED_TAB);
+		int selectedTabIndex=tabbedPane.indexOfTab(selectedTab);
+		if(selectedTabIndex>=0) {
+			tabbedPane.setSelectedIndex(selectedTabIndex);
+		}
+	}
+
+	private static String initDefTabList() {
+		StringBuilder defTabListBuilder=new StringBuilder();
+		defTabListBuilder.append(OPERATION_TAB);
+		defTabListBuilder.append(",");
+		defTabListBuilder.append(NETCONSOLE_TAB);
+		return defTabListBuilder.toString();
 	}
 
 	private class DetachableTab extends JPanel {
