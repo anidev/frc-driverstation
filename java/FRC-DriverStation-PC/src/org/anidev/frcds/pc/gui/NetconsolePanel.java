@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import org.anidev.frcds.common.types.NetconsoleMessage;
 import org.anidev.frcds.pc.DriverStationMain;
 import org.anidev.frcds.pc.PCDriverStation;
+import org.anidev.frcds.pc.Utils;
 
 public class NetconsolePanel extends JPanel {
 	private JTable consoleTable;
@@ -27,14 +28,15 @@ public class NetconsolePanel extends JPanel {
 	private JTextField consoleSendText;
 	private JScrollPane scrollPane;
 	private PCDriverStation ds;
+
 	public NetconsolePanel() {
 		this.ds=DriverStationMain.getDS();
 
 		setPreferredSize(new Dimension(600,240));
 		setSize(new Dimension(600,240));
-		setLayout(new BorderLayout(0, 0));
-		
-		consoleTable = new JTable();
+		setLayout(new BorderLayout(0,0));
+
+		consoleTable=new JTable();
 		consoleTable.setFillsViewportHeight(true);
 		consoleTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableModel=new NetconsoleTableModel();
@@ -42,42 +44,47 @@ public class NetconsolePanel extends JPanel {
 		consoleTable.getColumnModel().getColumn(0).setPreferredWidth(16);
 		consoleTable.getColumnModel().getColumn(1).setPreferredWidth(500);
 		Font oldFont=consoleTable.getFont();
-		Font monoFont=new Font(Font.MONOSPACED,oldFont.getStyle(),oldFont.getSize());
+		Font monoFont=new Font(Font.MONOSPACED,oldFont.getStyle(),oldFont
+				.getSize());
 		consoleTable.setFont(monoFont);
-		
-		scrollPane = new JScrollPane(consoleTable);
-		add(scrollPane, BorderLayout.CENTER);
-		
-		JPanel consoleSendPanel = new JPanel();
-		consoleSendPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
-		add(consoleSendPanel, BorderLayout.SOUTH);
-		consoleSendPanel.setLayout(new BorderLayout(2, 0));
-		
-		consoleSendText = new JTextField();
-		consoleSendPanel.add(consoleSendText, BorderLayout.CENTER);
+
+		scrollPane=new JScrollPane(consoleTable);
+		add(scrollPane,BorderLayout.CENTER);
+
+		JPanel consoleSendPanel=new JPanel();
+		consoleSendPanel.setBorder(new EmptyBorder(2,2,2,2));
+		add(consoleSendPanel,BorderLayout.SOUTH);
+		consoleSendPanel.setLayout(new BorderLayout(2,0));
+
+		consoleSendText=new JTextField();
+		consoleSendPanel.add(consoleSendText,BorderLayout.CENTER);
 		consoleSendText.setColumns(10);
-		
-		JButton consoleSendButton = new JButton("Send");
-		consoleSendPanel.add(consoleSendButton, BorderLayout.EAST);
+
+		JButton consoleSendButton=new JButton("Send");
+		consoleSendPanel.add(consoleSendButton,BorderLayout.EAST);
 	}
-	
+
 	public void fireMessagesAdded() {
 		tableModel.fireTableDataChanged();
-//		consoleTable.invalidate();
+		// consoleTable.invalidate();
 	}
-	
+
 	private class NetconsoleTableModel extends AbstractTableModel {
 		private ImageIcon sentIcon;
 		private ImageIcon receivedIcon;
 		private DateFormat dateFormat;
-		
+
 		public NetconsoleTableModel() {
-			sentIcon=getIcon("arrow-up.png");
-			receivedIcon=getIcon("arrow-down.png");
+			sentIcon=Utils.getIcon("arrow-up.png");
+			receivedIcon=Utils.getIcon("arrow-down.png");
 			dateFormat=DateFormat.getTimeInstance();
 		}
+
 		@Override
 		public int getRowCount() {
+			if(ds==null) {
+				return 0;
+			}
 			return ds.getNetconsoleMessages().size();
 		}
 
@@ -118,6 +125,9 @@ public class NetconsolePanel extends JPanel {
 
 		@Override
 		public Object getValueAt(int rowIndex,int columnIndex) {
+			if(ds==null) {
+				return null;
+			}
 			NetconsoleMessage msg=ds.getNetconsoleMessages().get(rowIndex);
 			switch(columnIndex) {
 			case 0:
@@ -132,18 +142,6 @@ public class NetconsolePanel extends JPanel {
 				return dateFormat.format(msg.getDate().getTime());
 			}
 			return null;
-		}
-		
-		private ImageIcon getIcon(String name) {
-			try {
-				URL imageUrl=getClass().getResource("/resources/"+name);
-				Image image=ImageIO.read(imageUrl);
-				ImageIcon icon=new ImageIcon(image);
-				return icon;
-			} catch(IOException e) {
-				e.printStackTrace();
-				return null;
-			}
 		}
 	}
 }
