@@ -18,19 +18,22 @@ import java.util.Map;
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 import javax.swing.JWindow;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.TabbedPaneUI;
 
 public class DraggableTabbedPane extends JTabbedPane {
 	public static final int DETACH_THRESHOLD=5;
 	private volatile boolean dragging=false;
+	private volatile boolean draggingForbidden=false;
+	private volatile boolean detachingForbidden=false;
 	private volatile Rectangle tabBounds=null;
 	private volatile BufferedImage tabImage=null;
 	private volatile Point currentMouseLocation=null;
 	private volatile int draggedTabIndex=0;
 	private volatile DropState dropState=null;
 	private volatile JWindow dragWindow=null;
-	private Map<Integer,Boolean> draggingEnabled=Collections
-			.synchronizedMap(new HashMap<Integer,Boolean>());
+	private Map<String,TabInfo> tabInfoList=Collections
+			.synchronizedMap(new HashMap<String,TabInfo>());
 	private volatile int indicatorPos=-1;
 	private List<Listener> listeners=Collections
 			.synchronizedList(new ArrayList<Listener>());
@@ -38,53 +41,7 @@ public class DraggableTabbedPane extends JTabbedPane {
 	public DraggableTabbedPane() {
 		super();
 		addMouseMotionListener(new DragMotionListener());
-
-		addMouseListener(new MouseAdapter() {
-			public void mouseReleased(MouseEvent e) {
-				if(!dragging) {
-					return;
-				}
-				dragging=false;
-				tabImage=null;
-				tabBounds=null;
-				dragWindow.setVisible(false);
-				dragWindow.dispose();
-				dragWindow=null;
-				boolean moved=false;
-				int insertPos=0;
-				if(indicatorPos>=0&&indicatorPos!=draggedTabIndex
-						&&indicatorPos-1!=draggedTabIndex) {
-					Component comp=getComponentAt(draggedTabIndex);
-					String title=getTitleAt(draggedTabIndex);
-					Icon icon=getIconAt(draggedTabIndex);
-					String tooltip=getToolTipTextAt(draggedTabIndex);
-					removeTabAt(draggedTabIndex);
-					insertPos=indicatorPos;
-					if(draggedTabIndex<indicatorPos) {
-						insertPos--;
-					}
-					insertTab(title,icon,comp,tooltip,insertPos);
-					setSelectedIndex(insertPos);
-					moved=true;
-				}
-				synchronized(listeners) {
-					for(Listener listener:listeners) {
-						// Also canceled if ROW_MOVE but did not
-						// actually move to a different location
-						if(dropState==null||dropState==DropState.NO_CHANGE
-								||(dropState==DropState.ROW_MOVE&&!moved)) {
-							listener.tabDropCanceled(draggedTabIndex,e);
-						} else if(dropState==DropState.ROW_MOVE&&moved) {
-							listener.tabMoved(draggedTabIndex,insertPos,e);
-						} else if(dropState==DropState.DETACHED) {
-							listener.tabDetached(draggedTabIndex,e);
-						}
-					}
-				}
-				indicatorPos=-1;
-				repaint();
-			}
-		});
+		addMouseListener(new DragReleaseListener());
 	}
 
 	public DropState calcTabDropState(int index,int x,int y) {
@@ -98,11 +55,35 @@ public class DraggableTabbedPane extends JTabbedPane {
 	}
 
 	public void setTabDraggable(int index,boolean draggable) {
-		draggingEnabled.put(index,draggable);
+		String title=getTitleAt(index);
+		TabInfo info=tabInfoList.get(title);
+		if(info==null) {
+			info=new TabInfo();
+		}
+		info.draggable=draggable;
+		tabInfoList.put(title,info);
 	}
 
 	public boolean isTabDraggable(int index) {
-		return draggingEnabled.get(index);
+		String title=getTitleAt(index);
+		TabInfo info=tabInfoList.get(title);
+		return(info==null?true:info.draggable);
+	}
+
+	public void setTabDetachable(int index,boolean detachable) {
+		String title=getTitleAt(index);
+		TabInfo info=tabInfoList.get(title);
+		if(info==null) {
+			info=new TabInfo();
+		}
+		info.detachable=detachable;
+		tabInfoList.put(title,info);
+	}
+
+	public boolean isTabDetachable(int index) {
+		String title=getTitleAt(index);
+		TabInfo info=tabInfoList.get(title);
+		return(info==null?true:info.detachable);
 	}
 
 	public void addTabDragListener(Listener listener) {
@@ -111,6 +92,14 @@ public class DraggableTabbedPane extends JTabbedPane {
 
 	public void removeTabDragListener(Listener listener) {
 		listeners.remove(listener);
+	}
+
+	@Override
+	public void setTitleAt(int index,String title) {
+		String oldTitle=getTitleAt(index);
+		TabInfo info=tabInfoList.get(oldTitle);
+		super.setTitleAt(index,title);
+		tabInfoList.put(title,info);
 	}
 
 	@Override
@@ -152,6 +141,11 @@ public class DraggableTabbedPane extends JTabbedPane {
 		DETACHED; // tab dropped far enough away to be detached
 	}
 
+	private static class TabInfo {
+		public boolean draggable=true;
+		public boolean detachable=true;
+	}
+
 	private class DragMotionListener extends MouseMotionAdapter {
 		public void mouseDragged(MouseEvent e) {
 			updateStatus(e);
@@ -164,19 +158,26 @@ public class DraggableTabbedPane extends JTabbedPane {
 		}
 
 		public void updateStatus(MouseEvent e) {
-			if(!dragging) {
+			if(!dragging&&!draggingForbidden) {
 				// Gets the tab index based on the mouse position
 				int tabNumber=getUI().tabForCoordinate(
 						DraggableTabbedPane.this,e.getX(),e.getY());
 				if(tabNumber>=0) {
-					draggedTabIndex=tabNumber;
-					tabBounds=getUI().getTabBounds(DraggableTabbedPane.this,
-							tabNumber);
-					dragging=true;
-					synchronized(listeners) {
-						for(Listener listener:listeners) {
-							listener.tabDragging(draggedTabIndex,e);
+					boolean draggable=isTabDraggable(tabNumber);
+					boolean detachable=isTabDetachable(tabNumber);
+					if(draggable) {
+						detachingForbidden=!detachable;
+						draggedTabIndex=tabNumber;
+						tabBounds=getUI().getTabBounds(
+								DraggableTabbedPane.this,tabNumber);
+						dragging=true;
+						synchronized(listeners) {
+							for(Listener listener:listeners) {
+								listener.tabDragging(draggedTabIndex,e);
+							}
 						}
+					} else {
+						draggingForbidden=true;
 					}
 				}
 			}
@@ -204,6 +205,12 @@ public class DraggableTabbedPane extends JTabbedPane {
 						DraggableTabbedPane.this);
 				currentMouseLocation=new Point(e.getXOnScreen(),e
 						.getYOnScreen());
+				if(detachingForbidden) {
+					Point toConvert=new Point(tabBounds.getLocation());
+					SwingUtilities.convertPointToScreen(toConvert,
+							DraggableTabbedPane.this);
+					currentMouseLocation.y=toConvert.y;
+				}
 
 				if(dragWindow==null) {
 					dragWindow=new JWindow() {
@@ -226,8 +233,11 @@ public class DraggableTabbedPane extends JTabbedPane {
 				return;
 			}
 			int x=e.getX();
-			int y=e.getY();
+			int y=(detachingForbidden?tabBounds.y:e.getY());
 			dropState=calcTabDropState(draggedTabIndex,x,y);
+			if(detachingForbidden&&dropState==DropState.DETACHED) {
+				dropState=DropState.ROW_MOVE;
+			}
 			indicatorPos=-1;
 			if(dropState!=DropState.ROW_MOVE) {
 				return;
@@ -237,7 +247,9 @@ public class DraggableTabbedPane extends JTabbedPane {
 			if(hoverTabIndex<0) {
 				Rectangle endTabBounds=ui.getTabBounds(
 						DraggableTabbedPane.this,getTabCount()-1);
-				if(x>endTabBounds.x+endTabBounds.width) {
+				if(x<0) {
+					indicatorPos=0;
+				} else if(x>endTabBounds.x+endTabBounds.width) {
 					indicatorPos=getTabCount();
 				}
 				return;
@@ -248,6 +260,55 @@ public class DraggableTabbedPane extends JTabbedPane {
 			if(x>=hoverBounds.x+hoverBounds.width/2.0) {
 				indicatorPos++;
 			}
+		}
+	}
+
+	private class DragReleaseListener extends MouseAdapter {
+		public void mouseReleased(MouseEvent e) {
+			draggingForbidden=false;
+			detachingForbidden=false;
+			if(!dragging) {
+				return;
+			}
+			dragging=false;
+			tabImage=null;
+			tabBounds=null;
+			dragWindow.setVisible(false);
+			dragWindow.dispose();
+			dragWindow=null;
+			boolean moved=false;
+			int insertPos=0;
+			if(indicatorPos>=0&&indicatorPos!=draggedTabIndex
+					&&indicatorPos-1!=draggedTabIndex) {
+				Component comp=getComponentAt(draggedTabIndex);
+				String title=getTitleAt(draggedTabIndex);
+				Icon icon=getIconAt(draggedTabIndex);
+				String tooltip=getToolTipTextAt(draggedTabIndex);
+				removeTabAt(draggedTabIndex);
+				insertPos=indicatorPos;
+				if(draggedTabIndex<indicatorPos) {
+					insertPos--;
+				}
+				insertTab(title,icon,comp,tooltip,insertPos);
+				setSelectedIndex(insertPos);
+				moved=true;
+			}
+			synchronized(listeners) {
+				for(Listener listener:listeners) {
+					// Also canceled if ROW_MOVE but did not
+					// actually move to a different location
+					if(dropState==null||dropState==DropState.NO_CHANGE
+							||(dropState==DropState.ROW_MOVE&&!moved)) {
+						listener.tabDropCanceled(draggedTabIndex,e);
+					} else if(dropState==DropState.ROW_MOVE&&moved) {
+						listener.tabMoved(draggedTabIndex,insertPos,e);
+					} else if(dropState==DropState.DETACHED) {
+						listener.tabDetached(draggedTabIndex,e);
+					}
+				}
+			}
+			indicatorPos=-1;
+			repaint();
 		}
 	}
 }

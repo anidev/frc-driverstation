@@ -97,9 +97,11 @@ public class DriverStationFrame extends JFrame {
 		DetachableTab netconsoleTab=new DetachableTab(NETCONSOLE_TAB);
 
 		restoreTabOrder(operationPanel,netconsolePanel);
-		tabbedPane.setTabComponentAt(tabbedPane.indexOfTab(NETCONSOLE_TAB),
-				netconsoleTab);
-		
+		int operationTabIndex=tabbedPane.indexOfTab(OPERATION_TAB);
+		tabbedPane.setTabDetachable(operationTabIndex,false);
+		int netconsoleTabIndex=tabbedPane.indexOfTab(NETCONSOLE_TAB);
+		tabbedPane.setTabComponentAt(netconsoleTabIndex,netconsoleTab);
+
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -158,7 +160,8 @@ public class DriverStationFrame extends JFrame {
 				tabbedPane.addTab(tab,null,toAdd,tooltip);
 			}
 		}
-		String selectedTab=Utils.getPrefs().get(SELECTED_TAB_PREF,DEF_SELECTED_TAB);
+		String selectedTab=Utils.getPrefs().get(SELECTED_TAB_PREF,
+				DEF_SELECTED_TAB);
 		int selectedTabIndex=tabbedPane.indexOfTab(selectedTab);
 		if(selectedTabIndex>=0) {
 			tabbedPane.setSelectedIndex(selectedTabIndex);
