@@ -4,7 +4,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import org.anidev.frcds.pc.DriverStationMain;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

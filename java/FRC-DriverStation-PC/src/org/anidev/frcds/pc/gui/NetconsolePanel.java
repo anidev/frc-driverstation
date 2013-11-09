@@ -2,12 +2,8 @@ package org.anidev.frcds.pc.gui;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
