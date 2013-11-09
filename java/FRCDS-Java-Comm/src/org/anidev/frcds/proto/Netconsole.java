@@ -166,8 +166,10 @@ public class Netconsole {
 					e.printStackTrace();
 				}
 				String data=new String(buffer,0,packet.getLength());
-				for(NetconsoleListener listener:listeners) {
-					listener.receivedData(data);
+				synchronized(listeners) {
+					for(NetconsoleListener listener:listeners) {
+						listener.receivedData(data);
+					}
 				}
 			}
 		}

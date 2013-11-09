@@ -268,8 +268,10 @@ public class FRCCommunication {
 				}
 				FRCRobotControl robotData=new FRCRobotControl();
 				robotData.deserialize(buffer);
-				for(FRCCommunicationListener listener:robotListeners) {
-					listener.receivedData(robotData);
+				synchronized(robotListeners) {
+					for(FRCCommunicationListener listener:robotListeners) {
+						listener.receivedData(robotData);
+					}
 				}
 			}
 		}
@@ -299,9 +301,10 @@ public class FRCCommunication {
 				}
 				FRCCommonControl controlData=new FRCCommonControl();
 				controlData.deserialize(buffer);
-				// FIXME Use thread-safe array list
-				for(FRCCommunicationListener listener:dsListeners) {
-					listener.receivedData(controlData);
+				synchronized(dsListeners) {
+					for(FRCCommunicationListener listener:dsListeners) {
+						listener.receivedData(controlData);
+					}
 				}
 			}
 		}
