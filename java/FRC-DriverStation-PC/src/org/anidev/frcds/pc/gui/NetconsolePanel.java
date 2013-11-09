@@ -10,7 +10,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
 import org.anidev.frcds.common.types.NetconsoleMessage;
@@ -24,6 +29,8 @@ public class NetconsolePanel extends JPanel {
 	private JTextField consoleSendText;
 	private JScrollPane scrollPane;
 	private PCDriverStation ds;
+	private static final int ICON_COL_WIDTH=22;
+	private static final int TIME_COL_WIDTH=90;
 
 	public NetconsolePanel() {
 		this.ds=DriverStationMain.getDS();
@@ -37,8 +44,12 @@ public class NetconsolePanel extends JPanel {
 		consoleTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableModel=new NetconsoleTableModel();
 		consoleTable.setModel(tableModel);
-		consoleTable.getColumnModel().getColumn(0).setPreferredWidth(16);
-		consoleTable.getColumnModel().getColumn(1).setPreferredWidth(500);
+		TableColumn iconColumn=consoleTable.getColumnModel().getColumn(0);
+		iconColumn.setMinWidth(ICON_COL_WIDTH);
+		iconColumn.setMaxWidth(ICON_COL_WIDTH);
+		TableColumn timeColumn=consoleTable.getColumnModel().getColumn(2);
+		timeColumn.setMinWidth(TIME_COL_WIDTH);
+		timeColumn.setMaxWidth(TIME_COL_WIDTH);
 		Font oldFont=consoleTable.getFont();
 		Font monoFont=new Font(Font.MONOSPACED,oldFont.getStyle(),oldFont
 				.getSize());
