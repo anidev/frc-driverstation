@@ -201,7 +201,6 @@ public class DraggableTabbedPane extends JTabbedPane {
 				setDoubleBuffered(false);
 				paint(totalGraphics);
 
-
 				// Paint just the dragged tab to the buffer
 				tabImage=new BufferedImage(tabBounds.width,tabBounds.height,
 						BufferedImage.TYPE_INT_ARGB);
