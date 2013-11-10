@@ -35,20 +35,29 @@ public class FRCRobotControl extends CommData {
 		this.control=control;
 	}
 
-	public int getBatteryVolts() {
+	public int getBatteryVoltsInt() {
 		return batteryVolts;
 	}
 
-	public void setBatteryVolts(int batteryVolts) {
+	public void setBatteryVoltsInt(int batteryVolts) {
 		this.batteryVolts=batteryVolts;
 	}
 
-	public int getBatteryMV() {
+	public int getBatteryVoltsFraction() {
 		return batteryMV;
 	}
 
-	public void setBatteryMV(int batteryMV) {
+	public void setBatteryFraction(int batteryMV) {
 		this.batteryMV=batteryMV;
+	}
+	
+	public double getBatteryVolts() {
+		return batteryVolts+(batteryMV*1.0/1000.0);
+	}
+	
+	public void setBatteryVolts(double volts) {
+		this.batteryVolts=(int)volts;
+		this.batteryMV=(int)((volts-batteryVolts)*1000);
 	}
 
 	public DigitalOutputs getDigitalOutputs() {

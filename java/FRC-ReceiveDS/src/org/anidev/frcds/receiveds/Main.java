@@ -69,8 +69,7 @@ public class Main {
 					joyButtons[i].setSelected(joystick.getButton(i));
 				}
 				FRCRobotControl robotData=new FRCRobotControl();
-				robotData.setBatteryVolts(12);
-				robotData.setBatteryMV(0);
+				robotData.setBatteryVolts(12.0);
 				robotData.setTeamID(612);
 				robotData.getControlFlags().setEnabled(false);
 				frcComm.sendToDS(robotData);
