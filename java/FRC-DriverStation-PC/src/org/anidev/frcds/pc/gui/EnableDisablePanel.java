@@ -2,7 +2,6 @@ package org.anidev.frcds.pc.gui;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
-import javax.swing.Painter;
 import javax.swing.UIDefaults;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -135,6 +134,7 @@ public class EnableDisablePanel extends JPanel {
 				case TOP:
 					g.drawLine(minX,minY+BORDER_PADDING,maxX,minY+BORDER_PADDING);
 					break;
+				case NONE:
 				}
 			}
 		}
