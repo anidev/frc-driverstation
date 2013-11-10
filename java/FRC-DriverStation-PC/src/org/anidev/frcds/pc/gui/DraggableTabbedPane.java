@@ -10,11 +10,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 import javax.swing.JWindow;
@@ -28,6 +31,7 @@ public class DraggableTabbedPane extends JTabbedPane {
 	private volatile boolean detachingForbidden=false;
 	private volatile Rectangle tabBounds=null;
 	private volatile BufferedImage tabImage=null;
+	private volatile Component tabComponent=null;
 	private volatile Point currentMouseLocation=null;
 	private volatile int draggedTabIndex=0;
 	private volatile DropState dropState=null;
@@ -170,6 +174,7 @@ public class DraggableTabbedPane extends JTabbedPane {
 						draggedTabIndex=tabNumber;
 						tabBounds=getUI().getTabBounds(
 								DraggableTabbedPane.this,tabNumber);
+						tabComponent=getTabComponentAt(tabNumber);
 						dragging=true;
 						synchronized(listeners) {
 							for(Listener listener:listeners) {
@@ -190,10 +195,12 @@ public class DraggableTabbedPane extends JTabbedPane {
 						getHeight(),BufferedImage.TYPE_INT_ARGB);
 				Graphics2D totalGraphics=totalImage.createGraphics();
 				totalGraphics.setClip(tabBounds);
+//				totalGraphics.setClip(new Rectangle(0,0,getWidth(),getHeight()));
 				// Don't be double buffered when painting to a static
 				// image.
 				setDoubleBuffered(false);
-				paintComponent(totalGraphics);
+				paint(totalGraphics);
+
 
 				// Paint just the dragged tab to the buffer
 				tabImage=new BufferedImage(tabBounds.width,tabBounds.height,
@@ -203,6 +210,7 @@ public class DraggableTabbedPane extends JTabbedPane {
 						tabBounds.height,tabBounds.x,tabBounds.y,tabBounds.x
 								+tabBounds.width,tabBounds.y+tabBounds.height,
 						DraggableTabbedPane.this);
+
 				currentMouseLocation=new Point(e.getXOnScreen(),e
 						.getYOnScreen());
 				if(detachingForbidden) {
@@ -210,6 +218,17 @@ public class DraggableTabbedPane extends JTabbedPane {
 					SwingUtilities.convertPointToScreen(toConvert,
 							DraggableTabbedPane.this);
 					currentMouseLocation.y=toConvert.y;
+					if(e.getX()<0) {
+						Point minPoint=new Point(0,0);
+						SwingUtilities.convertPointToScreen(minPoint,
+								DraggableTabbedPane.this);
+						currentMouseLocation.x=minPoint.x;
+					} else if(e.getX()+tabBounds.width>getWidth()) {
+						Point maxPoint=new Point(getWidth(),0);
+						SwingUtilities.convertPointToScreen(maxPoint,
+								DraggableTabbedPane.this);
+						currentMouseLocation.x=maxPoint.x-tabBounds.width;
+					}
 				}
 
 				if(dragWindow==null) {
