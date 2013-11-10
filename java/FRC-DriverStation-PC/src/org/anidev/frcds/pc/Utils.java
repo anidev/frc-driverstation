@@ -10,17 +10,22 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 
 public class Utils {
 	public static int calcAlpha(double alpha,int newColor,int oldColor) {
 		return (int)Math.round(alpha*newColor+(1-alpha)*oldColor);
 	}
+
 	public static Color calcAlpha(double alpha,Color newColor,Color oldColor) {
 		int calcR=calcAlpha(alpha,newColor.getRed(),oldColor.getRed());
 		int calcG=calcAlpha(alpha,newColor.getGreen(),oldColor.getGreen());
 		int calcB=calcAlpha(alpha,newColor.getBlue(),oldColor.getBlue());
 		return new Color(calcR,calcG,calcB);
 	}
+
 	public static AbstractButton getSelectedButton(ButtonGroup group) {
 		Enumeration<AbstractButton> buttons=group.getElements();
 		while(buttons.hasMoreElements()) {
@@ -31,6 +36,7 @@ public class Utils {
 		}
 		return null;
 	}
+
 	public static ImageIcon getIcon(String name) {
 		try {
 			URL imageUrl=Utils.class.getResource("/resources/"+name);
@@ -42,7 +48,21 @@ public class Utils {
 			return null;
 		}
 	}
+
 	public static Preferences getPrefs() {
 		return Preferences.userNodeForPackage(PCDriverStation.class);
+	}
+	
+	public static Object getNimbusPref(String key,JComponent c) {
+		UIDefaults uiValues=UIManager.getLookAndFeelDefaults();
+		Object overrides=c.getClientProperty("Nimbus.Overrides");
+		Object pref=null;
+		if(overrides!=null&&overrides instanceof UIDefaults) {
+			pref=((UIDefaults)overrides).get(key);
+		}
+		if(pref==null) {
+			pref=uiValues.get(key);
+		}
+		return pref;
 	}
 }
