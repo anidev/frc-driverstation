@@ -5,7 +5,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.anidev.frcds.pc.DriverStationMain;
+import org.anidev.frcds.pc.PCDriverStation;
 import org.anidev.frcds.pc.Utils;
+import org.anidev.frcds.proto.tods.FRCRobotControl;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -13,6 +15,7 @@ import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -26,12 +29,14 @@ public class DriverStationFrame extends JFrame {
 	private TeamIDPanel teamIDPanel;
 	private OperationPanel operationPanel;
 	private NetconsolePanel netconsolePanel;
+	private final PCDriverStation ds=DriverStationMain.getDS();
 	private static final String OPERATION_TAB="Operation";
 	private static final String NETCONSOLE_TAB="Netconsole";
 	private static final String OPERATION_TIP="Robot Operation";
 	private static final String NETCONSOLE_TIP="Netconsole";
 	private static final String TAB_ORDER_PREF="tab_order";
 	private static final String SELECTED_TAB_PREF="selected_tab";
+	private static final String TEAMID_PREF="teamid";
 	private static final String DEF_TAB_LIST;
 	private static final String DEF_SELECTED_TAB=OPERATION_TAB;
 	static {
@@ -107,11 +112,18 @@ public class DriverStationFrame extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				int selectedTabIndex=tabbedPane.getSelectedIndex();
 				String selectedTab=tabbedPane.getTitleAt(selectedTabIndex);
-				Utils.getPrefs().put(SELECTED_TAB_PREF,selectedTab);
+				Preferences prefs=Utils.getPrefs();
+				prefs.put(SELECTED_TAB_PREF,selectedTab);
+				prefs.putInt(TEAMID_PREF,ds.getTeamID());
+				try {
+					prefs.flush();
+				} catch(BackingStoreException ex) {
+					ex.printStackTrace();
+				}
 			}
 		});
-
-		setTeamID(0);
+		
+		ds.setTeamID(612);
 	}
 
 	public void setElapsedTime(double elapsedTime) {
@@ -124,11 +136,16 @@ public class DriverStationFrame extends JFrame {
 		} else {
 			setEnableAllowed(true);
 		}
+		teamIDPanel.setTeamID(teamID);
 		operationPanel.setTeamID(teamID);
 	}
 
 	public void setBatteryPercent(double percent) {
 		operationPanel.setBatteryPercent(percent);
+	}
+	
+	public void displayControlData(FRCRobotControl control) {
+		
 	}
 
 	private void setEnableAllowed(boolean allowed) {
@@ -167,7 +184,7 @@ public class DriverStationFrame extends JFrame {
 			tabbedPane.setSelectedIndex(selectedTabIndex);
 		}
 	}
-
+	
 	private static String initDefTabList() {
 		StringBuilder defTabListBuilder=new StringBuilder();
 		defTabListBuilder.append(OPERATION_TAB);

@@ -55,6 +55,11 @@ public class TeamIDPanel extends JPanel {
 
 		add(teamIDField,gbc_teamIDField);
 	}
+	
+	public void setTeamID(int teamid) {
+		teamIDField.setText((teamid<=0?"":Integer.toString(teamid)));
+	}
+	
 	public int getTeamID() {
 		Object value=teamIDField.getValue();
 		if(value!=null) {
