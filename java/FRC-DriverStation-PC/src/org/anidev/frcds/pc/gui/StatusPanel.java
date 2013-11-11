@@ -11,8 +11,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.text.DecimalFormat;
 
 public class StatusPanel extends JPanel {
+	private JLabel voltsValueLabel;
+	private DecimalFormat voltsFormat;
 	public StatusPanel() {
 		setSize(new Dimension(170, 240));
 		setLayout(new GridLayout(2, 1, 0, 0));
@@ -32,10 +35,13 @@ public class StatusPanel extends JPanel {
 		voltsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		voltsPanel.add(voltsLabel);
 
-		JLabel voltsValueLabel=new JLabel("--.--");
+		voltsValueLabel=new JLabel();
+		setBatteryVolts(-1.0);
 		voltsValueLabel.setFont(new Font("Arial", Font.BOLD, 16));
 		voltsValueLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		voltsPanel.add(voltsValueLabel);
+		
+		voltsFormat=new DecimalFormat("##.##");
 
 		JPanel communicationStatusPanel=new JPanel();
 		robotStatusPanel.add(communicationStatusPanel);
@@ -64,6 +70,13 @@ public class StatusPanel extends JPanel {
 		operationStatusLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		operationStatusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		operationStatusPanel.add(operationStatusLabel, BorderLayout.CENTER);
-
+	}
+	
+	public void setBatteryVolts(double volts) {
+		if(volts<0) {
+			voltsValueLabel.setText("--.--");
+		} else {
+			voltsValueLabel.setText(voltsFormat.format(volts));
+		}
 	}
 }
