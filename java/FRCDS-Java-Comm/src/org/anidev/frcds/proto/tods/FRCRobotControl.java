@@ -13,8 +13,8 @@ public class FRCRobotControl extends CommData {
 	public static final Version CURRENT_VERSION=new Version("12191200");
 	private static int totalPackets=0;
 	private ControlFlags control=new ControlFlags();
-	private int batteryVolts=0;
-	private int batteryMV=0;
+	private int batteryVolts=-1;
+	private int batteryMV=-1;
 	private DigitalOutputs digitalOutputs=new DigitalOutputs();
 	private byte[] unknown1=new byte[] {0,0,0,0};
 	private int teamID=0;
@@ -52,10 +52,16 @@ public class FRCRobotControl extends CommData {
 	}
 	
 	public double getBatteryVolts() {
+		if(batteryVolts<0||batteryMV<0) {
+			return -1.0;
+		}
 		return batteryVolts+(batteryMV*1.0/1000.0);
 	}
 	
 	public void setBatteryVolts(double volts) {
+		if(volts<0) {
+			this.batteryVolts=this.batteryMV=-1;
+		}
 		this.batteryVolts=(int)volts;
 		this.batteryMV=(int)((volts-batteryVolts)*1000);
 	}
