@@ -1,4 +1,4 @@
-package org.anidev.frcds.pc.gui;
+package org.anidev.frcds.pc.gui.nc;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -28,9 +28,9 @@ public class NetconsolePanel extends JPanel {
 	private static final int ICON_COL_WIDTH=22;
 	private static final int TIME_COL_WIDTH=90;
 
-	public NetconsolePanel() {
-		this.ds=DriverStationMain.getDS();
-
+	public NetconsolePanel(PCDriverStation ds) {
+		this.ds=ds;
+		
 		setPreferredSize(new Dimension(600,240));
 		setSize(new Dimension(600,240));
 		setLayout(new BorderLayout(0,0));

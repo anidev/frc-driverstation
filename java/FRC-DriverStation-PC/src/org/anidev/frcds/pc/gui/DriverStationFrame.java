@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import org.anidev.frcds.pc.DriverStationMain;
 import org.anidev.frcds.pc.PCDriverStation;
 import org.anidev.frcds.pc.Utils;
+import org.anidev.frcds.pc.gui.nc.NetconsoleFrame;
+import org.anidev.frcds.pc.gui.nc.NetconsolePanel;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -85,11 +87,8 @@ public class DriverStationFrame extends JFrame {
 			@Override
 			public void tabDetached(int index,MouseEvent e) {
 				if(tabbedPane.getTitleAt(index).equals(NETCONSOLE_TAB)) {
-					JFrame frame=new JFrame();
-					NetconsolePanel panel=new NetconsolePanel();
-					frame.setContentPane(panel);
-					DriverStationMain.getDS().addNetconsolePanel(panel);
-					frame.pack();
+					JFrame frame=new NetconsoleFrame(ds);
+					frame.setLocation(e.getLocationOnScreen());
 					frame.setVisible(true);
 				}
 			}
@@ -97,8 +96,8 @@ public class DriverStationFrame extends JFrame {
 
 		operationPanel=new OperationPanel();
 
-		netconsolePanel=new NetconsolePanel();
-		DriverStationMain.getDS().addNetconsolePanel(netconsolePanel);
+		netconsolePanel=new NetconsolePanel(ds);
+		ds.addNetconsolePanel(netconsolePanel);
 		DetachableTab netconsoleTab=new DetachableTab(NETCONSOLE_TAB);
 
 		restoreTabOrder(operationPanel,netconsolePanel);
@@ -123,7 +122,7 @@ public class DriverStationFrame extends JFrame {
 			}
 		});
 		
-		ds.setTeamID(612);
+		ds.setTeamID(Utils.getPrefs().getInt(TEAMID_PREF,0));
 	}
 
 	public void setElapsedTime(double elapsedTime) {

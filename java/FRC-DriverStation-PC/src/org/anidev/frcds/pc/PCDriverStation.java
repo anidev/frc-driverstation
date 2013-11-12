@@ -8,7 +8,7 @@ import org.anidev.frcds.common.types.NetconsoleMessage;
 import org.anidev.frcds.proto.Netconsole;
 import org.anidev.frcds.proto.NetconsoleListener;
 import org.anidev.frcds.pc.gui.DriverStationFrame;
-import org.anidev.frcds.pc.gui.NetconsolePanel;
+import org.anidev.frcds.pc.gui.nc.NetconsolePanel;
 
 public class PCDriverStation extends DriverStation {
 	private DriverStationFrame frame=null;
