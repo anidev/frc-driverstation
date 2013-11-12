@@ -4,27 +4,23 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
-import org.anidev.frcds.pc.PCDriverStation;
+import org.anidev.frcds.proto.nc.Netconsole;
 
 public class NetconsoleFrame extends JFrame {
-	private final PCDriverStation ds;
+	private final Netconsole nc;
 	private final NetconsolePanel netconsolePanel;
-	public NetconsoleFrame(PCDriverStation _ds) {
+
+	public NetconsoleFrame(Netconsole _nc) {
 		super("FRC Netconsole");
-		this.ds=_ds;
+		this.nc=_nc;
 		setResizable(false);
 		setSize(new Dimension(630,300));
-		netconsolePanel=new NetconsolePanel(ds);
+		netconsolePanel=new NetconsolePanel(nc);
 		setContentPane(netconsolePanel);
-		if(ds!=null) {
-			ds.addNetconsolePanel(netconsolePanel);
-		}
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if(ds!=null) {
-					ds.removeNetconsolePanel(netconsolePanel);
-				}
+				netconsolePanel.firePanelDestroyed();
 			}
 		});
 	}

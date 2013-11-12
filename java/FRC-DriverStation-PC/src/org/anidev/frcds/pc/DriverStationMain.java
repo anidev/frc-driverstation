@@ -6,10 +6,12 @@ import org.anidev.frcds.common.types.BatteryProvider;
 import org.anidev.frcds.pc.battery.linux.LinuxBatteryProvider;
 import org.anidev.frcds.pc.battery.win.WindowsBatteryProvider;
 import org.anidev.frcds.pc.gui.DriverStationFrame;
+import org.anidev.frcds.proto.nc.Netconsole;
 
 public class DriverStationMain {
 	private static DriverStationFrame dsFrame;
 	private static PCDriverStation ds;
+	private static Netconsole nc;
 
 	public static void main(String[] args) {
 		try {
@@ -19,6 +21,7 @@ public class DriverStationMain {
 			e.printStackTrace();
 		}
 		ds=new PCDriverStation();
+		nc=new Netconsole();
 		dsFrame=new DriverStationFrame();
 		dsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		dsFrame.setVisible(true);
@@ -32,6 +35,10 @@ public class DriverStationMain {
 	
 	public static PCDriverStation getDS() {
 		return ds;
+	}
+	
+	public static Netconsole getNetconsole() {
+		return nc;
 	}
 	
 	private static void initBatteryProvider() {

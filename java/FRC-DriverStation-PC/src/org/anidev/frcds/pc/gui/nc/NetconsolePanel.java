@@ -4,6 +4,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
@@ -14,23 +18,38 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
-import org.anidev.frcds.common.types.NetconsoleMessage;
-import org.anidev.frcds.pc.DriverStationMain;
-import org.anidev.frcds.pc.PCDriverStation;
 import org.anidev.frcds.pc.Utils;
+import org.anidev.frcds.proto.nc.Netconsole;
+import org.anidev.frcds.proto.nc.NetconsoleListener;
+import org.anidev.frcds.proto.nc.NetconsoleMessage;
 
 public class NetconsolePanel extends JPanel {
 	private JTable consoleTable;
 	private AbstractTableModel tableModel;
 	private JTextField consoleSendText;
 	private JScrollPane scrollPane;
-	private PCDriverStation ds;
+	private Netconsole nc;
+	private NetconsoleListener ncListener=null;
 	private static final int ICON_COL_WIDTH=22;
 	private static final int TIME_COL_WIDTH=90;
 
-	public NetconsolePanel(PCDriverStation ds) {
-		this.ds=ds;
-		
+	public NetconsolePanel(Netconsole _nc) {
+		this.nc=_nc;
+		if(nc!=null) {
+			ncListener=new NetconsoleListener() {
+				@Override
+				public void receivedData(NetconsoleMessage msg) {
+					fireMessagesAdded();
+				}
+
+				@Override
+				public void dataSent(NetconsoleMessage msg) {
+					fireMessagesAdded();
+				}
+			};
+			nc.addNetconsoleListener(ncListener);
+		}
+
 		setPreferredSize(new Dimension(600,240));
 		setSize(new Dimension(600,240));
 		setLayout(new BorderLayout(0,0));
@@ -63,13 +82,41 @@ public class NetconsolePanel extends JPanel {
 		consoleSendPanel.add(consoleSendText,BorderLayout.CENTER);
 		consoleSendText.setColumns(10);
 
+		consoleSendText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode()!=KeyEvent.VK_ENTER) {
+					return;
+				}
+				sendMessage();
+			}
+		});
+
 		JButton consoleSendButton=new JButton("Send");
 		consoleSendPanel.add(consoleSendButton,BorderLayout.EAST);
+		consoleSendButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sendMessage();
+			}
+		});
 	}
 
 	public void fireMessagesAdded() {
 		tableModel.fireTableDataChanged();
 		// consoleTable.invalidate();
+	}
+
+	public void firePanelDestroyed() {
+		if(nc!=null) {
+			nc.removeNetconsoleListener(ncListener);
+		}
+	}
+
+	private void sendMessage() {
+		String text=consoleSendText.getText();
+		nc.sendData(text);
+		consoleSendText.setText("");
 	}
 
 	private class NetconsoleTableModel extends AbstractTableModel {
@@ -85,10 +132,10 @@ public class NetconsolePanel extends JPanel {
 
 		@Override
 		public int getRowCount() {
-			if(ds==null) {
+			if(nc==null) {
 				return 0;
 			}
-			return ds.getNetconsoleMessages().size();
+			return nc.getNetconsoleMessages().size();
 		}
 
 		@Override
@@ -128,10 +175,10 @@ public class NetconsolePanel extends JPanel {
 
 		@Override
 		public Object getValueAt(int rowIndex,int columnIndex) {
-			if(ds==null) {
+			if(nc==null) {
 				return null;
 			}
-			NetconsoleMessage msg=ds.getNetconsoleMessages().get(rowIndex);
+			NetconsoleMessage msg=nc.getNetconsoleMessage(rowIndex);
 			switch(columnIndex) {
 			case 0:
 				if(msg.getType()==NetconsoleMessage.Type.TODS) {

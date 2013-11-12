@@ -87,7 +87,7 @@ public class DriverStationFrame extends JFrame {
 			@Override
 			public void tabDetached(int index,MouseEvent e) {
 				if(tabbedPane.getTitleAt(index).equals(NETCONSOLE_TAB)) {
-					JFrame frame=new NetconsoleFrame(ds);
+					JFrame frame=new NetconsoleFrame(DriverStationMain.getNetconsole());
 					frame.setLocation(e.getLocationOnScreen());
 					frame.setVisible(true);
 				}
@@ -96,8 +96,7 @@ public class DriverStationFrame extends JFrame {
 
 		operationPanel=new OperationPanel();
 
-		netconsolePanel=new NetconsolePanel(ds);
-		ds.addNetconsolePanel(netconsolePanel);
+		netconsolePanel=new NetconsolePanel(DriverStationMain.getNetconsole());
 		DetachableTab netconsoleTab=new DetachableTab(NETCONSOLE_TAB);
 
 		restoreTabOrder(operationPanel,netconsolePanel);

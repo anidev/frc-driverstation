@@ -1,4 +1,4 @@
-package org.anidev.frcds.proto;
+package org.anidev.frcds.proto.nc;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -21,6 +21,8 @@ public class Netconsole {
 	private int queueTimeout=40;
 	private List<NetconsoleListener> listeners=Collections
 			.synchronizedList(new ArrayList<NetconsoleListener>());
+	private List<NetconsoleMessage> netconsoleMessages=Collections
+			.synchronizedList(new ArrayList<NetconsoleMessage>());
 	private DatagramSocket sendDataSocket;
 	private DatagramSocket receiveDataSocket;
 	private Thread sendDataThread;
@@ -41,6 +43,14 @@ public class Netconsole {
 		sendDataQueue=new LinkedBlockingQueue<String>();
 		initSockets();
 		initThreads();
+	}
+
+	public List<NetconsoleMessage> getNetconsoleMessages() {
+		return netconsoleMessages;
+	}
+
+	public NetconsoleMessage getNetconsoleMessage(int index) {
+		return netconsoleMessages.get(index);
 	}
 
 	public void sendData(String data) {
@@ -65,6 +75,10 @@ public class Netconsole {
 		listeners.add(listener);
 	}
 
+	public void removeNetconsoleListener(NetconsoleListener listener) {
+		listeners.remove(listener);
+	}
+
 	public void close() {
 		checkClosed();
 		if(sendDataSocket!=null) {
@@ -85,6 +99,8 @@ public class Netconsole {
 		}
 		listeners.clear();
 		listeners=null;
+		netconsoleMessages.clear();
+		netconsoleMessages=null;
 		sendDataQueue.clear();
 		sendDataQueue=null;
 		closed=true;
@@ -147,6 +163,14 @@ public class Netconsole {
 				} catch(IOException e) {
 					e.printStackTrace();
 				}
+				NetconsoleMessage msg=new NetconsoleMessage(
+						NetconsoleMessage.Type.TOROBOT,sendData);
+				netconsoleMessages.add(msg);
+				synchronized(listeners) {
+					for(NetconsoleListener listener:listeners) {
+						listener.dataSent(msg);
+					}
+				}
 			}
 		}
 	}
@@ -166,9 +190,12 @@ public class Netconsole {
 					e.printStackTrace();
 				}
 				String data=new String(buffer,0,packet.getLength());
+				NetconsoleMessage msg=new NetconsoleMessage(
+						NetconsoleMessage.Type.TODS,data);
+				netconsoleMessages.add(msg);
 				synchronized(listeners) {
 					for(NetconsoleListener listener:listeners) {
-						listener.receivedData(data);
+						listener.receivedData(msg);
 					}
 				}
 			}

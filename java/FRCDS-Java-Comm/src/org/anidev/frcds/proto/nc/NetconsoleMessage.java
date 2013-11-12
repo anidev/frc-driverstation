@@ -1,4 +1,4 @@
-package org.anidev.frcds.common.types;
+package org.anidev.frcds.proto.nc;
 
 import java.util.Calendar;
 
