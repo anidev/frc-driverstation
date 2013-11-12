@@ -4,6 +4,7 @@ import org.anidev.frcds.common.types.BatteryProvider;
 import org.anidev.frcds.common.types.OperationMode;
 import org.anidev.frcds.proto.ControlFlags;
 import org.anidev.frcds.proto.FRCCommunication;
+import org.anidev.frcds.proto.tods.FRCRobotControl;
 import org.anidev.frcds.proto.torobot.FRCCommonControl;
 
 public abstract class DriverStation {
@@ -11,6 +12,7 @@ public abstract class DriverStation {
 	public static final double SLOW_HERTZ=1.0;
 	protected FRCCommunication frcComm=new FRCCommunication();
 	protected FRCCommonControl dsControl=new FRCCommonControl();
+	protected FRCRobotControl lastRobotControl=null;
 	protected BatteryProvider batteryProvider=null;
 	protected Thread enabledLoop=null;
 	protected Thread commonLoop=null;
@@ -19,11 +21,11 @@ public abstract class DriverStation {
 	protected double elapsedTime=0.0;
 	protected double batteryPercent=-1.0;
 	protected int teamID=0;
-	
+
 	public void setBatteryProvider(BatteryProvider batteryProvider) {
 		this.batteryProvider=batteryProvider;
 	}
-	
+
 	public BatteryProvider getBatteryProvider() {
 		return batteryProvider;
 	}
@@ -75,18 +77,18 @@ public abstract class DriverStation {
 		this.elapsedTime=elapsedTime;
 		setElapsedTimeImpl();
 	}
-	
+
 	public int getTeamID() {
 		return teamID;
 	}
-	
+
 	public void setTeamID(int teamID) {
 		this.teamID=teamID;
 		dsControl.setTeamID(teamID);
 		frcComm.setTeamID(teamID);
 		setTeamIDImpl();
 	}
-	
+
 	public void refreshBattery() {
 		if(batteryProvider==null) {
 			batteryPercent=-1.0;
@@ -94,6 +96,14 @@ public abstract class DriverStation {
 			batteryPercent=batteryProvider.getBatteryPercent();
 		}
 		setBatteryPercentImpl();
+	}
+
+	public void setLastRobotControl(FRCRobotControl control) {
+		this.lastRobotControl=control;
+	}
+
+	public FRCRobotControl getLastRobotControl() {
+		return lastRobotControl;
 	}
 
 	protected void startLoops() {
@@ -106,19 +116,22 @@ public abstract class DriverStation {
 
 	protected void setElapsedTimeImpl() {
 	}
-	
+
 	protected void setTeamIDImpl() {
 	}
-	
+
 	protected void setBatteryPercentImpl() {
 	}
-	
+
 	protected void setModeImpl() {
 	}
-	
+
+	protected void setLastRobotControl() {
+	}
+
 	protected void doCommonLoop() {
 	}
-	
+
 	protected void doEnabledLoop() {
 	}
 }
