@@ -1,8 +1,6 @@
 package org.anidev.frcds.pc.gui;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.anidev.frcds.pc.DriverStationMain;
 import org.anidev.frcds.pc.PCDriverStation;
@@ -10,7 +8,6 @@ import org.anidev.frcds.pc.Utils;
 import org.anidev.frcds.pc.gui.nc.NetconsoleFrame;
 import org.anidev.frcds.pc.gui.nc.NetconsolePanel;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Cursor;
@@ -97,13 +94,10 @@ public class DriverStationFrame extends JFrame {
 		operationPanel=new OperationPanel();
 
 		netconsolePanel=new NetconsolePanel(DriverStationMain.getNetconsole());
-		DetachableTab netconsoleTab=new DetachableTab(NETCONSOLE_TAB);
 
 		restoreTabOrder(operationPanel,netconsolePanel);
 		int operationTabIndex=tabbedPane.indexOfTab(OPERATION_TAB);
 		tabbedPane.setTabDetachable(operationTabIndex,false);
-		int netconsoleTabIndex=tabbedPane.indexOfTab(NETCONSOLE_TAB);
-		tabbedPane.setTabComponentAt(netconsoleTabIndex,netconsoleTab);
 
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -189,19 +183,5 @@ public class DriverStationFrame extends JFrame {
 		defTabListBuilder.append(",");
 		defTabListBuilder.append(NETCONSOLE_TAB);
 		return defTabListBuilder.toString();
-	}
-
-	private class DetachableTab extends JPanel {
-		private String title;
-		private JButton detachButton;
-
-		public DetachableTab(String title) {
-			super(new BorderLayout());
-			setOpaque(false);
-			this.title=title;
-			JLabel label=new JLabel(title);
-			add(label,BorderLayout.CENTER);
-			detachButton=new JButton();
-		}
 	}
 }
