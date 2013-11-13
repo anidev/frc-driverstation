@@ -53,4 +53,12 @@ public class PCDriverStation extends DriverStation {
 	@Override
 	protected void setModeImpl() {
 	}
+	
+	@Override
+	protected void setLastRobotControlImpl() {
+		if(frame==null) {
+			return;
+		}
+		frame.displayControlData(lastRobotControl);
+	}
 }

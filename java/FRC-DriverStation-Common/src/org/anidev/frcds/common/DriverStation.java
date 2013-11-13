@@ -2,8 +2,10 @@ package org.anidev.frcds.common;
 
 import org.anidev.frcds.common.types.BatteryProvider;
 import org.anidev.frcds.common.types.OperationMode;
+import org.anidev.frcds.proto.CommData;
 import org.anidev.frcds.proto.ControlFlags;
 import org.anidev.frcds.proto.FRCCommunication;
+import org.anidev.frcds.proto.FRCCommunicationListener;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
 import org.anidev.frcds.proto.torobot.FRCCommonControl;
 
@@ -21,6 +23,19 @@ public abstract class DriverStation {
 	protected double elapsedTime=0.0;
 	protected double batteryPercent=-1.0;
 	protected int teamID=0;
+
+	protected DriverStation() {
+		frcComm.addRobotDataListener(new FRCCommunicationListener() {
+			@Override
+			public void receivedData(CommData data) {
+				if(!(data instanceof FRCRobotControl)) {
+					return;
+				}
+				FRCRobotControl robotControl=(FRCRobotControl)data;
+				setLastRobotControl(robotControl);
+			}
+		});
+	}
 
 	public void setBatteryProvider(BatteryProvider batteryProvider) {
 		this.batteryProvider=batteryProvider;
@@ -100,6 +115,7 @@ public abstract class DriverStation {
 
 	public void setLastRobotControl(FRCRobotControl control) {
 		this.lastRobotControl=control;
+		setLastRobotControlImpl();
 	}
 
 	public FRCRobotControl getLastRobotControl() {
@@ -126,7 +142,7 @@ public abstract class DriverStation {
 	protected void setModeImpl() {
 	}
 
-	protected void setLastRobotControl() {
+	protected void setLastRobotControlImpl() {
 	}
 
 	protected void doCommonLoop() {
