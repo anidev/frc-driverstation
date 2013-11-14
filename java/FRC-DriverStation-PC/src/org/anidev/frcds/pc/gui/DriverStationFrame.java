@@ -137,7 +137,7 @@ public class DriverStationFrame extends JFrame {
 	}
 	
 	public void displayControlData(FRCRobotControl control) {
-		
+		statusPanel.setBatteryVolts(control.getBatteryVolts());
 	}
 
 	private void setEnableAllowed(boolean allowed) {
