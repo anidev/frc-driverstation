@@ -1,6 +1,5 @@
 package org.anidev.frcds.proto;
 
-
 public class ControlFlags extends CommData {
 	public static final int SIZE=1;
 	private boolean reset=false;
@@ -78,22 +77,49 @@ public class ControlFlags extends CommData {
 
 	@Override
 	public byte[] serialize() {
-		int data=bitsToInts(new boolean[] {reset,notEStop,enabled,autonomous,
-				fmsAttached,resync,test,checkVersions})[0];
+		return serialize(DataDir.TOROBOT);
+	}
+
+	public byte[] serialize(DataDir dir) {
+		int data=-1;
+		if(dir==DataDir.TOROBOT) {
+			data=bitsToInts(new boolean[] {reset,notEStop,enabled,
+					autonomous,fmsAttached,resync,test,checkVersions})[0];
+		} else {
+			data=bitsToInts(new boolean[] {checkVersions,test,resync,
+					fmsAttached,autonomous,enabled,notEStop,reset})[0];
+		}
 		return new byte[] {(byte)data};
 	}
 
 	@Override
 	public void deserialize(byte[] data) {
+		deserialize(data,DataDir.TOROBOT);
+	}
+
+	public void deserialize(byte[] data,DataDir dir) {
 		boolean[] flags=intsToBits(new int[] {data[0]&0xFF});
-		reset=flags[0];
-		notEStop=flags[1];
-		enabled=flags[2];
-		autonomous=flags[3];
-		fmsAttached=flags[4];
-		resync=flags[5];
-		test=flags[6];
-		checkVersions=flags[7];
+		if(dir==DataDir.TOROBOT) {
+			reset=flags[0];
+			notEStop=flags[1];
+			enabled=flags[2];
+			autonomous=flags[3];
+			fmsAttached=flags[4];
+			resync=flags[5];
+			test=flags[6];
+			checkVersions=flags[7];
+		} else {
+			// TODO Figure out if this is accurate...
+			// If it is, then its just the opposite of above
+			checkVersions=flags[0];
+			test=flags[1];
+			resync=flags[2];
+			fmsAttached=flags[3];
+			autonomous=flags[4];
+			enabled=flags[5];
+			notEStop=flags[6];
+			reset=flags[7];
+		}
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.zip.CRC32;
 import org.anidev.frcds.proto.CommData;
 import org.anidev.frcds.proto.ControlFlags;
+import org.anidev.frcds.proto.DataDir;
 import org.anidev.frcds.proto.Version;
 
 public class FRCCommonControl extends CommData {
@@ -138,7 +139,7 @@ public class FRCCommonControl extends CommData {
 		byteBuffer.putShort((short)packetIndex);
 		byte[] packetIndexBytes=byteBuffer.array();
 		byteStream.write(packetIndexBytes,0,packetIndexBytes.length);
-		byte[] controlBytes=control.serialize();
+		byte[] controlBytes=control.serialize(DataDir.TOROBOT);
 		byteStream.write(controlBytes,0,controlBytes.length);
 		byte[] digitalInputsBytes=digitalInputs.serialize();
 		byteStream.write(digitalInputsBytes,0,digitalInputsBytes.length);
@@ -185,7 +186,7 @@ public class FRCCommonControl extends CommData {
 		ShortBuffer shortBuffer=byteBuffer.asShortBuffer();
 		packetIndex=shortBuffer.get(0)&0xFFFF;
 		control.deserialize(Arrays.copyOfRange(data,index,
-				index+=ControlFlags.SIZE));
+				index+=ControlFlags.SIZE),DataDir.TOROBOT);
 		digitalInputs.deserialize(Arrays.copyOfRange(data,index,
 				index+=DigitalInputs.SIZE));
 		byteBuffer.put(0,data[index++]).put(1,data[index++]);

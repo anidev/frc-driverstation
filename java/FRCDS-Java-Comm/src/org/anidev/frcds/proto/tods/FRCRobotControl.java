@@ -6,6 +6,7 @@ import java.nio.ShortBuffer;
 import java.util.Arrays;
 import org.anidev.frcds.proto.CommData;
 import org.anidev.frcds.proto.ControlFlags;
+import org.anidev.frcds.proto.DataDir;
 import org.anidev.frcds.proto.Version;
 
 public class FRCRobotControl extends CommData {
@@ -109,7 +110,7 @@ public class FRCRobotControl extends CommData {
 	@Override
 	public byte[] serialize() {
 		ByteArrayOutputStream byteStream=new ByteArrayOutputStream(SIZE);
-		byte[] controlBytes=control.serialize();
+		byte[] controlBytes=control.serialize(DataDir.TODS);
 		byteStream.write(controlBytes,0,controlBytes.length);
 		byteStream.write(new byte[] {(byte)batteryVolts},0,1);
 		byteStream.write(new byte[] {(byte)batteryMV},0,1);
@@ -136,7 +137,7 @@ public class FRCRobotControl extends CommData {
 	public void deserialize(byte[] data) {
 		int index=0;
 		control.deserialize(Arrays.copyOfRange(data,index,
-				index+=ControlFlags.SIZE));
+				index+=ControlFlags.SIZE),DataDir.TODS);
 		batteryVolts=data[index++]&0xFF;
 		batteryMV=data[index++]&0xFF;
 		digitalOutputs.deserialize(Arrays.copyOfRange(data,index,
