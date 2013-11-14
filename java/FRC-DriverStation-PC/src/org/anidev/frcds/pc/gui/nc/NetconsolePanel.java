@@ -19,6 +19,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
 import org.anidev.frcds.pc.Utils;
+import org.anidev.frcds.proto.DataDir;
 import org.anidev.frcds.proto.nc.Netconsole;
 import org.anidev.frcds.proto.nc.NetconsoleListener;
 import org.anidev.frcds.proto.nc.NetconsoleMessage;
@@ -181,7 +182,7 @@ public class NetconsolePanel extends JPanel {
 			NetconsoleMessage msg=nc.getNetconsoleMessage(rowIndex);
 			switch(columnIndex) {
 			case 0:
-				if(msg.getType()==NetconsoleMessage.Type.TODS) {
+				if(msg.getDirection()==DataDir.TODS) {
 					return receivedIcon;
 				} else {
 					return sentIcon;

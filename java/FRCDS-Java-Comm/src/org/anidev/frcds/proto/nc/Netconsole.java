@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import org.anidev.frcds.proto.DataDir;
 
 public class Netconsole {
 	public static final int RECV_PORT=6666;
@@ -167,8 +168,8 @@ public class Netconsole {
 				} catch(IOException e) {
 					e.printStackTrace();
 				}
-				NetconsoleMessage msg=new NetconsoleMessage(
-						NetconsoleMessage.Type.TOROBOT,sendData);
+				NetconsoleMessage msg=new NetconsoleMessage(DataDir.TOROBOT,
+						sendData);
 				netconsoleMessages.add(msg);
 				synchronized(listeners) {
 					for(NetconsoleListener listener:listeners) {
@@ -194,8 +195,7 @@ public class Netconsole {
 					e.printStackTrace();
 				}
 				String data=new String(buffer,0,packet.getLength());
-				NetconsoleMessage msg=new NetconsoleMessage(
-						NetconsoleMessage.Type.TODS,data);
+				NetconsoleMessage msg=new NetconsoleMessage(DataDir.TODS,data);
 				netconsoleMessages.add(msg);
 				synchronized(listeners) {
 					for(NetconsoleListener listener:listeners) {
