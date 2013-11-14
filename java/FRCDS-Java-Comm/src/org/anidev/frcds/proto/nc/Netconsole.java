@@ -153,6 +153,10 @@ public class Netconsole {
 				} catch(InterruptedException e) {
 					break;
 				}
+				int len=sendData.length();
+				if(len==0||sendData.charAt(len-1)!='\n') {
+					sendData+='\n';
+				}
 				byte[] sendBytes=sendData.getBytes();
 				DatagramPacket packet=new DatagramPacket(sendBytes,
 						sendBytes.length);
