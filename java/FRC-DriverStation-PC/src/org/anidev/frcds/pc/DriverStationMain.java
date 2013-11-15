@@ -1,7 +1,6 @@
 package org.anidev.frcds.pc;
 
 import javax.swing.JFrame;
-import javax.swing.UIManager;
 import org.anidev.frcds.common.types.BatteryProvider;
 import org.anidev.frcds.pc.battery.linux.LinuxBatteryProvider;
 import org.anidev.frcds.pc.battery.win.WindowsBatteryProvider;
@@ -14,12 +13,7 @@ public class DriverStationMain {
 	private static Netconsole nc;
 
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-		} catch(Exception e) {
-			System.err.println("Error while setting Nimbus L&F.");
-			e.printStackTrace();
-		}
+		Utils.setLookAndFeel();
 		ds=new PCDriverStation();
 		nc=new Netconsole();
 		dsFrame=new DriverStationFrame();

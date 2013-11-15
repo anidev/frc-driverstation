@@ -52,7 +52,7 @@ public class Utils {
 	public static Preferences getPrefs() {
 		return Preferences.userNodeForPackage(PCDriverStation.class);
 	}
-	
+
 	public static Object getNimbusPref(String key,JComponent c) {
 		UIDefaults uiValues=UIManager.getLookAndFeelDefaults();
 		Object overrides=c.getClientProperty("Nimbus.Overrides");
@@ -64,5 +64,26 @@ public class Utils {
 			pref=uiValues.get(key);
 		}
 		return pref;
+	}
+
+	public static void setLookAndFeel() {
+		String lafStr=System.getProperty("anidev.pcds.laf","<nimbus>");
+		switch(lafStr) {
+		case "<nimbus>":
+			lafStr="com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+			break;
+		case "<system>":
+			lafStr=UIManager.getSystemLookAndFeelClassName();
+			break;
+		case "<cross>":
+			lafStr=UIManager.getCrossPlatformLookAndFeelClassName();
+			break;
+		}
+		try {
+			UIManager.setLookAndFeel(lafStr);
+		} catch(Exception e) {
+			System.err.println("Error while setting Nimbus L&F.");
+			e.printStackTrace();
+		}
 	}
 }
