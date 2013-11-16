@@ -98,7 +98,7 @@ public abstract class DriverStation {
 	}
 
 	public void setTeamID(int teamID) {
-		this.teamID=teamID;
+		this.teamID=teamID%10000;
 		dsControl.setTeamID(teamID);
 		frcComm.setTeamID(teamID);
 		setTeamIDImpl();

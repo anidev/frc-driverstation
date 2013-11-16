@@ -37,6 +37,7 @@ public class TeamIDPanel extends JPanel {
 		format.setMinimumIntegerDigits(1);
 		format.setMaximumIntegerDigits(4);
 		format.setGroupingUsed(false);
+		format.setParseIntegerOnly(true);
 
 		teamIDField=new JFormattedTextField(format);
 		teamIDField.setColumns(4);
@@ -63,7 +64,17 @@ public class TeamIDPanel extends JPanel {
 	public int getTeamID() {
 		Object value=teamIDField.getValue();
 		if(value!=null) {
-			return ((Long)value).intValue();
+			int teamIDRaw;
+			if(value instanceof Long) {
+				teamIDRaw=((Long)value).intValue();
+			} else {
+				teamIDRaw=((Double)value).intValue();
+			}
+			int teamID=teamIDRaw%10000;
+			if(teamID!=teamIDRaw) {
+				teamIDField.setText(Integer.toString(teamID));
+			}
+			return teamID;
 		} else {
 			return 0;
 		}
