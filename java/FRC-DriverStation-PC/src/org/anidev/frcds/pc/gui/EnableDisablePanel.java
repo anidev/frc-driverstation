@@ -158,6 +158,9 @@ public class EnableDisablePanel extends JPanel {
 	private class EnableDisableButtonListener implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
+			if(e.getStateChange()==ItemEvent.DESELECTED) {
+				return;
+			}
 			JToggleButton button=(JToggleButton)e.getSource();
 			boolean enabled=button.getActionCommand().equals("enable");
 			if(enabled) {
@@ -166,6 +169,7 @@ public class EnableDisablePanel extends JPanel {
 				enableButton.requestFocusInWindow();
 			}
 			DriverStationMain.getDS().setEnabled(enabled);
+			System.out.println(DriverStationMain.getDS().getTeamID());
 		}
 	}
 }
