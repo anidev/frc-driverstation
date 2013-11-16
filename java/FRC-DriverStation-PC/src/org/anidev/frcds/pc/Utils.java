@@ -82,7 +82,7 @@ public class Utils {
 		try {
 			UIManager.setLookAndFeel(lafStr);
 		} catch(Exception e) {
-			System.err.println("Error while setting Nimbus L&F.");
+			System.err.println("Error while setting "+lafStr+" L&F.");
 			e.printStackTrace();
 		}
 	}
