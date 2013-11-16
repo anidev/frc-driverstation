@@ -13,7 +13,6 @@ public class NetconsoleFrame extends JFrame {
 	public NetconsoleFrame(Netconsole _nc) {
 		super("FRC Netconsole");
 		this.nc=_nc;
-		setResizable(false);
 		setSize(new Dimension(630,300));
 		netconsolePanel=new NetconsolePanel(nc);
 		setContentPane(netconsolePanel);
