@@ -8,10 +8,5 @@ bin/
 *.ear
 *.zip
 
-# Eclipse stuff
-.project
-.classpath
-.settings
-
 # Backup files
 *~
