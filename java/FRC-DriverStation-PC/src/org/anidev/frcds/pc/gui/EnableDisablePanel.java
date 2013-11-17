@@ -169,7 +169,6 @@ public class EnableDisablePanel extends JPanel {
 				enableButton.requestFocusInWindow();
 			}
 			DriverStationMain.getDS().setEnabled(enabled);
-			System.out.println(DriverStationMain.getDS().getTeamID());
 		}
 	}
 }
