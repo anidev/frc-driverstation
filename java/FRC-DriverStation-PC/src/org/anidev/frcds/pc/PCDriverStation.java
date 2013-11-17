@@ -1,7 +1,9 @@
 package org.anidev.frcds.pc;
 
+import java.util.prefs.Preferences;
 import org.anidev.frcds.common.DriverStation;
 import org.anidev.frcds.pc.gui.DriverStationFrame;
+import org.anidev.utils.Utils;
 
 public class PCDriverStation extends DriverStation {
 	private DriverStationFrame frame=null;
@@ -21,7 +23,7 @@ public class PCDriverStation extends DriverStation {
 	public DriverStationFrame getFrame() {
 		return frame;
 	}
-
+	
 	@Override
 	protected void setEnabledImpl() {
 	}

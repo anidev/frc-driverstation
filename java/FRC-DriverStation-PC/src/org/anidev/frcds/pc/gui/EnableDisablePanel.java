@@ -16,7 +16,7 @@ import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import org.anidev.frcds.pc.DriverStationMain;
-import org.anidev.frcds.pc.Utils;
+import org.anidev.utils.Utils;
 
 public class EnableDisablePanel extends JPanel {
 	private static final double SELECTED_ALPHA=0.8;
