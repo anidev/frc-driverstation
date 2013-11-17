@@ -44,8 +44,8 @@ public class DriverStationFrame extends JFrame {
 
 	public DriverStationFrame() {
 		super("FRC Driver Station");
-		setResizable(false);
 		setSize(new Dimension(870,300));
+		setMinimumSize(getSize());
 		contentPane=new JPanel();
 		contentPane
 				.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
