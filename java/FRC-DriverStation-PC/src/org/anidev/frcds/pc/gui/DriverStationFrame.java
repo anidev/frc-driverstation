@@ -4,10 +4,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.anidev.frcds.pc.DriverStationMain;
 import org.anidev.frcds.pc.PCDriverStation;
-import org.anidev.frcds.pc.Utils;
-import org.anidev.frcds.pc.gui.nc.NetconsoleFrame;
-import org.anidev.frcds.pc.gui.nc.NetconsolePanel;
+import org.anidev.frcds.pc.nc.NetconsoleFrame;
+import org.anidev.frcds.pc.nc.NetconsolePanel;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
+import org.anidev.utils.Utils;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Cursor;
@@ -78,13 +78,14 @@ public class DriverStationFrame extends JFrame {
 					}
 				}
 				String tabList=tabListBuilder.toString();
-				Utils.getPrefs().put(TAB_ORDER_PREF,tabList);
+				getPrefs().put(TAB_ORDER_PREF,tabList);
 			}
 
 			@Override
 			public void tabDetached(int index,MouseEvent e) {
 				if(tabbedPane.getTitleAt(index).equals(NETCONSOLE_TAB)) {
-					JFrame frame=new NetconsoleFrame(DriverStationMain.getNetconsole());
+					JFrame frame=new NetconsoleFrame(DriverStationMain
+							.getNetconsole());
 					frame.setLocation(e.getLocationOnScreen());
 					frame.setVisible(true);
 				}
@@ -104,7 +105,7 @@ public class DriverStationFrame extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				int selectedTabIndex=tabbedPane.getSelectedIndex();
 				String selectedTab=tabbedPane.getTitleAt(selectedTabIndex);
-				Preferences prefs=Utils.getPrefs();
+				Preferences prefs=getPrefs();
 				prefs.put(SELECTED_TAB_PREF,selectedTab);
 				prefs.putInt(TEAMID_PREF,ds.getTeamID());
 				try {
@@ -114,8 +115,8 @@ public class DriverStationFrame extends JFrame {
 				}
 			}
 		});
-		
-		ds.setTeamID(Utils.getPrefs().getInt(TEAMID_PREF,0));
+
+		ds.setTeamID(getPrefs().getInt(TEAMID_PREF,0));
 	}
 
 	public void setElapsedTime(double elapsedTime) {
@@ -135,19 +136,13 @@ public class DriverStationFrame extends JFrame {
 	public void setBatteryPercent(double percent) {
 		operationPanel.setBatteryPercent(percent);
 	}
-	
+
 	public void displayControlData(FRCRobotControl control) {
 		statusPanel.setBatteryVolts(control.getBatteryVolts());
 	}
 
 	private void setEnableAllowed(boolean allowed) {
 		enableDisablePanel.setEnableAllowed(allowed);
-	}
-
-	private static String[] getTabOrderPref() {
-		Preferences prefs=Utils.getPrefs();
-		String tabOrderList=prefs.get(TAB_ORDER_PREF,DEF_TAB_LIST);
-		return tabOrderList.split(",");
 	}
 
 	private void restoreTabOrder(Component operationTab,Component netconsoleTab) {
@@ -169,19 +164,29 @@ public class DriverStationFrame extends JFrame {
 				tabbedPane.addTab(tab,null,toAdd,tooltip);
 			}
 		}
-		String selectedTab=Utils.getPrefs().get(SELECTED_TAB_PREF,
-				DEF_SELECTED_TAB);
+		String selectedTab=getPrefs()
+				.get(SELECTED_TAB_PREF,DEF_SELECTED_TAB);
 		int selectedTabIndex=tabbedPane.indexOfTab(selectedTab);
 		if(selectedTabIndex>=0) {
 			tabbedPane.setSelectedIndex(selectedTabIndex);
 		}
 	}
 	
+	private static Preferences getPrefs() {
+		return Utils.getPrefs(DriverStationFrame.class);
+	}
+
 	private static String initDefTabList() {
 		StringBuilder defTabListBuilder=new StringBuilder();
 		defTabListBuilder.append(OPERATION_TAB);
 		defTabListBuilder.append(",");
 		defTabListBuilder.append(NETCONSOLE_TAB);
 		return defTabListBuilder.toString();
+	}
+
+	private static String[] getTabOrderPref() {
+		Preferences prefs=getPrefs();
+		String tabOrderList=prefs.get(TAB_ORDER_PREF,DEF_TAB_LIST);
+		return tabOrderList.split(",");
 	}
 }
