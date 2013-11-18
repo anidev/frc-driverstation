@@ -73,7 +73,7 @@ public abstract class DriverStation {
 			if(enabledLoop!=null&&enabledLoop.isAlive()) {
 				return;
 			}
-			enabledLoop=new Thread(new EnabledLoop(this,UPDATE_HERTZ));
+			enabledLoop=new Thread(new EnabledLoop(this,UPDATE_HERTZ),"FRCDS Enabled Loop");
 			enabledLoop.start();
 		} else {
 			if(enabledLoop!=null) {
@@ -123,7 +123,7 @@ public abstract class DriverStation {
 	}
 
 	protected void startLoops() {
-		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ));
+		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ),"FRCDS Common Loop");
 		commonLoop.start();
 	}
 

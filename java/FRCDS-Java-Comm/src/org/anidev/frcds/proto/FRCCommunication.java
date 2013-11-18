@@ -60,8 +60,8 @@ public class FRCCommunication {
 		setReceivingFromDS(rDS);
 		sendToRobotQueue=new LinkedBlockingQueue<byte[]>();
 		sendToDSQueue=new LinkedBlockingQueue<byte[]>();
-		sendToRobotThread=new Thread(new SendToRobotWorker());
-		sendToDSThread=new Thread(new SendToDSWorker());
+		sendToRobotThread=new Thread(new SendToRobotWorker(),"FRCComm Send to Robot");
+		sendToDSThread=new Thread(new SendToDSWorker(),"FRCComm Send to DS");
 	}
 
 	public void sendToRobot(FRCCommonControl dsData) {
@@ -170,7 +170,7 @@ public class FRCCommunication {
 				receiveFromRobotSocket=null;
 				return false;
 			}
-			receiveFromRobotThread=new Thread(new ReceiveFromRobotWorker());
+			receiveFromRobotThread=new Thread(new ReceiveFromRobotWorker(),"FRCComm Receive from Robot");
 			receiveFromRobotThread.start();
 		} else {
 			if(receiveFromRobotSocket!=null) {
@@ -203,7 +203,7 @@ public class FRCCommunication {
 				receiveFromDSSocket=null;
 				return false;
 			}
-			receiveFromDSThread=new Thread(new ReceiveFromDSWorker());
+			receiveFromDSThread=new Thread(new ReceiveFromDSWorker(),"FRCComm Receive from DS");
 			receiveFromDSThread.start();
 		} else {
 			if(receiveFromDSSocket!=null) {

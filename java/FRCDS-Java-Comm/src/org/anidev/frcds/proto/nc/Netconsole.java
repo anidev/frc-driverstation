@@ -138,9 +138,9 @@ public class Netconsole {
 	}
 
 	private void initThreads() {
-		sendDataThread=new Thread(new SendDataWorker());
+		sendDataThread=new Thread(new SendDataWorker(),"Netconsole Send");
 		sendDataThread.start();
-		receiveDataThread=new Thread(new ReceiveDataWorker());
+		receiveDataThread=new Thread(new ReceiveDataWorker(),"Netconsole Receive");
 		receiveDataThread.start();
 	}
 
