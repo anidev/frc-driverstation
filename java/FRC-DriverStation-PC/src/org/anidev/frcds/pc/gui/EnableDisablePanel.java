@@ -48,7 +48,7 @@ public class EnableDisablePanel extends JPanel {
 
 		buttonGroup.add(disableButton);
 
-		ItemListener listener=new EnableDisableButtonListener();
+		ItemListener listener=new EnableDisableListener();
 		enableButton.addItemListener(listener);
 		disableButton.addItemListener(listener);
 	}
@@ -66,7 +66,8 @@ public class EnableDisablePanel extends JPanel {
 		enableButton.setEnabled(allowed);
 	}
 
-	private static class ColoredToggleButton extends JToggleButton {
+	private static class ColoredToggleButton extends JToggleButton implements
+			ItemListener {
 		private Color origColor;
 		private Color selectedColor;
 		private BorderCollapse borderCollapse;
@@ -83,7 +84,7 @@ public class EnableDisablePanel extends JPanel {
 			selectedColor=Utils
 					.calcAlpha(SELECTED_ALPHA,overlayColor,origColor);
 			setFont(new Font("Arial",Font.BOLD,12));
-			addItemListener(new ColoredToggleButtonListener());
+			addItemListener(this);
 			changeState(isSelected());
 			Object borderPref=Utils.getNimbusPref("nimbusBorder",this);
 			if(borderPref!=null&&borderPref instanceof Paint) {
@@ -129,23 +130,18 @@ public class EnableDisablePanel extends JPanel {
 				int maxY=bounds.y+bounds.height-BORDER_SIZE;
 				switch(borderCollapse) {
 				case BOTTOM:
-					g.drawLine(minX,maxY-BORDER_PADDING,maxX,maxY-BORDER_PADDING);
+					g.drawLine(minX,maxY-BORDER_PADDING,maxX,maxY
+							-BORDER_PADDING);
 					break;
 				case TOP:
-					g.drawLine(minX,minY+BORDER_PADDING,maxX,minY+BORDER_PADDING);
+					g.drawLine(minX,minY+BORDER_PADDING,maxX,minY
+							+BORDER_PADDING);
 					break;
 				case NONE:
 				}
 			}
 		}
 
-		public static enum BorderCollapse {
-			NONE,
-			BOTTOM,
-			TOP;
-		}
-	}
-	private static class ColoredToggleButtonListener implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if(!(e.getSource() instanceof ColoredToggleButton)) {
@@ -154,8 +150,14 @@ public class EnableDisablePanel extends JPanel {
 			ColoredToggleButton button=(ColoredToggleButton)e.getSource();
 			button.changeState(e.getStateChange()==ItemEvent.SELECTED);
 		}
+
+		public static enum BorderCollapse {
+			NONE,
+			BOTTOM,
+			TOP;
+		}
 	}
-	private class EnableDisableButtonListener implements ItemListener {
+	private class EnableDisableListener implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if(e.getStateChange()==ItemEvent.DESELECTED) {
