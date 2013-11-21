@@ -19,14 +19,11 @@ import com.jgoodies.forms.layout.RowSpec;
 public class StatusPanel extends JPanel {
 	private JLabel voltsValueLabel;
 	private DecimalFormat voltsFormat;
-	private JLabel communicationStatusIcon;
-	private ImageIcon goodIcon;
-	private ImageIcon badIcon;
+	private JPanel communicationStatus;
+
+	// private Indicator robotCodeStatus;
 
 	public StatusPanel() {
-		goodIcon=Utils.getIcon("status-good.png");
-		badIcon=Utils.getIcon("status-bad.png");
-
 		setSize(new Dimension(170,240));
 		setLayout(new GridLayout(2,1,0,0));
 
@@ -53,29 +50,23 @@ public class StatusPanel extends JPanel {
 
 		voltsFormat=new DecimalFormat("##.##");
 
-		JPanel communicationStatusPanel=new JPanel();
-		robotStatusPanel.add(communicationStatusPanel);
-		communicationStatusPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("16px"),
-				ColumnSpec.decode("4px"),
-				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
-				RowSpec.decode("default:grow"),
-				RowSpec.decode("default:grow"),}));
+		communicationStatus=new StatusIndicator("Communication");
+		robotStatusPanel.add(communicationStatus);
 
-		communicationStatusIcon=new JLabel("");
-		communicationStatusIcon.setPreferredSize(new Dimension(16,16));
-		setCommunicationState(false);
-		communicationStatusPanel
-				.add(communicationStatusIcon,"2, 1, left, fill");
+		/*		JPanel robotCodeStatusPanel=new JPanel();
+				robotStatusPanel.add(robotCodeStatusPanel);
+				robotCodeStatusPanel.setLayout(new FormLayout(new ColumnSpec[] {
+						ColumnSpec.decode("10px"),ColumnSpec.decode("16px"),
+						ColumnSpec.decode("4px"),ColumnSpec.decode("default:grow"),},
+						new RowSpec[] {RowSpec.decode("default:grow"),}));
 
-		JLabel communicationStatusLabel=new JLabel("Communication");
-		communicationStatusPanel.add(communicationStatusLabel,
-				"4, 1, fill, fill");
+				robotCodeStatusIcon=new JLabel("");
+				robotCodeStatusIcon.setPreferredSize(new Dimension(16,16));
+				setRobotCodeState(false);
+				robotCodeStatusPanel.add(robotCodeStatusIcon,"2, 1, left, fill");
 
-		JPanel robotCodeStatusPanel=new JPanel();
-		robotStatusPanel.add(robotCodeStatusPanel);
+				JLabel robotCodeStatusLabel=new JLabel("Robot Code");
+				robotCodeStatusPanel.add(robotCodeStatusLabel,"4, 1, fill, fill");*/
 
 		JPanel operationStatusPanel=new JPanel();
 		operationStatusPanel.setBorder(new TitledBorder(null,
@@ -100,7 +91,50 @@ public class StatusPanel extends JPanel {
 		}
 	}
 
-	public void setCommunicationState(boolean good) {
-		communicationStatusIcon.setIcon((good?goodIcon:badIcon));
+	public void setCommunicationState(boolean on) {
+		// communicationStatus.setOn(on);
+	}
+}
+
+class StatusIndicator extends JPanel {
+	private JLabel icon;
+	private JLabel label;
+	private boolean on;
+	private static final ImageIcon goodIcon;
+	private static final ImageIcon badIcon;
+	static {
+		goodIcon=Utils.getIcon("status-good.png");
+		badIcon=Utils.getIcon("status-bad.png");
+	}
+
+	public StatusIndicator(String text) {
+		System.out.println(badIcon);
+		setLayout(new FormLayout(new ColumnSpec[] {ColumnSpec.decode("10px"),
+				ColumnSpec.decode("16px"),ColumnSpec.decode("4px"),
+				ColumnSpec.decode("default:grow"),},new RowSpec[] {RowSpec
+				.decode("default:grow"),}));
+		icon=new JLabel("");
+		icon.setPreferredSize(new Dimension(16,16));
+		add(icon,"2, 1, left, fill");
+		label=new JLabel(text);
+		add(label,"4, 1, fill, fill");
+		setOn(false);
+	}
+
+	public String getText() {
+		return label.getText();
+	}
+
+	public void setText(String text) {
+		label.setText(text);
+	}
+
+	public boolean isOn() {
+		return on;
+	}
+
+	public void setOn(boolean newOn) {
+		on=newOn;
+		icon.setIcon((on?goodIcon:badIcon));
 	}
 }
