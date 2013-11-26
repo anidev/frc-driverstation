@@ -108,7 +108,6 @@ class StatusIndicator extends JPanel {
 	}
 
 	public StatusIndicator(String text) {
-		System.out.println(badIcon);
 		setLayout(new FormLayout(new ColumnSpec[] {ColumnSpec.decode("10px"),
 				ColumnSpec.decode("16px"),ColumnSpec.decode("4px"),
 				ColumnSpec.decode("default:grow"),},new RowSpec[] {RowSpec
