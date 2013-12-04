@@ -28,6 +28,7 @@ import org.anidev.frcds.proto.nc.NetconsoleMessage;
 import org.anidev.utils.Utils;
 
 public class NetconsolePanel extends JPanel {
+	private int lastCount=0;
 	private JTable consoleTable;
 	private AbstractTableModel tableModel;
 	private JTextField consoleSendText;
@@ -109,8 +110,13 @@ public class NetconsolePanel extends JPanel {
 	}
 
 	public void fireMessagesAdded() {
-		tableModel.fireTableDataChanged();
-		// consoleTable.invalidate();
+		int count=nc.getNetconsoleMessages().size();
+		int diff=count-lastCount;
+		if(diff==0) {
+			return;
+		}
+		tableModel.fireTableRowsInserted(lastCount,lastCount+diff);
+		lastCount=count;
 	}
 
 	public void firePanelDestroyed() {
@@ -210,6 +216,7 @@ public class NetconsolePanel extends JPanel {
 					value,isSelected,hasFocus,row,column);
 			String tooltip=label.getText();
 			label.setToolTipText(tooltip);
+			System.out.println("rendering");
 			return label;
 		}
 	}
