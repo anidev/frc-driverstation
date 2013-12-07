@@ -37,10 +37,6 @@ public class AnalyzerProviderSelector {
 			public void receivedData(NetconsoleMessage msg) {
 				System.out.print(msg.getMessage());
 			}
-
-			@Override
-			public void dataSent(NetconsoleMessage msg) {
-			}
 		});
 		netcon.sendData("asdf");
 	}
