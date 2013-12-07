@@ -12,9 +12,11 @@ import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JScrollBar;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,6 +31,7 @@ import org.anidev.utils.Utils;
 
 public class NetconsolePanel extends JPanel {
 	private int lastCount=0;
+	private volatile int autoScrolling=0;
 	private JTable consoleTable;
 	private AbstractTableModel tableModel;
 	private JTextField consoleSendText;
@@ -115,7 +118,28 @@ public class NetconsolePanel extends JPanel {
 		if(diff==0) {
 			return;
 		}
+		boolean autoScroll=false;
+		JScrollBar scrollBar=scrollPane.getVerticalScrollBar();
+		System.out.print(scrollBar.getValue()+scrollBar.getVisibleAmount()+" ");
+		System.out.print(scrollBar.getMaximum()+" ");
+		if(scrollBar.getValue()+scrollBar.getVisibleAmount()>=scrollBar.getMaximum()) {
+			autoScroll=true;
+		}
 		tableModel.fireTableRowsInserted(lastCount,lastCount+diff);
+		if(autoScroll||autoScrolling>0) {
+			autoScrolling++;
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					JScrollBar scrollBar=scrollPane.getVerticalScrollBar();
+					scrollBar.setValue(scrollBar.getMaximum());
+					autoScrolling--;
+				}
+			});
+		}
+		System.out.print(scrollBar.getValue()+scrollBar.getVisibleAmount()+" ");
+		System.out.print(scrollBar.getMaximum());
+		System.out.println();
 		lastCount=count;
 	}
 
@@ -216,7 +240,6 @@ public class NetconsolePanel extends JPanel {
 					value,isSelected,hasFocus,row,column);
 			String tooltip=label.getText();
 			label.setToolTipText(tooltip);
-			System.out.println("rendering");
 			return label;
 		}
 	}
