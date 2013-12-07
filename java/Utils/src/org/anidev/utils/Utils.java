@@ -40,6 +40,9 @@ public class Utils {
 	public static ImageIcon getIcon(String name) {
 		try {
 			URL imageUrl=Utils.class.getResource("/resources/"+name);
+			if(imageUrl==null) {
+				return null;
+			}
 			Image image=ImageIO.read(imageUrl);
 			ImageIcon icon=new ImageIcon(image);
 			return icon;
