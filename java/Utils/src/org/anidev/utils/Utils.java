@@ -1,6 +1,7 @@
 package org.anidev.utils;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Image;
 import java.io.IOException;
 import java.net.URL;
@@ -88,5 +89,9 @@ public class Utils {
 			System.err.println("Error while setting "+lafStr+" L&F.");
 			e.printStackTrace();
 		}
+	}
+
+	public static Font makeMonoFont(Font oldFont) {
+		return new Font(Font.MONOSPACED,oldFont.getStyle(),oldFont.getSize());
 	}
 }
