@@ -53,6 +53,15 @@ public class Netconsole {
 	public NetconsoleMessage getNetconsoleMessage(int index) {
 		return netconsoleMessages.get(index);
 	}
+	
+	public void clearMessages() {
+		netconsoleMessages.clear();
+		synchronized(listeners) {
+			for(NetconsoleListener listener:listeners) {
+				listener.messagesCleared();
+			}
+		}
+	}
 
 	public void sendData(String data) {
 		checkClosed();
