@@ -18,6 +18,7 @@ public class Netconsole {
 	public static final int RECV_PORT=6666;
 	public static final int SEND_PORT=6668;
 	private static final InetAddress broadcastAddress;
+	private volatile boolean paused=false;
 	private volatile boolean closed=false;
 	private int queueTimeout=40;
 	private List<NetconsoleListener> listeners=Collections
@@ -53,7 +54,7 @@ public class Netconsole {
 	public NetconsoleMessage getNetconsoleMessage(int index) {
 		return netconsoleMessages.get(index);
 	}
-	
+
 	public void clearMessages() {
 		netconsoleMessages.clear();
 		synchronized(listeners) {
@@ -69,6 +70,19 @@ public class Netconsole {
 			sendDataQueue.offer(data,queueTimeout,TimeUnit.MILLISECONDS);
 		} catch(InterruptedException e) {
 			Thread.currentThread().interrupt();
+		}
+	}
+
+	public boolean isPaused() {
+		return paused;
+	}
+
+	public void setPaused(boolean paused) {
+		this.paused=paused;
+		synchronized(listeners) {
+			for(NetconsoleListener listener:listeners) {
+				listener.pauseChanged(paused);
+			}
 		}
 	}
 
@@ -149,7 +163,8 @@ public class Netconsole {
 	private void initThreads() {
 		sendDataThread=new Thread(new SendDataWorker(),"Netconsole Send");
 		sendDataThread.start();
-		receiveDataThread=new Thread(new ReceiveDataWorker(),"Netconsole Receive");
+		receiveDataThread=new Thread(new ReceiveDataWorker(),
+				"Netconsole Receive");
 		receiveDataThread.start();
 	}
 
@@ -202,6 +217,9 @@ public class Netconsole {
 					break;
 				} catch(IOException e) {
 					e.printStackTrace();
+				}
+				if(paused) {
+					continue;
 				}
 				String data=new String(buffer,0,packet.getLength());
 				NetconsoleMessage msg=new NetconsoleMessage(DataDir.TODS,data);

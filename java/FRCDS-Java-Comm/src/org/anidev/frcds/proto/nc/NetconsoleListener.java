@@ -7,4 +7,6 @@ public abstract class NetconsoleListener {
 	}
 	public void messagesCleared() {
 	}
+	public void pauseChanged(boolean paused) {
+	}
 }

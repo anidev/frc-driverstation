@@ -18,6 +18,7 @@ public class ControlBar extends JToolBar {
 	private Netconsole nc;
 	private JToggleButton listButton;
 	private JToggleButton textButton;
+	private JToggleButton pauseButton;
 
 	public ControlBar() {
 		setBorder(null);
@@ -26,7 +27,6 @@ public class ControlBar extends JToolBar {
 		setOrientation(SwingConstants.VERTICAL);
 
 		JButton clearButton=new JButton(Utils.getIcon("delete.png"));
-		clearButton.setSize(new Dimension(32,32));
 		clearButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -35,7 +35,13 @@ public class ControlBar extends JToolBar {
 		});
 		add(clearButton);
 
-		JToggleButton pauseButton=new JToggleButton(Utils.getIcon("pause.png"));
+		pauseButton=new JToggleButton(Utils.getIcon("pause.png"));
+		pauseButton.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				ncPanel.setPaused(pauseButton.isSelected());
+			}
+		});
 		add(pauseButton);
 
 		addSeparator();
@@ -71,5 +77,8 @@ public class ControlBar extends JToolBar {
 
 	protected JToggleButton getTextButton() {
 		return textButton;
+	}
+	protected JToggleButton getPauseButton() {
+		return pauseButton;
 	}
 }

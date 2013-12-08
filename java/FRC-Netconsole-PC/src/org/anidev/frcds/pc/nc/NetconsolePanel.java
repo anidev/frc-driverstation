@@ -67,6 +67,10 @@ public class NetconsolePanel extends JPanel {
 				public void messagesCleared() {
 					tableModel.fireTableDataChanged();
 				}
+				@Override
+				public void pauseChanged(boolean paused) {
+					controlBar.getPauseButton().setSelected(paused);
+				}
 			};
 			nc.addNetconsoleListener(ncListener);
 		}
@@ -173,7 +177,6 @@ public class NetconsolePanel extends JPanel {
 				}
 			});
 		}
-		lastCount=count;
 	}
 
 	public void firePanelDestroyed() {
@@ -201,6 +204,10 @@ public class NetconsolePanel extends JPanel {
 		}
 		controlBar.getListButton().setSelected(listMode);
 		controlBar.getTextButton().setSelected(!listMode);
+	}
+
+	protected void setPaused(boolean paused) {
+		nc.setPaused(paused);
 	}
 
 	private class NetconsoleTableModel extends AbstractTableModel {
