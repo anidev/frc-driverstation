@@ -2,7 +2,6 @@ package org.anidev.frcds.pc.nc;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -10,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JScrollBar;
@@ -28,18 +28,26 @@ import org.anidev.frcds.proto.nc.Netconsole;
 import org.anidev.frcds.proto.nc.NetconsoleListener;
 import org.anidev.frcds.proto.nc.NetconsoleMessage;
 import org.anidev.utils.Utils;
+import java.awt.CardLayout;
+import javax.swing.JTextArea;
 
 public class NetconsolePanel extends JPanel {
 	private int lastCount=0;
+	private boolean listMode=false;
 	private volatile int autoScrolling=0;
+	private CardLayout messagesLayout;
+	private ControlBar controlBar;
+	private JPanel messagesPanel;
+	private JTextArea consoleText;
 	private JTable consoleTable;
 	private AbstractTableModel tableModel;
 	private JTextField consoleSendText;
-	private JScrollPane scrollPane;
+	private JScrollPane tableScrollPane;
 	private Netconsole nc;
 	private NetconsoleListener ncListener=null;
 	private static final int ICON_COL_WIDTH=22;
 	private static final int TIME_COL_WIDTH=90;
+	private JScrollPane textScrollPane;
 
 	public NetconsolePanel(Netconsole _nc) {
 		this.nc=_nc;
@@ -54,13 +62,23 @@ public class NetconsolePanel extends JPanel {
 				public void dataSent(NetconsoleMessage msg) {
 					fireMessagesAdded();
 				}
+
+				@Override
+				public void messagesCleared() {
+					tableModel.fireTableDataChanged();
+				}
 			};
 			nc.addNetconsoleListener(ncListener);
 		}
 
 		setPreferredSize(new Dimension(600,240));
 		setSize(new Dimension(600,240));
-		setLayout(new BorderLayout(0,0));
+		setLayout(new BorderLayout(2,0));
+
+		messagesPanel=new JPanel();
+		add(messagesPanel,BorderLayout.CENTER);
+		messagesLayout=new CardLayout(0,0);
+		messagesPanel.setLayout(messagesLayout);
 
 		consoleTable=new JTable();
 		consoleTable.setFillsViewportHeight(true);
@@ -70,18 +88,21 @@ public class NetconsolePanel extends JPanel {
 		consoleTable.setDefaultRenderer(String.class,
 				new NetconsoleCellRenderer());
 		TableColumn iconColumn=consoleTable.getColumnModel().getColumn(0);
+		TableColumn timeColumn=consoleTable.getColumnModel().getColumn(2);
 		iconColumn.setMinWidth(ICON_COL_WIDTH);
 		iconColumn.setMaxWidth(ICON_COL_WIDTH);
-		TableColumn timeColumn=consoleTable.getColumnModel().getColumn(2);
 		timeColumn.setMinWidth(TIME_COL_WIDTH);
 		timeColumn.setMaxWidth(TIME_COL_WIDTH);
-		Font oldFont=consoleTable.getFont();
-		Font monoFont=new Font(Font.MONOSPACED,oldFont.getStyle(),oldFont
-				.getSize());
-		consoleTable.setFont(monoFont);
+		consoleTable.setFont(Utils.makeMonoFont(consoleTable.getFont()));
 
-		scrollPane=new JScrollPane(consoleTable);
-		add(scrollPane,BorderLayout.CENTER);
+		tableScrollPane=new JScrollPane(consoleTable);
+		messagesPanel.add(tableScrollPane,"list");
+
+		consoleText=new JTextArea();
+		consoleText.setEditable(false);
+		consoleText.setFont(Utils.makeMonoFont(consoleText.getFont()));
+		textScrollPane=new JScrollPane(consoleText);
+		messagesPanel.add(textScrollPane,"text");
 
 		JPanel consoleSendPanel=new JPanel();
 		consoleSendPanel.setBorder(new EmptyBorder(2,2,2,2));
@@ -104,12 +125,19 @@ public class NetconsolePanel extends JPanel {
 
 		JButton consoleSendButton=new JButton("Send");
 		consoleSendPanel.add(consoleSendButton,BorderLayout.EAST);
+
+		controlBar=new ControlBar();
+		controlBar.setPanel(this);
+		controlBar.setNetconsole(nc);
+		add(controlBar,BorderLayout.WEST);
 		consoleSendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sendMessage();
 			}
 		});
+
+		setListMode(true);
 	}
 
 	public void fireMessagesAdded() {
@@ -119,27 +147,32 @@ public class NetconsolePanel extends JPanel {
 			return;
 		}
 		boolean autoScroll=false;
-		JScrollBar scrollBar=scrollPane.getVerticalScrollBar();
-		System.out.print(scrollBar.getValue()+scrollBar.getVisibleAmount()+" ");
-		System.out.print(scrollBar.getMaximum()+" ");
-		if(scrollBar.getValue()+scrollBar.getVisibleAmount()>=scrollBar.getMaximum()) {
+		JScrollBar scrollBar=tableScrollPane.getVerticalScrollBar();
+		if(scrollBar.getValue()+scrollBar.getVisibleAmount()>=scrollBar
+				.getMaximum()) {
 			autoScroll=true;
 		}
 		tableModel.fireTableRowsInserted(lastCount,lastCount+diff);
+		List<NetconsoleMessage> list=nc.getNetconsoleMessages();
+		StringBuilder text=new StringBuilder();
+		synchronized(list) {
+			for(int i=lastCount;i+diff<=count;i++) {
+				text.append(list.get(i).getMessage());
+			}
+		}
+		consoleText.append(text.toString());
+		consoleTable.invalidate();
 		if(autoScroll||autoScrolling>0) {
 			autoScrolling++;
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					JScrollBar scrollBar=scrollPane.getVerticalScrollBar();
+					JScrollBar scrollBar=tableScrollPane.getVerticalScrollBar();
 					scrollBar.setValue(scrollBar.getMaximum());
 					autoScrolling--;
 				}
 			});
 		}
-		System.out.print(scrollBar.getValue()+scrollBar.getVisibleAmount()+" ");
-		System.out.print(scrollBar.getMaximum());
-		System.out.println();
 		lastCount=count;
 	}
 
@@ -153,6 +186,21 @@ public class NetconsolePanel extends JPanel {
 		String text=consoleSendText.getText();
 		nc.sendData(text);
 		consoleSendText.setText("");
+	}
+
+	public boolean isListMode() {
+		return listMode;
+	}
+
+	public void setListMode(boolean listMode) {
+		this.listMode=listMode;
+		if(listMode) {
+			messagesLayout.show(messagesPanel,"list");
+		} else {
+			messagesLayout.show(messagesPanel,"text");
+		}
+		controlBar.getListButton().setSelected(listMode);
+		controlBar.getTextButton().setSelected(!listMode);
 	}
 
 	private class NetconsoleTableModel extends AbstractTableModel {
