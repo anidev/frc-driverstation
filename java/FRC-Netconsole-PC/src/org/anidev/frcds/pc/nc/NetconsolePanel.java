@@ -67,6 +67,7 @@ public class NetconsolePanel extends JPanel {
 				public void messagesCleared() {
 					tableModel.fireTableDataChanged();
 				}
+
 				@Override
 				public void pauseChanged(boolean paused) {
 					controlBar.getPauseButton().setSelected(paused);
@@ -151,32 +152,36 @@ public class NetconsolePanel extends JPanel {
 			return;
 		}
 		boolean autoScroll=false;
-		JScrollBar scrollBar=tableScrollPane.getVerticalScrollBar();
-		if(scrollBar.getValue()+scrollBar.getVisibleAmount()>=scrollBar
-				.getMaximum()) {
+		JScrollBar scrollBar=getScrollBar(listMode);
+		if(isScrollBarMaximum(scrollBar)) {
 			autoScroll=true;
 		}
 		tableModel.fireTableRowsInserted(lastCount,lastCount+diff);
 		List<NetconsoleMessage> list=nc.getNetconsoleMessages();
 		StringBuilder text=new StringBuilder();
 		synchronized(list) {
-			for(int i=lastCount;i+diff<=count;i++) {
+			for(int i=lastCount;i<lastCount+diff;i++) {
 				text.append(list.get(i).getMessage());
 			}
 		}
 		consoleText.append(text.toString());
 		consoleTable.invalidate();
 		if(autoScroll||autoScrolling>0) {
+			if(autoScrolling<0) {
+				autoScrolling=0;
+			}
 			autoScrolling++;
+			final boolean cachedListMode=listMode;
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					JScrollBar scrollBar=tableScrollPane.getVerticalScrollBar();
+					JScrollBar scrollBar=getScrollBar(cachedListMode);
 					scrollBar.setValue(scrollBar.getMaximum());
 					autoScrolling--;
 				}
 			});
 		}
+		lastCount=count;
 	}
 
 	public void firePanelDestroyed() {
@@ -196,6 +201,9 @@ public class NetconsolePanel extends JPanel {
 	}
 
 	public void setListMode(boolean listMode) {
+		if(this.listMode==listMode) {
+			return;
+		}
 		this.listMode=listMode;
 		if(listMode) {
 			messagesLayout.show(messagesPanel,"list");
@@ -204,10 +212,21 @@ public class NetconsolePanel extends JPanel {
 		}
 		controlBar.getListButton().setSelected(listMode);
 		controlBar.getTextButton().setSelected(!listMode);
+		JScrollBar scrollBar=getScrollBar(listMode);
+		scrollBar.setValue(scrollBar.getMaximum());
 	}
 
 	protected void setPaused(boolean paused) {
 		nc.setPaused(paused);
+	}
+
+	private JScrollBar getScrollBar(boolean mode) {
+		return (mode?tableScrollPane:textScrollPane).getVerticalScrollBar();
+	}
+
+	private static boolean isScrollBarMaximum(JScrollBar scrollBar) {
+		return scrollBar.getValue()+scrollBar.getVisibleAmount()>=scrollBar
+				.getMaximum();
 	}
 
 	private class NetconsoleTableModel extends AbstractTableModel {
