@@ -19,14 +19,20 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.factories.FormFactory;
+import org.anidev.frcds.common.types.OperationMode;
 import org.anidev.frcds.common.types.TeamStation;
 
 public class OperationPanel extends JPanel {
-	private final ButtonGroup operationModeGroup=new ButtonGroup();
+	private ButtonGroup operationModeGroup=new ButtonGroup();
 	private JLabel elapsedTimeValue;
 	private JComboBox<TeamStation> teamStationBox;
 	private JProgressBar batteryBar;
 	private JLabel teamIDText;
+	private JRadioButton teleopRadio;
+	private JRadioButton autonomousRadio;
+	private JRadioButton practiceRadio;
+	private JTextArea lcdTextArea;
+	private JRadioButton testRadio;
 
 	public OperationPanel() {
 		setPreferredSize(new Dimension(600,240));
@@ -42,36 +48,48 @@ public class OperationPanel extends JPanel {
 		JPanel topControlPanel=new JPanel();
 		add(topControlPanel,"1, 1, fill, fill");
 		topControlPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("20px"),ColumnSpec.decode("default:grow"),},
-				new RowSpec[] {FormFactory.GLUE_ROWSPEC,
-						FormFactory.GLUE_ROWSPEC,FormFactory.GLUE_ROWSPEC,}));
+				ColumnSpec.decode("20px"),
+				ColumnSpec.decode("default:grow"),},
+			new RowSpec[] {
+				FormFactory.GLUE_ROWSPEC,
+				FormFactory.GLUE_ROWSPEC,
+				FormFactory.GLUE_ROWSPEC,
+				FormFactory.GLUE_ROWSPEC,}));
 
-		JRadioButton teleopRadio=new JRadioButton("Teleoperated");
+		teleopRadio=new JRadioButton("Teleoperated");
 		teleopRadio.setActionCommand("teleop");
 		teleopRadio.setSelected(true);
 		operationModeGroup.add(teleopRadio);
 		teleopRadio.setHorizontalAlignment(SwingConstants.LEFT);
 		topControlPanel.add(teleopRadio,"2, 1");
 
-		JRadioButton autonomousRadio=new JRadioButton("Autonomous");
+		autonomousRadio=new JRadioButton("Autonomous");
 		autonomousRadio.setActionCommand("autonomous");
 		operationModeGroup.add(autonomousRadio);
 		autonomousRadio.setHorizontalAlignment(SwingConstants.LEFT);
 		topControlPanel.add(autonomousRadio,"2, 2");
 
-		JRadioButton practiceRadio=new JRadioButton("Practice");
+		testRadio = new JRadioButton("Test");
+		testRadio.setActionCommand("test");
+		operationModeGroup.add(testRadio);
+		testRadio.setHorizontalAlignment(SwingConstants.LEFT);
+		topControlPanel.add(testRadio, "2, 3");
+
+		practiceRadio=new JRadioButton("Practice");
+		practiceRadio.setToolTipText("Not currently implemented");
+		practiceRadio.setEnabled(false);
 		practiceRadio.setActionCommand("practice");
 		operationModeGroup.add(practiceRadio);
 		practiceRadio.setHorizontalAlignment(SwingConstants.LEFT);
-		topControlPanel.add(practiceRadio,"2, 3");
-
+		topControlPanel.add(practiceRadio,"2, 4");
+		
 		JPanel lcdPanel=new JPanel();
 		lcdPanel.setBorder(new TitledBorder(null,"User Messages",
 				TitledBorder.LEADING,TitledBorder.TOP,null,null));
 		add(lcdPanel,"3, 1, 1, 3, fill, fill");
 		lcdPanel.setLayout(new BorderLayout(0,0));
 
-		JTextArea lcdTextArea=new JTextArea();
+		lcdTextArea=new JTextArea();
 		lcdTextArea.setEditable(false);
 		lcdTextArea.setText("This is a test message.");
 		lcdTextArea.setFont(new Font("Monospaced",Font.PLAIN,12));
@@ -157,5 +175,19 @@ public class OperationPanel extends JPanel {
 		} else {
 			teamIDText.setText(Integer.toString(id));
 		}
+	}
+	
+	public OperationMode getMode() {
+		if(autonomousRadio.isSelected()) {
+			return OperationMode.AUTONOMOUS;
+		} else if(testRadio.isSelected()) {
+			return OperationMode.TEST;
+		} else {
+			return OperationMode.TELEOPERATED;
+		}
+	}
+	
+	public TeamStation getStation() {
+		return (TeamStation)teamStationBox.getSelectedItem();
 	}
 }
