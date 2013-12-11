@@ -1,6 +1,6 @@
 package org.anidev.frcds.pc.gui;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -100,8 +100,8 @@ class StatusIndicator extends JPanel {
 	private JLabel icon;
 	private JLabel label;
 	private boolean on;
-	private static final ImageIcon goodIcon;
-	private static final ImageIcon badIcon;
+	private static final Icon goodIcon;
+	private static final Icon badIcon;
 	static {
 		goodIcon=Utils.getIcon("status-good.png");
 		badIcon=Utils.getIcon("status-bad.png");

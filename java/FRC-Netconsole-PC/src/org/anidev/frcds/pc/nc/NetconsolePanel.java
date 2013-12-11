@@ -10,7 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import java.util.List;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JScrollBar;
 import javax.swing.JTable;
@@ -230,8 +230,8 @@ public class NetconsolePanel extends JPanel {
 	}
 
 	private class NetconsoleTableModel extends AbstractTableModel {
-		private ImageIcon sentIcon;
-		private ImageIcon receivedIcon;
+		private Icon sentIcon;
+		private Icon receivedIcon;
 		private DateFormat dateFormat;
 
 		public NetconsoleTableModel() {
@@ -270,7 +270,7 @@ public class NetconsolePanel extends JPanel {
 		public Class<?> getColumnClass(int columnIndex) {
 			switch(columnIndex) {
 			case 0:
-				return ImageIcon.class;
+				return Icon.class;
 			case 1:
 			case 2:
 				return String.class;
