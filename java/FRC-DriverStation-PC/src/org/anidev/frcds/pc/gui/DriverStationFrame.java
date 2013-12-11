@@ -35,6 +35,7 @@ public class DriverStationFrame extends JFrame {
 	private static final String NETCONSOLE_TIP="Netconsole";
 	private static final String TAB_ORDER_PREF="tab_order";
 	private static final String SELECTED_TAB_PREF="selected_tab";
+	private static final String MAIN_NC_LIST="main_nc_list";
 	private static final String TEAMID_PREF="teamid";
 	private static final String DEF_TAB_LIST;
 	private static final String DEF_SELECTED_TAB=OPERATION_TAB;
@@ -95,6 +96,7 @@ public class DriverStationFrame extends JFrame {
 		operationPanel=new OperationPanel();
 
 		netconsolePanel=new NetconsolePanel(DriverStationMain.getNetconsole());
+		netconsolePanel.setListMode(getPrefs().getBoolean(MAIN_NC_LIST,true));
 
 		restoreTabOrder(operationPanel,netconsolePanel);
 		int operationTabIndex=tabbedPane.indexOfTab(OPERATION_TAB);
@@ -108,6 +110,7 @@ public class DriverStationFrame extends JFrame {
 				Preferences prefs=getPrefs();
 				prefs.put(SELECTED_TAB_PREF,selectedTab);
 				prefs.putInt(TEAMID_PREF,ds.getTeamID());
+				prefs.putBoolean(MAIN_NC_LIST,netconsolePanel.isListMode());
 				try {
 					prefs.flush();
 				} catch(BackingStoreException ex) {
