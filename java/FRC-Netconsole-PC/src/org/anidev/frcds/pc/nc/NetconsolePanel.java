@@ -66,6 +66,7 @@ public class NetconsolePanel extends JPanel {
 				@Override
 				public void messagesCleared() {
 					tableModel.fireTableDataChanged();
+					consoleText.setText("");
 				}
 
 				@Override
