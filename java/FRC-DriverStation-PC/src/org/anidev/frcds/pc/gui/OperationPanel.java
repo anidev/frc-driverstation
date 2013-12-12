@@ -3,6 +3,8 @@ package org.anidev.frcds.pc.gui;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -19,10 +21,16 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.factories.FormFactory;
+import org.anidev.frcds.common.DriverStation;
 import org.anidev.frcds.common.types.OperationMode;
 import org.anidev.frcds.common.types.TeamStation;
+import org.anidev.frcds.pc.DriverStationMain;
 
 public class OperationPanel extends JPanel {
+	private static final String TELEOP_CMD="teleop";
+	private static final String AUTONOMOUS_CMD="auto";
+	private static final String PRACTICE_CMD="practice";
+	private static final String TEST_CMD="test";
 	private ButtonGroup operationModeGroup=new ButtonGroup();
 	private JLabel elapsedTimeValue;
 	private JComboBox<TeamStation> teamStationBox;
@@ -48,41 +56,54 @@ public class OperationPanel extends JPanel {
 		JPanel topControlPanel=new JPanel();
 		add(topControlPanel,"1, 1, fill, fill");
 		topControlPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
-				FormFactory.GLUE_ROWSPEC,
-				FormFactory.GLUE_ROWSPEC,
-				FormFactory.GLUE_ROWSPEC,
-				FormFactory.GLUE_ROWSPEC,}));
+				ColumnSpec.decode("20px"),ColumnSpec.decode("default:grow"),},
+				new RowSpec[] {FormFactory.GLUE_ROWSPEC,
+						FormFactory.GLUE_ROWSPEC,FormFactory.GLUE_ROWSPEC,
+						FormFactory.GLUE_ROWSPEC,}));
+
+		ItemListener modeListener=new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange()!=ItemEvent.SELECTED) {
+					return;
+				}
+				OperationMode mode=getMode();
+				DriverStation ds=DriverStationMain.getDS();
+				ds.setMode(mode);
+			}
+		};
 
 		teleopRadio=new JRadioButton("Teleoperated");
-		teleopRadio.setActionCommand("teleop");
+		teleopRadio.setActionCommand(TELEOP_CMD);
 		teleopRadio.setSelected(true);
+		teleopRadio.addItemListener(modeListener);
 		operationModeGroup.add(teleopRadio);
 		teleopRadio.setHorizontalAlignment(SwingConstants.LEFT);
 		topControlPanel.add(teleopRadio,"2, 1");
 
 		autonomousRadio=new JRadioButton("Autonomous");
-		autonomousRadio.setActionCommand("autonomous");
+		autonomousRadio.setActionCommand(AUTONOMOUS_CMD);
+		autonomousRadio.addItemListener(modeListener);
 		operationModeGroup.add(autonomousRadio);
 		autonomousRadio.setHorizontalAlignment(SwingConstants.LEFT);
 		topControlPanel.add(autonomousRadio,"2, 2");
 
-		testRadio = new JRadioButton("Test");
-		testRadio.setActionCommand("test");
+		testRadio=new JRadioButton("Test");
+		testRadio.setActionCommand(TEST_CMD);
+		testRadio.addItemListener(modeListener);
 		operationModeGroup.add(testRadio);
 		testRadio.setHorizontalAlignment(SwingConstants.LEFT);
-		topControlPanel.add(testRadio, "2, 3");
+		topControlPanel.add(testRadio,"2, 3");
 
 		practiceRadio=new JRadioButton("Practice");
 		practiceRadio.setToolTipText("Not currently implemented");
 		practiceRadio.setEnabled(false);
-		practiceRadio.setActionCommand("practice");
+		practiceRadio.setActionCommand(PRACTICE_CMD);
+		practiceRadio.addItemListener(modeListener);
 		operationModeGroup.add(practiceRadio);
 		practiceRadio.setHorizontalAlignment(SwingConstants.LEFT);
 		topControlPanel.add(practiceRadio,"2, 4");
-		
+
 		JPanel lcdPanel=new JPanel();
 		lcdPanel.setBorder(new TitledBorder(null,"User Messages",
 				TitledBorder.LEADING,TitledBorder.TOP,null,null));
@@ -101,14 +122,10 @@ public class OperationPanel extends JPanel {
 		JPanel bottomControlPanel=new JPanel();
 		add(bottomControlPanel,"1, 3, fill, fill");
 		bottomControlPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.GLUE_COLSPEC,
-				ColumnSpec.decode("5px"),
-				FormFactory.GLUE_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.GLUE_ROWSPEC,
-				FormFactory.GLUE_ROWSPEC,
-				FormFactory.GLUE_ROWSPEC,
-				FormFactory.GLUE_ROWSPEC,}));
+				FormFactory.GLUE_COLSPEC,ColumnSpec.decode("5px"),
+				FormFactory.GLUE_COLSPEC,},new RowSpec[] {
+				FormFactory.GLUE_ROWSPEC,FormFactory.GLUE_ROWSPEC,
+				FormFactory.GLUE_ROWSPEC,FormFactory.GLUE_ROWSPEC,}));
 
 		JLabel elapsedTimeLabel=new JLabel("Elapsed Time");
 		elapsedTimeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -121,22 +138,23 @@ public class OperationPanel extends JPanel {
 		elapsedTimeValue.setHorizontalAlignment(SwingConstants.LEFT);
 		setElapsedTime(0);
 		bottomControlPanel.add(elapsedTimeValue,"3, 1");
-		
-		JLabel teamIDLabel = new JLabel("Team ID");
+
+		JLabel teamIDLabel=new JLabel("Team ID");
 		teamIDLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		bottomControlPanel.add(teamIDLabel, "1, 2");
-		
-		teamIDText = new JLabel();
+		bottomControlPanel.add(teamIDLabel,"1, 2");
+
+		teamIDText=new JLabel();
 		teamIDText.setHorizontalAlignment(SwingConstants.CENTER);
 		setTeamID(-1);
-		bottomControlPanel.add(teamIDText, "3, 2");
+		bottomControlPanel.add(teamIDText,"3, 2");
 
 		JLabel teamStationLabel=new JLabel("Team Station");
 		teamStationLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		bottomControlPanel.add(teamStationLabel,"1, 3");
 
 		teamStationBox=new JComboBox<TeamStation>();
-		teamStationBox.setModel(new DefaultComboBoxModel<TeamStation>(TeamStation.values()));
+		teamStationBox.setModel(new DefaultComboBoxModel<TeamStation>(
+				TeamStation.values()));
 		bottomControlPanel.add(teamStationBox,"3, 3, fill, default");
 
 		JLabel batteryLabel=new JLabel("PC Battery");
@@ -158,7 +176,7 @@ public class OperationPanel extends JPanel {
 		String text=minutes+":"+roundSecondsText+"."+deciSeconds;
 		elapsedTimeValue.setText(text);
 	}
-	
+
 	public void setBatteryPercent(double percent) {
 		if(percent<0) {
 			batteryBar.setValue(0);
@@ -168,7 +186,7 @@ public class OperationPanel extends JPanel {
 			batteryBar.setString(null);
 		}
 	}
-	
+
 	public void setTeamID(int id) {
 		if(id<=0) {
 			teamIDText.setText("—");
@@ -176,7 +194,7 @@ public class OperationPanel extends JPanel {
 			teamIDText.setText(Integer.toString(id));
 		}
 	}
-	
+
 	public OperationMode getMode() {
 		if(autonomousRadio.isSelected()) {
 			return OperationMode.AUTONOMOUS;
@@ -186,7 +204,7 @@ public class OperationPanel extends JPanel {
 			return OperationMode.TELEOPERATED;
 		}
 	}
-	
+
 	public TeamStation getStation() {
 		return (TeamStation)teamStationBox.getSelectedItem();
 	}
