@@ -10,6 +10,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
@@ -38,14 +39,18 @@ public class Utils {
 		return null;
 	}
 
-	public static ImageIcon getIcon(String name) {
+	public static Icon getIcon(String name) {
+		Icon icon=GTKIconTheme.findIcon(name);
+		if(icon!=null) {
+			return icon;
+		}
 		try {
 			URL imageUrl=Utils.class.getResource("/resources/"+name);
 			if(imageUrl==null) {
 				return null;
 			}
 			Image image=ImageIO.read(imageUrl);
-			ImageIcon icon=new ImageIcon(image);
+			icon=new ImageIcon(image);
 			return icon;
 		} catch(IOException e) {
 			e.printStackTrace();
