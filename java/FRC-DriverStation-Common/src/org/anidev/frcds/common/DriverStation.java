@@ -1,13 +1,13 @@
 package org.anidev.frcds.common;
 
 import org.anidev.frcds.common.types.BatteryProvider;
-import org.anidev.frcds.common.types.OperationMode;
 import org.anidev.frcds.proto.CommData;
 import org.anidev.frcds.proto.ControlFlags;
 import org.anidev.frcds.proto.FRCCommunication;
 import org.anidev.frcds.proto.FRCCommunicationListener;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
 import org.anidev.frcds.proto.torobot.FRCCommonControl;
+import org.anidev.frcds.proto.torobot.OperationMode;
 
 public abstract class DriverStation {
 	public static final double UPDATE_HERTZ=50.0;
@@ -57,9 +57,9 @@ public abstract class DriverStation {
 	public void setMode(OperationMode mode) {
 		this.mode=mode;
 		ControlFlags flags=dsControl.getControlFlags();
-		flags.setAutonomous(OperationMode.AUTONOMOUS.equals(mode));
-		flags.setTest(OperationMode.TEST.equals(mode));
+		flags.setOperationMode(mode);
 		dsControl.setControlFlags(flags);
+		setModeImpl();
 	}
 
 	public boolean isEnabled() {

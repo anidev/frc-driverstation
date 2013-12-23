@@ -1,5 +1,7 @@
 package org.anidev.frcds.proto;
 
+import org.anidev.frcds.proto.torobot.OperationMode;
+
 public class ControlFlags extends CommData {
 	public static final int SIZE=1;
 	private boolean reset=false;
@@ -41,6 +43,9 @@ public class ControlFlags extends CommData {
 
 	public void setAutonomous(boolean autonomous) {
 		this.autonomous=autonomous;
+		if(autonomous) {
+			this.test=false;
+		}
 	}
 
 	public boolean isFmsAttached() {
@@ -65,6 +70,9 @@ public class ControlFlags extends CommData {
 
 	public void setTest(boolean test) {
 		this.test=test;
+		if(test) {
+			this.autonomous=false;
+		}
 	}
 
 	public boolean isCheckVersions() {
@@ -73,6 +81,21 @@ public class ControlFlags extends CommData {
 
 	public void setCheckVersions(boolean checkVersions) {
 		this.checkVersions=checkVersions;
+	}
+	
+	public OperationMode getOperationMode() {
+		if(autonomous) {
+			return OperationMode.AUTONOMOUS;
+		} else if(test) {
+			return OperationMode.TEST;
+		} else {
+			return OperationMode.TELEOPERATED;
+		}
+	}
+	
+	public void setOperationMode(OperationMode mode) {
+		autonomous=OperationMode.AUTONOMOUS.equals(mode);
+		test=OperationMode.TEST.equals(mode);
 	}
 
 	@Override

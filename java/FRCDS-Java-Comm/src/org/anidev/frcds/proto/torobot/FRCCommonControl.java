@@ -130,6 +130,35 @@ public class FRCCommonControl extends CommData {
 	public void setVersion(Version version) {
 		this.version=version;
 	}
+	
+	public TeamStation getTeamStation() {
+		return getTeamStation(alliance,position);
+	}
+	
+	public static TeamStation getTeamStation(Alliance alliance,char position) {
+		switch(alliance) {
+		case BLUE:
+			switch(position) {
+			case '1':
+				return TeamStation.BLUE1;
+			case '2':
+				return TeamStation.BLUE2;
+			case '3':
+				return TeamStation.BLUE3;
+			}
+			break;
+		case RED:
+			switch(position) {
+			case '1':
+				return TeamStation.RED1;
+			case '2':
+				return TeamStation.RED2;
+			case '3':
+				return TeamStation.RED3;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public byte[] serialize() {

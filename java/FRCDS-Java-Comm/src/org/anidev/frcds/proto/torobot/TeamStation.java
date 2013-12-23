@@ -1,6 +1,5 @@
-package org.anidev.frcds.common.types;
+package org.anidev.frcds.proto.torobot;
 
-import org.anidev.frcds.proto.torobot.Alliance;
 
 public enum TeamStation {
 	RED1(Alliance.RED,1),

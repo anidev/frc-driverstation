@@ -1,4 +1,4 @@
-package org.anidev.frcds.common.types;
+package org.anidev.frcds.proto.torobot;
 
 public enum OperationMode {
 	TELEOPERATED,AUTONOMOUS,TEST;//PRACTICE;

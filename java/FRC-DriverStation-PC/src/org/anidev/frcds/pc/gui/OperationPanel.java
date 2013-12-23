@@ -22,9 +22,9 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.factories.FormFactory;
 import org.anidev.frcds.common.DriverStation;
-import org.anidev.frcds.common.types.OperationMode;
-import org.anidev.frcds.common.types.TeamStation;
 import org.anidev.frcds.pc.DriverStationMain;
+import org.anidev.frcds.proto.torobot.OperationMode;
+import org.anidev.frcds.proto.torobot.TeamStation;
 
 public class OperationPanel extends JPanel {
 	private static final String TELEOP_CMD="teleop";
