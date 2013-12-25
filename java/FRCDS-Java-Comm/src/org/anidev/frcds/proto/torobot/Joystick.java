@@ -5,6 +5,8 @@ import org.anidev.frcds.proto.CommData;
 
 public class Joystick extends CommData {
 	public static final int SIZE=8;
+	public static final int NUM_AXES=6;
+	public static final int NUM_BUTTONS=12;
 	// 6 axes of motion, each a signed byte/int8
 	byte[] axes=new byte[] {0,0,0,0,0,0};
 	// 12 buttons max, stored in 16 bits with left 4 bits ignored
