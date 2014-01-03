@@ -145,9 +145,9 @@ public abstract class DriverStation {
 	protected void setLastRobotControlImpl() {
 	}
 
-	protected void doCommonLoop() {
+	protected void doCommonLoopImpl() {
 	}
 
-	protected void doEnabledLoop() {
+	protected void doEnabledLoopImpl() {
 	}
 }

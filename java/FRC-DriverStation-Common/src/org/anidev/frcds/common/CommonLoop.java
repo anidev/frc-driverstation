@@ -13,6 +13,7 @@ public class CommonLoop implements Runnable {
 	public void run() {
 		while(!Thread.interrupted()) {
 			doBattery();
+			ds.doCommonLoopImpl();
 			try {
 				Thread.sleep((long)delayMs);
 			} catch(InterruptedException e) {

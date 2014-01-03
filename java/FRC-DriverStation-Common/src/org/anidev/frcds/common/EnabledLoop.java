@@ -15,6 +15,7 @@ public class EnabledLoop implements Runnable {
 		while(!Thread.interrupted()) {
 			doElapsedTime();
 			doSendData();
+			ds.doEnabledLoopImpl();
 			try {
 				Thread.sleep((long)delayMs);
 			} catch(InterruptedException e) {
