@@ -2,9 +2,11 @@ package org.anidev.frcds.pc;
 
 import org.anidev.frcds.common.DriverStation;
 import org.anidev.frcds.pc.gui.DriverStationFrame;
+import org.anidev.frcds.pc.input.InputEnvironment;
 
 public class PCDriverStation extends DriverStation {
 	private DriverStationFrame frame=null;
+	private InputEnvironment inputEnv=new InputEnvironment();
 
 	public PCDriverStation() {
 		this.startLoops();
@@ -21,7 +23,7 @@ public class PCDriverStation extends DriverStation {
 	public DriverStationFrame getFrame() {
 		return frame;
 	}
-	
+
 	@Override
 	protected void setEnabledImpl() {
 	}
@@ -53,12 +55,17 @@ public class PCDriverStation extends DriverStation {
 	@Override
 	protected void setModeImpl() {
 	}
-	
+
 	@Override
 	protected void setLastRobotControlImpl() {
 		if(frame==null) {
 			return;
 		}
 		frame.displayControlData(lastRobotControl);
+	}
+
+	@Override
+	protected void doCommonLoopImpl() {
+		inputEnv.updateControllers();
 	}
 }
