@@ -2,7 +2,6 @@ package org.anidev.frcds.pc;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import javax.swing.JFrame;
 import org.anidev.frcds.common.types.BatteryProvider;
 import org.anidev.frcds.pc.battery.linux.LinuxBatteryProvider;
