@@ -28,7 +28,7 @@ public class InputEnvironment {
 	}
 
 	public InputEnvironment() {
-		Logger.getLogger("net.java.games.input.ControllerEnvironment")
+		Logger.getLogger("net.java.games.input")
 				.setUseParentHandlers(false);
 		env=ControllerEnvironment.getDefaultEnvironment();
 		updateControllers();
@@ -78,6 +78,7 @@ public class InputEnvironment {
 		if(deviceMap.containsKey(controllerHash)) {
 			return;
 		}
+		System.out.println(controllerStr);
 		InputDevice dev=new InputDevice(controller);
 		deviceMap.put(controllerHash,dev);
 	}

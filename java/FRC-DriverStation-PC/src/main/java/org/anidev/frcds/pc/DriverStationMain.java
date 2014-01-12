@@ -1,5 +1,8 @@
 package org.anidev.frcds.pc;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import javax.swing.JFrame;
 import org.anidev.frcds.common.types.BatteryProvider;
 import org.anidev.frcds.pc.battery.linux.LinuxBatteryProvider;
@@ -14,6 +17,9 @@ public class DriverStationMain {
 	private static Netconsole nc;
 
 	public static void main(String[] args) {
+		// Extract JInput natives if running from jar
+		// Will gracefully fail if not being run from jar
+		extractJInputNatives();
 		Utils.setLookAndFeel();
 		ds=new PCDriverStation();
 		nc=new Netconsole();
@@ -23,19 +29,19 @@ public class DriverStationMain {
 		ds.setFrame(dsFrame);
 		initBatteryProvider();
 	}
-	
+
 	public static DriverStationFrame getFrame() {
 		return dsFrame;
 	}
-	
+
 	public static PCDriverStation getDS() {
 		return ds;
 	}
-	
+
 	public static Netconsole getNetconsole() {
 		return nc;
 	}
-	
+
 	private static void initBatteryProvider() {
 		String os=System.getProperty("os.name");
 		BatteryProvider provider=null;
@@ -49,5 +55,37 @@ public class DriverStationMain {
 			provider=new WindowsBatteryProvider();
 		}
 		ds.setBatteryProvider(provider);
+	}
+
+	private static void extractJInputNatives() {
+		String os=System.getProperty("os.name").toLowerCase();
+		String libPath=System.getProperty("java.library.path");
+		String[] libNames;
+		if(os.startsWith("linux")) {
+			libNames=new String[] {"libjinput-linux.so","libjinput-linux64.so"};
+		} else if(os.startsWith("mac")) {
+			libNames=new String[] {"libjinput-osx.jnilib"};
+		} else if(os.startsWith("windows")) {
+			libNames=new String[] {"jinput-dx8.dll","jinput-dx8_64.dll",
+					"jinput-raw.dll","jinput-raw_64.dll","jinput-wintab.dll"};
+		} else {
+			libNames=new String[0];
+		}
+		try {
+			for(String libName:libNames) {
+				Utils.extractJarResource(libName);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		String separator=System.getProperty("path.separator");
+		System.setProperty("java.library.path",libPath+separator+Utils.TMPDIR);
+		try {
+			Field sysPathField=ClassLoader.class.getDeclaredField("sys_paths");
+			sysPathField.setAccessible(true);
+			sysPathField.set(null,null);
+		} catch(NoSuchFieldException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 }

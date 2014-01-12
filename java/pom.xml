@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>FRCDS</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.2</version>
+    <packaging>pom</packaging>
+
+    <repositories>
+        <repository>
+            <id>mavenrepo</id>
+            <url>file://${project.basedir}/../mavenrepo</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.bindir>${project.basedir}/../bin</project.bindir>
+    </properties>
+
+    <modules>
+        <module>Utils</module>
+        <module>FRCDS-Java-Comm</module>
+        <module>FRCDS-PacketAnalyzer</module>
+        <module>FRC-Netconsole-PC</module>
+        <module>FRC-DriverStation-Common</module>
+        <module>FRC-DriverStation-PC</module>
+    </modules>
+</project>
