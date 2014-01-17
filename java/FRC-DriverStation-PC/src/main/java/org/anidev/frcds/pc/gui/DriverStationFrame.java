@@ -14,6 +14,8 @@ import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
+import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import com.jgoodies.forms.layout.FormLayout;
@@ -29,17 +31,16 @@ public class DriverStationFrame extends JFrame {
 	private OperationPanel operationPanel;
 	private NetconsolePanel netconsolePanel;
 	private final PCDriverStation ds=DriverStationMain.getDS();
-	private static final String OPERATION_TAB="Operation";
-	private static final String NETCONSOLE_TAB="Netconsole";
-	private static final String OPERATION_TIP="Robot Operation";
-	private static final String NETCONSOLE_TIP="Netconsole";
+	private static final TabInfo[] tabs=new TabInfo[2];
 	private static final String TAB_ORDER_PREF="tab_order";
 	private static final String SELECTED_TAB_PREF="selected_tab";
 	private static final String MAIN_NC_LIST="main_nc_list";
 	private static final String TEAMID_PREF="teamid";
-	private static final String DEF_TAB_LIST;
-	private static final String DEF_SELECTED_TAB=OPERATION_TAB;
+	private static final String[] DEF_TAB_LIST;
+	private static final int DEF_SELECTED_TAB=0;
 	static {
+		tabs[0]=new TabInfo("Operation","Robot Operation");
+		tabs[1]=new TabInfo("Netconsole","Netconsole");
 		DEF_TAB_LIST=initDefTabList();
 	}
 
@@ -84,7 +85,7 @@ public class DriverStationFrame extends JFrame {
 
 			@Override
 			public void tabDetached(int index,MouseEvent e) {
-				if(tabbedPane.getTitleAt(index).equals(NETCONSOLE_TAB)) {
+				if(tabbedPane.getTitleAt(index).equals(tabs[1].name)) {
 					JFrame frame=new NetconsoleFrame(DriverStationMain
 							.getNetconsole());
 					frame.setLocation(e.getLocationOnScreen());
@@ -93,13 +94,9 @@ public class DriverStationFrame extends JFrame {
 			}
 		});
 
-		operationPanel=new OperationPanel();
-
-		netconsolePanel=new NetconsolePanel(DriverStationMain.getNetconsole());
-		netconsolePanel.setListMode(getPrefs().getBoolean(MAIN_NC_LIST,true));
-
-		restoreTabOrder(operationPanel,netconsolePanel);
-		int operationTabIndex=tabbedPane.indexOfTab(OPERATION_TAB);
+		initTabClasses();
+		restoreTabOrder();
+		int operationTabIndex=tabbedPane.indexOfTab(tabs[0].name);
 		tabbedPane.setTabDetachable(operationTabIndex,false);
 
 		addWindowListener(new WindowAdapter() {
@@ -148,48 +145,63 @@ public class DriverStationFrame extends JFrame {
 		enableDisablePanel.setEnableAllowed(allowed);
 	}
 
-	private void restoreTabOrder(Component operationTab,Component netconsoleTab) {
+	private void initTabClasses() {
+		operationPanel=new OperationPanel();
+		netconsolePanel=new NetconsolePanel(DriverStationMain.getNetconsole());
+		netconsolePanel.setListMode(getPrefs().getBoolean(MAIN_NC_LIST,true));
+		tabs[0].instance=operationPanel;
+		tabs[1].instance=netconsolePanel;
+	}
+
+	private void restoreTabOrder() {
 		String[] tabOrder=getTabOrderPref();
-		for(String tab:tabOrder) {
-			Component toAdd=null;
-			String tooltip=tab;
-			switch(tab) {
-			case OPERATION_TAB:
-				toAdd=operationTab;
-				tooltip=OPERATION_TIP;
-				break;
-			case NETCONSOLE_TAB:
-				toAdd=netconsoleTab;
-				tooltip=NETCONSOLE_TIP;
-				break;
-			}
-			if(toAdd!=null) {
-				tabbedPane.addTab(tab,null,toAdd,tooltip);
+		List<String> tabList=Arrays.asList(DEF_TAB_LIST);
+		for(String tabName:tabOrder) {
+			int i=tabList.indexOf(tabName);
+			if(i>=0) {
+				TabInfo tab=tabs[i];
+				tabbedPane.addTab(tab.name,null,tab.instance,tab.tooltip);
 			}
 		}
-		String selectedTab=getPrefs()
-				.get(SELECTED_TAB_PREF,DEF_SELECTED_TAB);
+		String selectedTab=getPrefs().get(SELECTED_TAB_PREF,tabs[DEF_SELECTED_TAB].name);
 		int selectedTabIndex=tabbedPane.indexOfTab(selectedTab);
 		if(selectedTabIndex>=0) {
 			tabbedPane.setSelectedIndex(selectedTabIndex);
 		}
 	}
-	
+
 	private static Preferences getPrefs() {
 		return Utils.getPrefs(DriverStationFrame.class);
 	}
 
-	private static String initDefTabList() {
+	private static String[] initDefTabList() {
 		StringBuilder defTabListBuilder=new StringBuilder();
-		defTabListBuilder.append(OPERATION_TAB);
-		defTabListBuilder.append(",");
-		defTabListBuilder.append(NETCONSOLE_TAB);
-		return defTabListBuilder.toString();
+		for(TabInfo tab:tabs) {
+			defTabListBuilder.append(tab.name);
+			defTabListBuilder.append(',');
+		}
+		defTabListBuilder.deleteCharAt(defTabListBuilder.length()-1);
+		return defTabListBuilder.toString().split(",");
 	}
 
 	private static String[] getTabOrderPref() {
 		Preferences prefs=getPrefs();
-		String tabOrderList=prefs.get(TAB_ORDER_PREF,DEF_TAB_LIST);
-		return tabOrderList.split(",");
+		String tabOrderStr=prefs.get(TAB_ORDER_PREF,"");
+		String[] tabOrderList=tabOrderStr.split(",");
+		if(tabOrderList.length!=tabs.length) {
+			tabOrderList=DEF_TAB_LIST;
+		}
+		return tabOrderList;
+	}
+
+	private static class TabInfo {
+		public String name;
+		public String tooltip;
+		public JPanel instance;
+
+		public TabInfo(String name,String tooltip) {
+			this.name=name;
+			this.tooltip=tooltip;
+		}
 	}
 }
