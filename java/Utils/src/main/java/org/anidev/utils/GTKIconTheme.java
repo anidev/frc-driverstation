@@ -3,12 +3,17 @@ package org.anidev.utils;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import com.kitfox.svg.app.beans.SVGIcon;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import com.sun.jna.StringArray;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.PointerByReference;
 
 public class GTKIconTheme {
 	private static final int GTK_ICON_LOOKUP_GENERIC_FALLBACK=1<<3;
@@ -16,8 +21,8 @@ public class GTKIconTheme {
 	private static Pointer theme=null;
 	private static boolean initFailed=false;
 	static {
-		addIcon("arrow-up","",16);
-		addIcon("arrow-down","",16);
+		addIcon("arrow-up",",go-up",16);
+		addIcon("arrow-down",",go-down",16);
 		addIcon("delete","edit-delete",22);
 		addIcon("pause","media-playback-pause",22);
 		addIcon("list","view-list-details",22);
@@ -27,8 +32,10 @@ public class GTKIconTheme {
 	}
 
 	private static void addIcon(String name,String id,int size) {
-		if("".equals(id)) {
+		if(id.equals("")) {
 			id=name;
+		} else if(id.startsWith(",")) {
+			id=name+id;
 		}
 		IconInfo info=new IconInfo(id,size);
 		ICON_MAP.put(name,info);
@@ -53,21 +60,34 @@ public class GTKIconTheme {
 		if(initFailed) {
 			return null;
 		}
-		Pointer infoPtr=gtk_icon_theme_lookup_icon(theme,info.id,info.size,
-				GTK_ICON_LOOKUP_GENERIC_FALLBACK);
-		if(infoPtr==null) {
-			return null;
+		String[] ids=info.id.split(",");
+		for(String id:ids) {
+			Pointer infoPtr=gtk_icon_theme_lookup_icon(theme,id,info.size,
+					GTK_ICON_LOOKUP_GENERIC_FALLBACK);
+			if(infoPtr==null) {
+				continue;
+			}
+			String filename=gtk_icon_info_get_filename(infoPtr);
+			try {
+				Icon icon=null;
+				if(filename.toLowerCase().endsWith(".svg")) {
+					icon=loadSVG(filename);
+				} else {
+					Image image=ImageIO.read(new File(filename));
+					icon=new ImageIcon(image);
+				}
+				if(icon==null) {
+					continue;
+				}
+				System.out.println("Found "+id);
+				info.cachedIcon=icon;
+				return icon;
+			} catch(IOException e) {
+				continue;
+			}
 		}
-		String filename=gtk_icon_info_get_filename(infoPtr);
-		try {
-			Image image=ImageIO.read(new File(filename));
-			Icon icon=new ImageIcon(image);
-			info.cachedIcon=icon;
-			return icon;
-		} catch(IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+		System.out.println("Did not find "+info.id);
+		return null;
 	}
 
 	private static void init() {
@@ -93,7 +113,16 @@ public class GTKIconTheme {
 		theme=gtk_icon_theme_get_default();
 	}
 
-	private static native boolean gtk_init_check(IntByReference argc,PointerByReference argv);
+	private static SVGIcon loadSVG(String filename) {
+		URI uri=new File(filename).toURI();
+		SVGIcon icon=new SVGIcon();
+		icon.setAntiAlias(true);
+		icon.setSvgURI(uri);
+		return icon;
+	}
+
+	private static native boolean gtk_init_check(IntByReference argc,
+			PointerByReference argv);
 
 	private static native Pointer gtk_icon_theme_get_default();
 
