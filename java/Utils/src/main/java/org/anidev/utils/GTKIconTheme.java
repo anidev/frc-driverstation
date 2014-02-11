@@ -83,14 +83,17 @@ public class GTKIconTheme {
 			initFailed=true;
 			return;
 		}
-		if(!gtk_init_check()) {
+		IntByReference argc=new IntByReference(0);
+		StringArray args=new StringArray(new String[0]);
+		PointerByReference argv=new PointerByReference(args);
+		if(!gtk_init_check(argc,argv)) {
 			initFailed=true;
 			return;
 		}
 		theme=gtk_icon_theme_get_default();
 	}
 
-	private static native boolean gtk_init_check();
+	private static native boolean gtk_init_check(IntByReference argc,PointerByReference argv);
 
 	private static native Pointer gtk_icon_theme_get_default();
 
