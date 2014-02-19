@@ -3,6 +3,8 @@ package org.anidev.utils;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
@@ -11,9 +13,6 @@ import javax.swing.ImageIcon;
 import com.kitfox.svg.app.beans.SVGIcon;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-import com.sun.jna.StringArray;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
 
 public class GTKIconTheme {
 	private static final int GTK_ICON_LOOKUP_GENERIC_FALLBACK=1<<3;
@@ -29,6 +28,7 @@ public class GTKIconTheme {
 		addIcon("text","utilities-terminal",22);
 		addIcon("status-bad","dialog-cancel",16);
 		addIcon("status-good","dialog-ok",16);
+		init();
 	}
 
 	private static void addIcon(String name,String id,int size) {
@@ -53,13 +53,10 @@ public class GTKIconTheme {
 		if(info==null) {
 			return null;
 		}
-		if(info.cachedIcon!=null) {
-			return info.cachedIcon;
-		}
-		init();
-		if(initFailed) {
-			return null;
-		}
+		return info.cachedIcon;
+	}
+
+	private static Icon loadIcon(IconInfo info) {
 		String[] ids=info.id.split(",");
 		for(String id:ids) {
 			Pointer infoPtr=gtk_icon_theme_lookup_icon(theme,id,info.size,
@@ -80,7 +77,6 @@ public class GTKIconTheme {
 					continue;
 				}
 				System.out.println("Found "+id);
-				info.cachedIcon=icon;
 				return icon;
 			} catch(IOException e) {
 				continue;
@@ -98,19 +94,28 @@ public class GTKIconTheme {
 			return;
 		}
 		try {
-			Native.register("gtk-x11-2.0");
-		} catch(UnsatisfiedLinkError e) {
+			Class<?> XToolkit=Class.forName("sun.awt.X11.XToolkit");
+			Object toolkit=XToolkit.newInstance();
+			Method loadGTK=XToolkit.getMethod("loadGTK");
+			loadGTK.invoke(toolkit);
+			try {
+				Native.register("gtk-x11-2.0");
+			} catch(UnsatisfiedLinkError e) {
+				initFailed=true;
+				return;
+			}
+			theme=gtk_icon_theme_get_default();
+			for(IconInfo info:ICON_MAP.values()) {
+				info.cachedIcon=loadIcon(info);
+			}
+			Method unloadGTK=XToolkit.getMethod("unload_gtk");
+			unloadGTK.invoke(toolkit);
+		} catch(ClassNotFoundException|InstantiationException
+				|IllegalAccessException|NoSuchMethodException|SecurityException
+				|IllegalArgumentException|InvocationTargetException e1) {
 			initFailed=true;
 			return;
 		}
-		IntByReference argc=new IntByReference(0);
-		StringArray args=new StringArray(new String[0]);
-		PointerByReference argv=new PointerByReference(args);
-		if(!gtk_init_check(argc,argv)) {
-			initFailed=true;
-			return;
-		}
-		theme=gtk_icon_theme_get_default();
 	}
 
 	private static SVGIcon loadSVG(String filename) {
@@ -120,9 +125,6 @@ public class GTKIconTheme {
 		icon.setSvgURI(uri);
 		return icon;
 	}
-
-	private static native boolean gtk_init_check(IntByReference argc,
-			PointerByReference argv);
 
 	private static native Pointer gtk_icon_theme_get_default();
 
