@@ -8,7 +8,6 @@ import org.anidev.frcds.pc.nc.NetconsoleFrame;
 import org.anidev.frcds.pc.nc.NetconsolePanel;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
 import org.anidev.utils.Utils;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Cursor;
 import java.awt.event.MouseEvent;
@@ -30,8 +29,9 @@ public class DriverStationFrame extends JFrame {
 	private TeamIDPanel teamIDPanel;
 	private OperationPanel operationPanel;
 	private NetconsolePanel netconsolePanel;
+	private SetupPanel setupPanel;
 	private final PCDriverStation ds=DriverStationMain.getDS();
-	private static final TabInfo[] tabs=new TabInfo[2];
+	private static final TabInfo[] tabs=new TabInfo[3];
 	private static final String TAB_ORDER_PREF="tab_order";
 	private static final String SELECTED_TAB_PREF="selected_tab";
 	private static final String MAIN_NC_LIST="main_nc_list";
@@ -41,6 +41,7 @@ public class DriverStationFrame extends JFrame {
 	static {
 		tabs[0]=new TabInfo("Operation","Robot Operation");
 		tabs[1]=new TabInfo("Netconsole","Netconsole");
+		tabs[2]=new TabInfo("Setup","Driver Station Setup");
 		DEF_TAB_LIST=initDefTabList();
 	}
 
@@ -98,6 +99,8 @@ public class DriverStationFrame extends JFrame {
 		restoreTabOrder();
 		int operationTabIndex=tabbedPane.indexOfTab(tabs[0].name);
 		tabbedPane.setTabDetachable(operationTabIndex,false);
+		int setupTabIndex=tabbedPane.indexOfTab(tabs[2].name);
+		tabbedPane.setTabDetachable(setupTabIndex,false);
 
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -140,7 +143,7 @@ public class DriverStationFrame extends JFrame {
 	public void displayControlData(FRCRobotControl control) {
 		statusPanel.setBatteryVolts(control.getBatteryVolts());
 	}
-
+	
 	private void setEnableAllowed(boolean allowed) {
 		enableDisablePanel.setEnableAllowed(allowed);
 	}
@@ -149,8 +152,10 @@ public class DriverStationFrame extends JFrame {
 		operationPanel=new OperationPanel();
 		netconsolePanel=new NetconsolePanel(DriverStationMain.getNetconsole());
 		netconsolePanel.setListMode(getPrefs().getBoolean(MAIN_NC_LIST,true));
+		setupPanel=new SetupPanel(DriverStationMain.getDS().getInputEnvironment());
 		tabs[0].instance=operationPanel;
 		tabs[1].instance=netconsolePanel;
+		tabs[2].instance=setupPanel;
 	}
 
 	private void restoreTabOrder() {
@@ -180,7 +185,6 @@ public class DriverStationFrame extends JFrame {
 			defTabListBuilder.append(tab.name);
 			defTabListBuilder.append(',');
 		}
-		defTabListBuilder.deleteCharAt(defTabListBuilder.length()-1);
 		return defTabListBuilder.toString().split(",");
 	}
 
