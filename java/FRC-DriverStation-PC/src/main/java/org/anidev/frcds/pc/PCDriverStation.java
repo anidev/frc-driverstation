@@ -5,11 +5,14 @@ import org.anidev.frcds.pc.gui.DriverStationFrame;
 import org.anidev.frcds.pc.input.InputEnvironment;
 
 public class PCDriverStation extends DriverStation {
+	private Thread inputThread=null;
 	private DriverStationFrame frame=null;
-	private InputEnvironment inputEnv=new InputEnvironment();
+	private final InputEnvironment inputEnv=new InputEnvironment();
 
 	public PCDriverStation() {
 		this.startLoops();
+		inputThread=new Thread(new InputLoop(),"Input Loop");
+		inputThread.start();
 	}
 
 	public void setFrame(DriverStationFrame frame) {
@@ -22,6 +25,10 @@ public class PCDriverStation extends DriverStation {
 
 	public DriverStationFrame getFrame() {
 		return frame;
+	}
+
+	public InputEnvironment getInputEnvironment() {
+		return inputEnv;
 	}
 
 	@Override
@@ -64,8 +71,18 @@ public class PCDriverStation extends DriverStation {
 		frame.displayControlData(lastRobotControl);
 	}
 
-	@Override
-	protected void doCommonLoopImpl() {
-		inputEnv.updateControllers();
+	private class InputLoop implements Runnable {
+		public static final int SLEEP_MS=5000;
+		@Override
+		public void run() {
+			while(!Thread.interrupted()) {
+				try {
+					Thread.sleep(SLEEP_MS);
+				} catch(InterruptedException e) {
+					break;
+				}
+				inputEnv.updateControllers();
+			}
+		}
 	}
 }

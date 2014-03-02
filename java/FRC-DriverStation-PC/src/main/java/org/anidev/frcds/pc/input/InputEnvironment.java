@@ -1,10 +1,15 @@
 package org.anidev.frcds.pc.input;
 
+import java.lang.reflect.Constructor;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
@@ -13,10 +18,11 @@ import net.java.games.input.ControllerEnvironment;
 public class InputEnvironment {
 	public static final int NUM_DEVICES=4;
 	private static MessageDigest digest=null;
-	private ControllerEnvironment env=null;
 	private String[] deviceHashes=new String[] {null,null,null,null};
 	private Map<String,InputDevice> deviceMap=Collections
 			.synchronizedMap(new HashMap<String,InputDevice>());
+	private List<InputListener> listeners=Collections
+			.synchronizedList(new ArrayList<InputListener>());
 	static {
 		try {
 			digest=MessageDigest.getInstance("MD5");
@@ -28,10 +34,16 @@ public class InputEnvironment {
 	}
 
 	public InputEnvironment() {
-		Logger.getLogger("net.java.games.input")
-				.setUseParentHandlers(false);
-		env=ControllerEnvironment.getDefaultEnvironment();
+		Logger.getLogger("net.java.games.input").setUseParentHandlers(false);
 		updateControllers();
+	}
+
+	public void addInputListener(InputListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeInputListener(InputListener listener) {
+		listeners.remove(listener);
 	}
 
 	public synchronized Map<String,InputDevice> getDeviceMap() {
@@ -43,7 +55,21 @@ public class InputEnvironment {
 			return null;
 		}
 		String hash=deviceHashes[index];
+		if(hash==null) {
+			return null;
+		}
 		return deviceMap.get(hash);
+	}
+
+	public synchronized InputDevice getDevice(String hash) {
+		return deviceMap.get(hash);
+	}
+
+	public synchronized String getDeviceHash(int index) {
+		if(index<0||index>3) {
+			return null;
+		}
+		return deviceHashes[index];
 	}
 
 	public synchronized void swapDevices(int index1,int index2) {
@@ -66,21 +92,72 @@ public class InputEnvironment {
 	}
 
 	public synchronized void updateControllers() {
-		Controller[] controllers=env.getControllers();
-		for(Controller controller:controllers) {
-			processController(controller);
+		ControllerEnvironment env=null;
+		try {
+			Class<?> clazz=Class
+					.forName("net.java.games.input.DefaultControllerEnvironment");
+			Constructor<?> defaultConstructor=clazz.getDeclaredConstructor();
+			defaultConstructor.setAccessible(true); // set visibility to public
+			env=(ControllerEnvironment)defaultConstructor.newInstance();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
+		Controller[] controllers=env.getControllers();
+		Set<String> oldKeys=new HashSet<>(deviceMap.keySet());
+		Set<String> processedKeys=new HashSet<>();
+		synchronized(listeners) {
+			for(Controller controller:controllers) {
+				processController(controller,processedKeys);
+			}
+		}
+		processDevicesRemoved(oldKeys,processedKeys);
 	}
 
-	private void processController(Controller controller) {
+	private void processController(Controller controller,
+			Set<String> procesedKeys) {
 		String controllerStr=stringifyController(controller);
 		String controllerHash=hashToString(makeHash(controllerStr));
+		procesedKeys.add(controllerHash);
 		if(deviceMap.containsKey(controllerHash)) {
 			return;
 		}
-		System.out.println(controllerStr);
 		InputDevice dev=new InputDevice(controller);
 		deviceMap.put(controllerHash,dev);
+		if(dev.getType()==Type.UNKNOWN) {
+			return;
+		}
+		for(int i=0;i<deviceHashes.length;i++) {
+			if(deviceHashes[i]==null) {
+				deviceHashes[i]=controllerHash;
+				break;
+			}
+		}
+		for(InputListener listener:listeners) {
+			listener.deviceAdded(dev);
+		}
+	}
+
+	private void processDevicesRemoved(Set<String> oldKeys,
+			Set<String> processedKeys) {
+		oldKeys.removeAll(processedKeys);
+		if(oldKeys.size()==0) {
+			return;
+		}
+		synchronized(listeners) {
+			for(String hash:oldKeys) {
+				for(int i=0;i<deviceHashes.length;i++) {
+					if(hash.equals(deviceHashes[i])) {
+						deviceHashes[i]=null;
+					}
+				}
+				InputDevice dev=deviceMap.get(hash);
+				for(InputListener listener:listeners) {
+					listener.deviceRemoved(dev);
+				}
+				deviceMap.remove(hash);
+				// TODO properly clear weakreferences to input devices
+			}
+		}
 	}
 
 	private static String stringifyController(Controller controller) {

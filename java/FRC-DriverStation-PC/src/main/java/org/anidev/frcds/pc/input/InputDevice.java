@@ -22,7 +22,6 @@ public class InputDevice {
 		if(trans==null) {
 			this.trans=getTranslationForType(this.controller,this.type);
 		}
-		System.out.println(this.type+"\n");
 	}
 
 	public Type getType() {
