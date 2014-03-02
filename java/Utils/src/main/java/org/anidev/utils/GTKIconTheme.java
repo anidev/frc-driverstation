@@ -76,7 +76,6 @@ public class GTKIconTheme {
 				if(icon==null) {
 					continue;
 				}
-				System.out.println("Found "+id);
 				return icon;
 			} catch(IOException e) {
 				continue;
