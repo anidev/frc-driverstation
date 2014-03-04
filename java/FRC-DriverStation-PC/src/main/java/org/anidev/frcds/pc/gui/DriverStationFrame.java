@@ -143,7 +143,7 @@ public class DriverStationFrame extends JFrame {
 	public void displayControlData(FRCRobotControl control) {
 		statusPanel.setBatteryVolts(control.getBatteryVolts());
 	}
-	
+
 	private void setEnableAllowed(boolean allowed) {
 		enableDisablePanel.setEnableAllowed(allowed);
 	}
@@ -152,7 +152,8 @@ public class DriverStationFrame extends JFrame {
 		operationPanel=new OperationPanel();
 		netconsolePanel=new NetconsolePanel(DriverStationMain.getNetconsole());
 		netconsolePanel.setListMode(getPrefs().getBoolean(MAIN_NC_LIST,true));
-		setupPanel=new SetupPanel(DriverStationMain.getDS().getInputEnvironment());
+		setupPanel=new SetupPanel(DriverStationMain.getDS()
+				.getInputEnvironment());
 		tabs[0].instance=operationPanel;
 		tabs[1].instance=netconsolePanel;
 		tabs[2].instance=setupPanel;
@@ -168,7 +169,8 @@ public class DriverStationFrame extends JFrame {
 				tabbedPane.addTab(tab.name,null,tab.instance,tab.tooltip);
 			}
 		}
-		String selectedTab=getPrefs().get(SELECTED_TAB_PREF,tabs[DEF_SELECTED_TAB].name);
+		String selectedTab=getPrefs().get(SELECTED_TAB_PREF,
+				tabs[DEF_SELECTED_TAB].name);
 		int selectedTabIndex=tabbedPane.indexOfTab(selectedTab);
 		if(selectedTabIndex>=0) {
 			tabbedPane.setSelectedIndex(selectedTabIndex);

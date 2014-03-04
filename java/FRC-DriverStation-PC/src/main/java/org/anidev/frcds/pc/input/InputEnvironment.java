@@ -21,6 +21,8 @@ public class InputEnvironment {
 	private String[] deviceHashes=new String[] {null,null,null,null};
 	private Map<String,InputDevice> deviceMap=Collections
 			.synchronizedMap(new HashMap<String,InputDevice>());
+	private Map<String,Integer> oldPositionMap=Collections
+			.synchronizedMap(new HashMap<String,Integer>());
 	private List<InputListener> listeners=Collections
 			.synchronizedList(new ArrayList<InputListener>());
 	static {
@@ -94,6 +96,9 @@ public class InputEnvironment {
 	public synchronized void updateControllers() {
 		ControllerEnvironment env=null;
 		try {
+			// The following hack is to force controllers to be updated
+			// because by default, the ControllerEnvironment only scans
+			// controllers once and caches them for all future instantiations
 			Class<?> clazz=Class
 					.forName("net.java.games.input.DefaultControllerEnvironment");
 			Constructor<?> defaultConstructor=clazz.getDeclaredConstructor();
@@ -126,10 +131,18 @@ public class InputEnvironment {
 		if(dev.getType()==Type.UNKNOWN) {
 			return;
 		}
-		for(int i=0;i<deviceHashes.length;i++) {
-			if(deviceHashes[i]==null) {
-				deviceHashes[i]=controllerHash;
-				break;
+		if(oldPositionMap.containsKey(controllerHash)) {
+			int oldPosition=oldPositionMap.get(controllerHash);
+			if(oldPosition>=0&&oldPosition<=3&&deviceHashes[oldPosition]==null) {
+				deviceHashes[oldPosition]=controllerHash;
+				oldPositionMap.remove(controllerHash);
+			}
+		} else {
+			for(int i=0;i<deviceHashes.length;i++) {
+				if(deviceHashes[i]==null) {
+					deviceHashes[i]=controllerHash;
+					break;
+				}
 			}
 		}
 		for(InputListener listener:listeners) {
@@ -148,6 +161,7 @@ public class InputEnvironment {
 				for(int i=0;i<deviceHashes.length;i++) {
 					if(hash.equals(deviceHashes[i])) {
 						deviceHashes[i]=null;
+						oldPositionMap.put(hash,i);
 					}
 				}
 				InputDevice dev=deviceMap.get(hash);

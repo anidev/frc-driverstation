@@ -53,8 +53,8 @@ public class SetupPanel extends JPanel {
 		inputTable.setFillsViewportHeight(true);
 		inputTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		inputTableModel=new InputTableModel();
-//		inputTable.setModel(new DefaultTableModel(new Object[][] { {"1","2"},
-//				{"3","4"},},new String[] {"New column","New column"}));
+		// inputTable.setModel(new DefaultTableModel(new Object[][] { {"1","2"},
+		// {"3","4"},},new String[] {"New column","New column"}));
 		inputTable.setModel(inputTableModel);
 		inputTable.setTransferHandler(new InputTransferHandler());
 
@@ -163,7 +163,8 @@ public class SetupPanel extends JPanel {
 				e.printStackTrace();
 				return false;
 			}
-			JTable.DropLocation location=(JTable.DropLocation)support.getDropLocation();
+			JTable.DropLocation location=(JTable.DropLocation)support
+					.getDropLocation();
 			int toIndex=location.getRow();
 			env.swapDevices(fromIndex,toIndex);
 			inputTableModel.fireTableDataChanged();
