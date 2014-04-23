@@ -182,8 +182,10 @@ public class OperationPanel extends JPanel {
 			batteryBar.setValue(0);
 			batteryBar.setString("Unavailable");
 		} else {
-			batteryBar.setValue((int)Math.round(percent*100));
-			batteryBar.setString(null);
+			int val=(int)Math.round(percent*100);
+			batteryBar.setValue(val);
+//			batteryBar.setString(null);
+			batteryBar.setString(val+"% \u26A1");
 		}
 	}
 
