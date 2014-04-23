@@ -14,7 +14,7 @@ public class NetconsoleFrame extends JFrame {
 		super("FRC Netconsole");
 		this.nc=_nc;
 		setSize(new Dimension(630,300));
-		netconsolePanel=new NetconsolePanel(nc);
+		netconsolePanel=new NetconsolePanel(nc,true);
 		setContentPane(netconsolePanel);
 		addWindowListener(new WindowAdapter() {
 			@Override

@@ -30,6 +30,7 @@ import org.anidev.frcds.proto.nc.NetconsoleMessage;
 import org.anidev.utils.Utils;
 import java.awt.CardLayout;
 import javax.swing.JTextArea;
+import javax.swing.JFormattedTextField;
 
 public class NetconsolePanel extends JPanel {
 	private int lastCount=0;
@@ -48,8 +49,16 @@ public class NetconsolePanel extends JPanel {
 	private static final int ICON_COL_WIDTH=22;
 	private static final int TIME_COL_WIDTH=90;
 	private JScrollPane textScrollPane;
+	private JFormattedTextField textIDField;
 
 	public NetconsolePanel(Netconsole _nc) {
+		this(_nc,false);
+	}
+	
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public NetconsolePanel(Netconsole _nc,boolean standalone) {
 		this.nc=_nc;
 		if(nc!=null) {
 			ncListener=new NetconsoleListener() {
@@ -110,13 +119,13 @@ public class NetconsolePanel extends JPanel {
 		textScrollPane=new JScrollPane(consoleText);
 		messagesPanel.add(textScrollPane,"text");
 
-		JPanel consoleSendPanel=new JPanel();
-		consoleSendPanel.setBorder(new EmptyBorder(2,2,2,2));
-		add(consoleSendPanel,BorderLayout.SOUTH);
-		consoleSendPanel.setLayout(new BorderLayout(2,0));
+		JPanel bottomPanel=new JPanel();
+		bottomPanel.setBorder(new EmptyBorder(2,2,2,2));
+		add(bottomPanel,BorderLayout.SOUTH);
+		bottomPanel.setLayout(new BorderLayout(2,0));
 
 		consoleSendText=new JTextField();
-		consoleSendPanel.add(consoleSendText,BorderLayout.CENTER);
+		bottomPanel.add(consoleSendText,BorderLayout.CENTER);
 		consoleSendText.setColumns(10);
 
 		consoleSendText.addKeyListener(new KeyAdapter() {
@@ -130,7 +139,14 @@ public class NetconsolePanel extends JPanel {
 		});
 
 		JButton consoleSendButton=new JButton("Send");
-		consoleSendPanel.add(consoleSendButton,BorderLayout.EAST);
+		bottomPanel.add(consoleSendButton,BorderLayout.EAST);
+		
+		if(standalone) {
+			textIDField = new JFormattedTextField(Utils.getTeamIDFormat());
+			textIDField.setToolTipText("Team Number");
+			textIDField.setColumns(4);
+			bottomPanel.add(textIDField, BorderLayout.WEST);
+		}
 
 		controlBar=new ControlBar();
 		controlBar.setPanel(this);
