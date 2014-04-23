@@ -111,6 +111,7 @@ public class DriverStationFrame extends JFrame {
 				prefs.put(SELECTED_TAB_PREF,selectedTab);
 				prefs.putInt(TEAMID_PREF,ds.getTeamID());
 				prefs.putBoolean(MAIN_NC_LIST,netconsolePanel.isListMode());
+				netconsolePanel.firePanelDestroyed();
 				try {
 					prefs.flush();
 				} catch(BackingStoreException ex) {
