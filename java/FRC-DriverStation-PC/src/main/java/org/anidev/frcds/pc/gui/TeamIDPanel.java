@@ -6,12 +6,12 @@ import javax.swing.JLabel;
 import java.awt.Component;
 import javax.swing.JFormattedTextField;
 import org.anidev.frcds.pc.DriverStationMain;
+import org.anidev.utils.Utils;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.NumberFormat;
 
 public class TeamIDPanel extends JPanel {
 	private JFormattedTextField teamIDField;
@@ -33,13 +33,7 @@ public class TeamIDPanel extends JPanel {
 		gbc_teamIDLabel.gridy=0;
 		add(teamIDLabel,gbc_teamIDLabel);
 
-		NumberFormat format=NumberFormat.getIntegerInstance();
-		format.setMinimumIntegerDigits(1);
-		format.setMaximumIntegerDigits(4);
-		format.setGroupingUsed(false);
-		format.setParseIntegerOnly(true);
-
-		teamIDField=new JFormattedTextField(format);
+		teamIDField=new JFormattedTextField(Utils.getTeamIDFormat());
 		teamIDField.setColumns(4);
 		GridBagConstraints gbc_teamIDField=new GridBagConstraints();
 		gbc_teamIDField.weightx=1.0;
