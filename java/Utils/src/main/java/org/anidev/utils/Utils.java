@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.util.Enumeration;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
@@ -154,5 +155,24 @@ public class Utils {
 			outStream.close();
 		}
 		return file;
+	}
+
+	public static NumberFormat getTeamIDFormat() {
+		NumberFormat format=NumberFormat.getIntegerInstance();
+		format.setMinimumIntegerDigits(1);
+		format.setMaximumIntegerDigits(4);
+		format.setGroupingUsed(false);
+		format.setParseIntegerOnly(true);
+		return format;
+	}
+	
+	public static byte[] teamIDToAddress(int teamID) {
+		if(teamID<=0) {
+			return null;
+		}
+		int teamUpper=teamID/100;
+		int teamLower=teamID-teamUpper*100;
+		byte[] addrBytes=new byte[] {10,(byte)teamUpper,(byte)teamLower,0};
+		return addrBytes;
 	}
 }

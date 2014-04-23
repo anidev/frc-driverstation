@@ -13,11 +13,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.anidev.frcds.proto.DataDir;
+import org.anidev.utils.Utils;
 
 public class Netconsole {
 	public static final int RECV_PORT=6666;
 	public static final int SEND_PORT=6668;
-	private static final InetAddress broadcastAddress;
+	private volatile int teamID;
+	private volatile InetAddress broadcastAddress=null;
 	private volatile boolean paused=false;
 	private volatile boolean closed=false;
 	private int queueTimeout=40;
@@ -31,18 +33,9 @@ public class Netconsole {
 	private Thread receiveDataThread;
 	private BlockingQueue<String> sendDataQueue;
 
-	static {
-		InetAddress dummy=null;
-		try {
-			dummy=InetAddress.getByName("255.255.255.255");
-		} catch(UnknownHostException e) {
-			dummy=null;
-		}
-		broadcastAddress=dummy;
-	}
-
 	public Netconsole() {
 		sendDataQueue=new LinkedBlockingQueue<String>();
+		
 		initSockets();
 		initThreads();
 	}
@@ -63,7 +56,7 @@ public class Netconsole {
 			}
 		}
 	}
-
+	
 	public void sendData(String data) {
 		checkClosed();
 		try {
@@ -84,6 +77,26 @@ public class Netconsole {
 				listener.pauseChanged(paused);
 			}
 		}
+	}
+	
+	public int getTeamID() {
+		return teamID;
+	}
+	
+	public void setTeamID(int teamID) {
+		if(teamID<=0) {
+			broadcastAddress=null;
+			return;
+		}
+		byte[] addrBytes=Utils.teamIDToAddress(teamID);
+		addrBytes[3]=(byte)255;
+		try {
+			broadcastAddress=InetAddress.getByAddress(addrBytes);
+		} catch(UnknownHostException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException("Invalid team ID: "+teamID);
+		}
+		this.teamID=teamID;
 	}
 
 	public int getQueueTimeout() {

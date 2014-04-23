@@ -14,6 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
 import org.anidev.frcds.proto.torobot.FRCCommonControl;
+import org.anidev.utils.Utils;
 
 public class FRCCommunication {
 	public static final int TOROBOT_PORT=1110;
@@ -125,9 +126,8 @@ public class FRCCommunication {
 			robotAddress=null;
 			return;
 		}
-		int teamUpper=teamID/100;
-		int teamLower=teamID-teamUpper*100;
-		byte[] addrBytes=new byte[] {10,(byte)teamUpper,(byte)teamLower,2};
+		byte[] addrBytes=Utils.teamIDToAddress(teamID);
+		addrBytes[3]=2;
 		try {
 			robotAddress=InetAddress.getByAddress(addrBytes);
 			if(!sendToRobotThread.isAlive()) {
