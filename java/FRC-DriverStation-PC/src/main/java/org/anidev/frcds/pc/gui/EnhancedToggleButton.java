@@ -11,6 +11,9 @@ import java.awt.event.ItemListener;
 import javax.swing.JToggleButton;
 import org.anidev.utils.Utils;
 
+/**
+ * JToggleButton used for enable and disable
+ */
 class EnhancedToggleButton extends JToggleButton implements
 		ItemListener {
 	private Color origColor;
@@ -21,6 +24,13 @@ class EnhancedToggleButton extends JToggleButton implements
 	private static final int BORDER_PADDING=2;
 	private static final int BORDER_TRANSLATE=BORDER_SIZE+BORDER_PADDING;
 
+	/**
+	 * Set the appearence of the button
+	 * @param text the String displayed on the button
+	 * @param overlayColor the color of the overlay
+	 * @param selectedAlpha the alpha value
+	 * @param border BorderCollapse so the border can be put in the right place
+	 */
 	public EnhancedToggleButton(String text,Color overlayColor,
 			double selectedAlpha,EnhancedToggleButton.BorderCollapse border) {
 		super(text);
@@ -36,11 +46,18 @@ class EnhancedToggleButton extends JToggleButton implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.AbstractButton#setSelected(boolean)
+	 */
 	public void setSelected(boolean selected) {
 		super.setSelected(selected);
 		changeState(selected);
 	}
 
+	/**
+	 * Changes the background and foreground colors
+	 * @param selected whether or not the button is selected
+	 */
 	public void changeState(boolean selected) {
 		if(selected) {
 			setBackground(selectedColor);
@@ -51,6 +68,9 @@ class EnhancedToggleButton extends JToggleButton implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
 	@Override
 	public void paintComponent(Graphics g) {
 		Rectangle bounds=g.getClipBounds();
@@ -86,6 +106,9 @@ class EnhancedToggleButton extends JToggleButton implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+	 */
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(!(e.getSource() instanceof EnhancedToggleButton)) {
@@ -95,6 +118,9 @@ class EnhancedToggleButton extends JToggleButton implements
 		button.changeState(e.getStateChange()==ItemEvent.SELECTED);
 	}
 
+	/**
+	 * Where to have a border
+	 */
 	public static enum BorderCollapse {
 		NONE,
 		BOTTOM,

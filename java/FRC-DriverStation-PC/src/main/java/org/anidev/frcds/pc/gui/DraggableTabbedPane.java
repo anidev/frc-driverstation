@@ -21,6 +21,9 @@ import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.TabbedPaneUI;
 
+/**
+ * JTabbedPane that can be dragged
+ */
 public class DraggableTabbedPane extends JTabbedPane {
 	public static final int DETACH_THRESHOLD=5;
 	private volatile boolean dragging=false;
@@ -38,12 +41,22 @@ public class DraggableTabbedPane extends JTabbedPane {
 	private List<Listener> listeners=Collections
 			.synchronizedList(new ArrayList<Listener>());
 
+	/**
+	 * Add mouse listeners
+	 */
 	public DraggableTabbedPane() {
 		super();
 		addMouseMotionListener(new DragMotionListener());
 		addMouseListener(new DragReleaseListener());
 	}
 
+	/**
+	 * Figure out the current tab drop state.
+	 * @param index the index
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @return the current drop state
+	 */
 	public DropState calcTabDropState(int index,int x,int y) {
 		if(x>=0&&x<=getWidth()&&y>=tabBounds.y&&y<=tabBounds.y+tabBounds.height) {
 			return DropState.ROW_MOVE;
@@ -54,6 +67,11 @@ public class DraggableTabbedPane extends JTabbedPane {
 		return DropState.NO_CHANGE;
 	}
 
+	/**
+	 * Set a tab to be draggable or not draggable
+	 * @param index the index of the item
+	 * @param draggable whether or not the user should be able to drag it
+	 */
 	public void setTabDraggable(int index,boolean draggable) {
 		String title=getTitleAt(index);
 		TabInfo info=tabInfoList.get(title);
@@ -64,12 +82,21 @@ public class DraggableTabbedPane extends JTabbedPane {
 		tabInfoList.put(title,info);
 	}
 
+	/**
+	 * @param index the index of the item
+	 * @return true if that tab is draggable false otherwise
+	 */
 	public boolean isTabDraggable(int index) {
 		String title=getTitleAt(index);
 		TabInfo info=tabInfoList.get(title);
 		return(info==null?true:info.draggable);
 	}
 
+	/**
+	 * Set a tab to be detachable or not detachable
+	 * @param index the index of the item
+	 * @param detachable whether or not that tab can be detached
+	 */
 	public void setTabDetachable(int index,boolean detachable) {
 		String title=getTitleAt(index);
 		TabInfo info=tabInfoList.get(title);
@@ -80,20 +107,33 @@ public class DraggableTabbedPane extends JTabbedPane {
 		tabInfoList.put(title,info);
 	}
 
+	/**
+	 * @param index the index of the item
+	 * @return true if that tab is detachable false otherwise
+	 */
 	public boolean isTabDetachable(int index) {
 		String title=getTitleAt(index);
 		TabInfo info=tabInfoList.get(title);
 		return(info==null?true:info.detachable);
 	}
 
+	/**
+	 * @param listener the listener to add
+	 */
 	public void addTabDragListener(Listener listener) {
 		listeners.add(listener);
 	}
 
+	/**
+	 * @param listener the listener to remove
+	 */
 	public void removeTabDragListener(Listener listener) {
 		listeners.remove(listener);
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.JTabbedPane#setTitleAt(int, java.lang.String)
+	 */
 	@Override
 	public void setTitleAt(int index,String title) {
 		String oldTitle=getTitleAt(index);
@@ -102,6 +142,9 @@ public class DraggableTabbedPane extends JTabbedPane {
 		tabInfoList.put(title,info);
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -121,32 +164,65 @@ public class DraggableTabbedPane extends JTabbedPane {
 		g.fillRect(x-1,y,3,h);
 	}
 
+	/**
+	 * Listener for tabs with mouse events
+	 */
 	public static abstract class Listener {
+		/**
+		 * @param index the index of the item
+		 * @param e the mouse event from the dragging of a tab
+		 */
 		public void tabDragging(int index,MouseEvent e) {
 		}
 
+		/**
+		 * @param index the index of the item
+		 * @param e the mouse event from cancelling dropping a tab
+		 */
 		public void tabDropCanceled(int index,MouseEvent e) {
 		}
 
+		/**
+		 * @param oldIndex the old index
+		 * @param newIndex the new index
+		 * @param e the mouse event from moving a tab
+		 */
 		public void tabMoved(int oldIndex,int newIndex,MouseEvent e) {
 		}
 
+		/**
+		 * @param index the index of the item
+		 * @param e the mouse event from detaching a tab
+		 */
 		public void tabDetached(int index,MouseEvent e) {
 		}
 	}
 
+	/**
+	 * The state of a tab drop
+	 */
 	public static enum DropState {
 		NO_CHANGE, // tab dropped back where it came from
 		ROW_MOVE, // tab dropped elsewhere on the tabstrip
 		DETACHED; // tab dropped far enough away to be detached
 	}
 
+	/**
+	 * Info if a tab is draggable and detachable
+	 */
 	private static class TabInfo {
 		public boolean draggable=true;
 		public boolean detachable=true;
 	}
 
+	/**
+	 * Listen to the drag motion of the mouse
+	 */
 	private class DragMotionListener extends MouseMotionAdapter {
+		/* (non-Javadoc)
+		 * @see java.awt.event.MouseMotionAdapter#mouseDragged(java.awt.event.MouseEvent)
+		 */
+		@Override
 		public void mouseDragged(MouseEvent e) {
 			updateStatus(e);
 			updateImage(e);
@@ -157,6 +233,9 @@ public class DraggableTabbedPane extends JTabbedPane {
 			}
 		}
 
+		/**
+		 * @param e the mouse event that occured
+		 */
 		public void updateStatus(MouseEvent e) {
 			if(!dragging&&!draggingForbidden) {
 				// Gets the tab index based on the mouse position
@@ -183,6 +262,9 @@ public class DraggableTabbedPane extends JTabbedPane {
 			}
 		}
 
+		/**
+		 * @param e the mouse event that occured
+		 */
 		public void updateImage(MouseEvent e) {
 			if(dragging) {
 				// Paint the tabbed pane to a buffer
@@ -226,6 +308,9 @@ public class DraggableTabbedPane extends JTabbedPane {
 
 				if(dragWindow==null) {
 					dragWindow=new JWindow() {
+						/* (non-Javadoc)
+						 * @see java.awt.Window#paint(java.awt.Graphics)
+						 */
 						@Override
 						public void paint(Graphics g) {
 							g.drawImage(tabImage,0,0,null);
@@ -239,6 +324,9 @@ public class DraggableTabbedPane extends JTabbedPane {
 			}
 		}
 
+		/**
+		 * @param e the mouse event that occured
+		 */
 		public void updateIndicator(MouseEvent e) {
 			if(!dragging) {
 				indicatorPos=-1;
@@ -275,7 +363,14 @@ public class DraggableTabbedPane extends JTabbedPane {
 		}
 	}
 
+	/**
+	 * listener for the release of a tab being dragged
+	 */
 	private class DragReleaseListener extends MouseAdapter {
+		/* (non-Javadoc)
+		 * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
+		 */
+		@Override
 		public void mouseReleased(MouseEvent e) {
 			draggingForbidden=false;
 			detachingForbidden=false;

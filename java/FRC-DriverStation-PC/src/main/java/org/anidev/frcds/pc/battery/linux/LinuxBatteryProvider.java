@@ -5,14 +5,23 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import org.anidev.frcds.common.types.BatteryProvider;
 
+/**
+ * BatteryProvider for Linux computers
+ */
 public class LinuxBatteryProvider implements BatteryProvider {
 	private static final File BATTERY_ROOT=new File("/sys/class/power_supply");
 	private File battery=null;
 
+	/**
+	 * Calls scanBatteries()
+	 */
 	public LinuxBatteryProvider() {
 		scanBatteries();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.common.types.BatteryProvider#getBatteryPercent()
+	 */
 	@Override
 	public double getBatteryPercent() {
 		if(battery==null) {
@@ -36,6 +45,9 @@ public class LinuxBatteryProvider implements BatteryProvider {
 		return batteryPercent;
 	}
 	
+	/**
+	 * Find the battery files
+	 */
 	private void scanBatteries() {
 		this.battery=null;
 		if(!BATTERY_ROOT.exists()) {

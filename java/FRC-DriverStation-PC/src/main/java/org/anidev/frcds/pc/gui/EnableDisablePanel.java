@@ -13,12 +13,18 @@ import java.awt.event.ItemListener;
 import org.anidev.frcds.pc.DriverStationMain;
 import org.anidev.utils.Utils;
 
+/**
+ * JPanel that allows user to enable/disable the robot
+ */
 public class EnableDisablePanel extends JPanel {
 	private static final double SELECTED_ALPHA=0.8;
 	private ButtonGroup buttonGroup;
 	private EnhancedToggleButton enableButton;
 	private EnhancedToggleButton disableButton;
 
+	/**
+	 * set up the panel
+	 */
 	public EnableDisablePanel() {
 		setSize(new Dimension(70,250));
 		setLayout(new GridLayout(2,1,0,0));
@@ -48,12 +54,18 @@ public class EnableDisablePanel extends JPanel {
 		disableButton.addItemListener(listener);
 	}
 
+	/**
+	 * @return true if enable has been selected false otherwise
+	 */
 	public boolean isEnabledSelected() {
 		JToggleButton button=(JToggleButton)Utils
 				.getSelectedButton(buttonGroup);
 		return button.getActionCommand().equals("enable");
 	}
 
+	/**
+	 * @param allowed whether or not it is allowed to enable the bot
+	 */
 	public void setEnableAllowed(boolean allowed) {
 		if(!allowed) {
 			disableButton.setSelected(true);
@@ -61,7 +73,13 @@ public class EnableDisablePanel extends JPanel {
 		enableButton.setEnabled(allowed);
 	}
 
+	/**
+	 * listen to the enable and disable buttons
+	 */
 	private class EnableDisableListener implements ItemListener {
+		/* (non-Javadoc)
+		 * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+		 */
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if(e.getStateChange()==ItemEvent.DESELECTED) {

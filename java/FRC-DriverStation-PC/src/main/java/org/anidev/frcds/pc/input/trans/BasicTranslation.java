@@ -15,10 +15,17 @@ import net.java.games.input.Controller;
 
 // Actually, for now just present axes in the
 // order in which they appear?
+/**
+ * Basic controller translation
+ */
 public class BasicTranslation extends TranslationProfile {
 	protected Component[] axes;
 	protected Component[] buttons;
 
+	/**
+	 * Create a translation with the axes and buttons of the controller
+	 * @param controller the controller to create translation for
+	 */
 	public BasicTranslation(Controller controller) {
 		this.controller=controller;
 		Component[] components=controller.getComponents();
@@ -36,6 +43,9 @@ public class BasicTranslation extends TranslationProfile {
 		this.buttons=buttonList.toArray(new Component[buttonList.size()]);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.pc.input.trans.TranslationProfile#getRawAxis(int)
+	 */
 	@Override
 	public float getRawAxis(int axis) {
 		if(axis>=getNumSupportedAxes()) {
@@ -44,6 +54,9 @@ public class BasicTranslation extends TranslationProfile {
 		return axes[axis].getPollData();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.pc.input.trans.TranslationProfile#getButton(int)
+	 */
 	@Override
 	public boolean getButton(int button) {
 		if(button>=getNumSupportedButtons()) {
@@ -52,11 +65,17 @@ public class BasicTranslation extends TranslationProfile {
 		return buttons[button].getPollData()>0.5f;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.pc.input.trans.TranslationProfile#getNumSupportedAxes()
+	 */
 	@Override
 	public int getNumSupportedAxes() {
 		return axes.length;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.pc.input.trans.TranslationProfile#getNumSupportedButtons()
+	 */
 	@Override
 	public int getNumSupportedButtons() {
 		// TODO Auto-generated method stub
