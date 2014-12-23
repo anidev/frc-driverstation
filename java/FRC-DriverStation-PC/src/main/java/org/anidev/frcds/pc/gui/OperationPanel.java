@@ -26,6 +26,9 @@ import org.anidev.frcds.pc.DriverStationMain;
 import org.anidev.frcds.proto.torobot.OperationMode;
 import org.anidev.frcds.proto.torobot.TeamStation;
 
+/**
+ * JPanel for the Operation tab
+ */
 public class OperationPanel extends JPanel {
 	private static final String TELEOP_CMD="teleop";
 	private static final String AUTONOMOUS_CMD="auto";
@@ -42,6 +45,9 @@ public class OperationPanel extends JPanel {
 	private JTextArea lcdTextArea;
 	private JRadioButton testRadio;
 
+	/**
+	 * add the initial contents to the panel
+	 */
 	public OperationPanel() {
 		setPreferredSize(new Dimension(600,240));
 		setSize(new Dimension(600,240));
@@ -62,6 +68,9 @@ public class OperationPanel extends JPanel {
 						FormFactory.GLUE_ROWSPEC,}));
 
 		ItemListener modeListener=new ItemListener() {
+			/* (non-Javadoc)
+			 * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+			 */
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()!=ItemEvent.SELECTED) {
@@ -167,6 +176,9 @@ public class OperationPanel extends JPanel {
 		bottomControlPanel.add(batteryBar,"3, 4");
 	}
 
+	/**
+	 * @param elapsedTimeMs the elapsed time in milliseconds
+	 */
 	public void setElapsedTime(double elapsedTimeMs) {
 		double seconds=elapsedTimeMs/1000;
 		int minutes=(int)Math.floor(seconds/60);
@@ -177,6 +189,9 @@ public class OperationPanel extends JPanel {
 		elapsedTimeValue.setText(text);
 	}
 
+	/**
+	 * @param percent the battery percentage
+	 */
 	public void setBatteryPercent(double percent) {
 		if(percent<0) {
 			batteryBar.setValue(0);
@@ -189,6 +204,9 @@ public class OperationPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * @param id the team ID
+	 */
 	public void setTeamID(int id) {
 		if(id<=0) {
 			teamIDText.setText("—");
@@ -197,6 +215,9 @@ public class OperationPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * @return the current OperationMode
+	 */
 	public OperationMode getMode() {
 		if(autonomousRadio.isSelected()) {
 			return OperationMode.AUTONOMOUS;
@@ -207,6 +228,9 @@ public class OperationPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * @return the TeamStation that was selected
+	 */
 	public TeamStation getStation() {
 		return (TeamStation)teamStationBox.getSelectedItem();
 	}

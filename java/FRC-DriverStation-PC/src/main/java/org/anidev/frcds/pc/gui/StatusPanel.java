@@ -16,6 +16,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
+/**
+ * JPanel for the robot and communication statuses
+ */
 public class StatusPanel extends JPanel {
 	private JLabel voltsValueLabel;
 	private DecimalFormat voltsFormat;
@@ -23,6 +26,9 @@ public class StatusPanel extends JPanel {
 
 	// private Indicator robotCodeStatus;
 
+	/**
+	 * Add contents to the status panel
+	 */
 	public StatusPanel() {
 		setSize(new Dimension(170,240));
 		setLayout(new GridLayout(2,1,0,0));
@@ -83,6 +89,10 @@ public class StatusPanel extends JPanel {
 		operationStatusPanel.add(operationStatusLabel,BorderLayout.CENTER);
 	}
 
+	/**
+	 * Set the voltage text
+	 * @param volts the battery voltage
+	 */
 	public void setBatteryVolts(double volts) {
 		if(volts<0) {
 			voltsValueLabel.setText("--.--");
@@ -91,11 +101,17 @@ public class StatusPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * @param on whether or not communication is on
+	 */
 	public void setCommunicationState(boolean on) {
 		// communicationStatus.setOn(on);
 	}
 }
 
+/**
+ * good/bad status indicator
+ */
 class StatusIndicator extends JPanel {
 	private JLabel icon;
 	private JLabel label;
@@ -107,6 +123,10 @@ class StatusIndicator extends JPanel {
 		badIcon=Utils.getIcon("status-bad.png");
 	}
 
+	/**
+	 * Set the layout and add contents
+	 * @param text text for the label
+	 */
 	public StatusIndicator(String text) {
 		setLayout(new FormLayout(new ColumnSpec[] {ColumnSpec.decode("10px"),
 				ColumnSpec.decode("16px"),ColumnSpec.decode("4px"),
@@ -120,18 +140,31 @@ class StatusIndicator extends JPanel {
 		setOn(false);
 	}
 
+	/**
+	 * @return text of the label
+	 */
 	public String getText() {
 		return label.getText();
 	}
 
+	/**
+	 * @param text text of the label
+	 */
 	public void setText(String text) {
 		label.setText(text);
 	}
 
+	/**
+	 * @return true if it is good false otherwise
+	 */
 	public boolean isOn() {
 		return on;
 	}
 
+	/**
+	 * Set on and the icon
+	 * @param newOn true if goodIcon should be shown false for badIcon
+	 */
 	public void setOn(boolean newOn) {
 		on=newOn;
 		icon.setIcon((on?goodIcon:badIcon));

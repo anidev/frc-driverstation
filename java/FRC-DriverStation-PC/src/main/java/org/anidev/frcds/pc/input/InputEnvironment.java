@@ -15,6 +15,9 @@ import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
+/**
+ * The environment of the input devices
+ */
 public class InputEnvironment {
 	public static final int NUM_DEVICES=4;
 	private static MessageDigest digest=null;
@@ -35,23 +38,39 @@ public class InputEnvironment {
 		}
 	}
 
+	/**
+	 * Set up the logger and update the controllers
+	 */
 	public InputEnvironment() {
 		Logger.getLogger("net.java.games.input").setUseParentHandlers(false);
 		updateControllers();
 	}
 
+	/**
+	 * @param listener the listener to add
+	 */
 	public void addInputListener(InputListener listener) {
 		listeners.add(listener);
 	}
 
+	/**
+	 * @param listener the listener to remove
+	 */
 	public void removeInputListener(InputListener listener) {
 		listeners.remove(listener);
 	}
 
+	/**
+	 * @return the map of the input devices
+	 */
 	public synchronized Map<String,InputDevice> getDeviceMap() {
 		return Collections.unmodifiableMap(deviceMap);
 	}
 
+	/**
+	 * @param index the index of the device
+	 * @return the device at that index or null if the index is not valid
+	 */
 	public synchronized InputDevice getDevice(int index) {
 		if(index<0||index>3) {
 			return null;
@@ -63,10 +82,18 @@ public class InputEnvironment {
 		return deviceMap.get(hash);
 	}
 
+	/**
+	 * @param hash the hash of the input device
+	 * @return the input device with that hash
+	 */
 	public synchronized InputDevice getDevice(String hash) {
 		return deviceMap.get(hash);
 	}
 
+	/**
+	 * @param index the index of the device hash
+	 * @return hash the hash at that index
+	 */
 	public synchronized String getDeviceHash(int index) {
 		if(index<0||index>3) {
 			return null;
@@ -74,6 +101,11 @@ public class InputEnvironment {
 		return deviceHashes[index];
 	}
 
+	/**
+	 * The two devices switch places
+	 * @param index1 the index of the first device
+	 * @param index2 the index of the second device
+	 */
 	public synchronized void swapDevices(int index1,int index2) {
 		String hash1=deviceHashes[index1];
 		String hash2=deviceHashes[index2];
@@ -81,6 +113,10 @@ public class InputEnvironment {
 		deviceHashes[index2]=hash1;
 	}
 
+	/**
+	 * @param index the index to put the device in
+	 * @param hash the hash of the device
+	 */
 	public synchronized void setDevice(int index,String hash) {
 		if(!deviceMap.containsKey(hash)) {
 			throw new IllegalArgumentException("Device hash "+hash
@@ -89,10 +125,18 @@ public class InputEnvironment {
 		deviceHashes[index]=hash;
 	}
 
+	/**
+	 * @param index the index of the device to unset
+	 */
 	public synchronized void unsetDevice(int index) {
 		deviceHashes[index]=null;
 	}
 
+	/**
+	 * Force the controllers to be updated because by default,
+	 * the ControllerEnvironment only scans controllers once and
+	 * caches them for all future instantiations
+	 */
 	public synchronized void updateControllers() {
 		ControllerEnvironment env=null;
 		try {
@@ -118,6 +162,11 @@ public class InputEnvironment {
 		processDevicesRemoved(oldKeys,processedKeys);
 	}
 
+	/**
+	 * Add an input device with the controller to the environment
+	 * @param controller the controller to process
+	 * @param procesedKeys the set to add the controller's hash to
+	 */
 	private void processController(Controller controller,
 			Set<String> procesedKeys) {
 		String controllerStr=stringifyController(controller);
@@ -150,6 +199,11 @@ public class InputEnvironment {
 		}
 	}
 
+	/**
+	 * Take out the old devices and hashes
+	 * @param oldKeys set of old device hashes
+	 * @param processedKeys set of processed device hashes
+	 */
 	private void processDevicesRemoved(Set<String> oldKeys,
 			Set<String> processedKeys) {
 		oldKeys.removeAll(processedKeys);
@@ -174,6 +228,10 @@ public class InputEnvironment {
 		}
 	}
 
+	/**
+	 * @param controller the controller to create a String for
+	 * @return a String representation of that controller
+	 */
 	private static String stringifyController(Controller controller) {
 		StringBuilder buffer=new StringBuilder();
 		buffer.append(controller.getPortType());
@@ -193,11 +251,19 @@ public class InputEnvironment {
 		return buffer.toString();
 	}
 
+	/**
+	 * @param str bytes to generate a hash for
+	 * @return a hash for those bytes
+	 */
 	private static byte[] makeHash(String str) {
 		digest.reset();
 		return digest.digest(str.getBytes());
 	}
 
+	/**
+	 * @param hash the hash to create a string for
+	 * @return a hexadecimal string representing the hash
+	 */
 	private static String hashToString(byte[] hash) {
 		StringBuffer hexStr=new StringBuffer();
 		for(byte b:hash) {

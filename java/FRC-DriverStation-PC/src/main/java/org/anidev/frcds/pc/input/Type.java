@@ -1,5 +1,8 @@
 package org.anidev.frcds.pc.input;
 
+/**
+ * Type of input device
+ */
 public enum Type {
 	// Genearlly, joysticks have 3 axes (x, y, z,
 	// where z is rotation or throttle)

@@ -10,6 +10,9 @@ import org.anidev.frcds.pc.gui.DriverStationFrame;
 import org.anidev.frcds.proto.nc.Netconsole;
 import org.anidev.utils.Utils;
 
+/**
+ * main-class for PC driver station
+ */
 public class DriverStationMain {
 	private static DriverStationFrame dsFrame;
 	private static PCDriverStation ds;
@@ -29,18 +32,30 @@ public class DriverStationMain {
 		initBatteryProvider();
 	}
 
+	/**
+	 * @return the frame
+	 */
 	public static DriverStationFrame getFrame() {
 		return dsFrame;
 	}
 
+	/**
+	 * @return the PCDriverStation instance
+	 */
 	public static PCDriverStation getDS() {
 		return ds;
 	}
 
+	/**
+	 * @return the Netconsole instance
+	 */
 	public static Netconsole getNetconsole() {
 		return nc;
 	}
 
+	/**
+	 * initialize the battery provider for respective operating systems
+	 */
 	private static void initBatteryProvider() {
 		String os=System.getProperty("os.name");
 		BatteryProvider provider=null;
@@ -56,6 +71,9 @@ public class DriverStationMain {
 		ds.setBatteryProvider(provider);
 	}
 
+	/**
+	 * Extract the jinput native files so they can be used.
+	 */
 	private static void extractJInputNatives() {
 		String os=System.getProperty("os.name").toLowerCase();
 		String libPath=System.getProperty("java.library.path");

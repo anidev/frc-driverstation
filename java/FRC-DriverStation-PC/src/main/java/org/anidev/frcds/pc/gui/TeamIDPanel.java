@@ -13,8 +13,14 @@ import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+/**
+ * JPanel for the team number
+ */
 public class TeamIDPanel extends JPanel {
 	private JFormattedTextField teamIDField;
+	/**
+	 * Create a new panel with a text field for the team number
+	 */
 	public TeamIDPanel() {
 		setSize(new Dimension(170,40));
 		GridBagLayout gridBagLayout=new GridBagLayout();
@@ -42,6 +48,9 @@ public class TeamIDPanel extends JPanel {
 		gbc_teamIDField.gridy=0;
 		
 		teamIDField.addPropertyChangeListener("value",new PropertyChangeListener() {
+			/* (non-Javadoc)
+			 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+			 */
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				DriverStationMain.getDS().setTeamID(getTeamID());
@@ -51,10 +60,16 @@ public class TeamIDPanel extends JPanel {
 		add(teamIDField,gbc_teamIDField);
 	}
 	
+	/**
+	 * @param teamid the team number which must be greater than 0
+	 */
 	public void setTeamID(int teamid) {
 		teamIDField.setText((teamid<=0?"":Integer.toString(teamid)));
 	}
 	
+	/**
+	 * @return the team number or 0 if value of the team ID field is null
+	 */
 	public int getTeamID() {
 		Object value=teamIDField.getValue();
 		if(value!=null) {

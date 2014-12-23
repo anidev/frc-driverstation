@@ -21,6 +21,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
+/**
+ * JFrame for the driver station
+ */
 public class DriverStationFrame extends JFrame {
 	private JPanel contentPane;
 	private DraggableTabbedPane tabbedPane;
@@ -45,6 +48,9 @@ public class DriverStationFrame extends JFrame {
 		DEF_TAB_LIST=initDefTabList();
 	}
 
+	/**
+	 * Set up the frame
+	 */
 	public DriverStationFrame() {
 		super("FRC Driver Station");
 		setSize(new Dimension(870,300));
@@ -70,6 +76,9 @@ public class DriverStationFrame extends JFrame {
 		tabbedPane=new DraggableTabbedPane();
 		contentPane.add(tabbedPane,"3, 1, 1, 2, fill, fill");
 		tabbedPane.addTabDragListener(new DraggableTabbedPane.Listener() {
+			/* (non-Javadoc)
+			 * @see org.anidev.frcds.pc.gui.DraggableTabbedPane.Listener#tabMoved(int, int, java.awt.event.MouseEvent)
+			 */
 			@Override
 			public void tabMoved(int oldIndex,int newIndex,MouseEvent e) {
 				StringBuilder tabListBuilder=new StringBuilder();
@@ -84,6 +93,9 @@ public class DriverStationFrame extends JFrame {
 				getPrefs().put(TAB_ORDER_PREF,tabList);
 			}
 
+			/* (non-Javadoc)
+			 * @see org.anidev.frcds.pc.gui.DraggableTabbedPane.Listener#tabDetached(int, java.awt.event.MouseEvent)
+			 */
 			@Override
 			public void tabDetached(int index,MouseEvent e) {
 				if(tabbedPane.getTitleAt(index).equals(tabs[1].name)) {
@@ -103,6 +115,9 @@ public class DriverStationFrame extends JFrame {
 		tabbedPane.setTabDetachable(setupTabIndex,false);
 
 		addWindowListener(new WindowAdapter() {
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
+			 */
 			@Override
 			public void windowClosing(WindowEvent e) {
 				int selectedTabIndex=tabbedPane.getSelectedIndex();
@@ -123,10 +138,16 @@ public class DriverStationFrame extends JFrame {
 		ds.setTeamID(getPrefs().getInt(TEAMID_PREF,0));
 	}
 
+	/**
+	 * @param elapsedTime the elapsedTime to set
+	 */
 	public void setElapsedTime(double elapsedTime) {
 		operationPanel.setElapsedTime(elapsedTime);
 	}
 
+	/**
+	 * @param teamID the teamID to set
+	 */
 	public void setTeamID(int teamID) {
 		if(teamID<=0) {
 			setEnableAllowed(false);
@@ -137,18 +158,30 @@ public class DriverStationFrame extends JFrame {
 		operationPanel.setTeamID(teamID);
 	}
 
+	/**
+	 * @param percent the battery percentage
+	 */
 	public void setBatteryPercent(double percent) {
 		operationPanel.setBatteryPercent(percent);
 	}
 
+	/**
+	 * @param control the control data with the battery voltage
+	 */
 	public void displayControlData(FRCRobotControl control) {
 		statusPanel.setBatteryVolts(control.getBatteryVolts());
 	}
 
+	/**
+	 * @param allowed  whether or not the enable is allowed
+	 */
 	private void setEnableAllowed(boolean allowed) {
 		enableDisablePanel.setEnableAllowed(allowed);
 	}
 
+	/**
+	 * initialize the tabs
+	 */
 	private void initTabClasses() {
 		operationPanel=new OperationPanel();
 		netconsolePanel=new NetconsolePanel(DriverStationMain.getNetconsole());
@@ -160,6 +193,9 @@ public class DriverStationFrame extends JFrame {
 		tabs[2].instance=setupPanel;
 	}
 
+	/**
+	 * back to prefered tab order
+	 */
 	private void restoreTabOrder() {
 		String[] tabOrder=getTabOrderPref();
 		List<String> tabList=Arrays.asList(DEF_TAB_LIST);
@@ -178,10 +214,16 @@ public class DriverStationFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * @return preferences of DriverStationFrame
+	 */
 	private static Preferences getPrefs() {
 		return Utils.getPrefs(DriverStationFrame.class);
 	}
 
+	/**
+	 * @return string array containing the name of each tab
+	 */
 	private static String[] initDefTabList() {
 		StringBuilder defTabListBuilder=new StringBuilder();
 		for(TabInfo tab:tabs) {
@@ -191,6 +233,9 @@ public class DriverStationFrame extends JFrame {
 		return defTabListBuilder.toString().split(",");
 	}
 
+	/**
+	 * @return a String array of the tabs in their prefered order
+	 */
 	private static String[] getTabOrderPref() {
 		Preferences prefs=getPrefs();
 		String tabOrderStr=prefs.get(TAB_ORDER_PREF,"");
@@ -201,11 +246,18 @@ public class DriverStationFrame extends JFrame {
 		return tabOrderList;
 	}
 
+	/**
+	 * info for a tab
+	 */
 	private static class TabInfo {
 		public String name;
 		public String tooltip;
 		public JPanel instance;
 
+		/**
+		 * @param name the name of the tab
+		 * @param tooltip the tooltip of the tab
+		 */
 		public TabInfo(String name,String tooltip) {
 			this.name=name;
 			this.tooltip=tooltip;

@@ -24,6 +24,9 @@ import org.anidev.frcds.pc.input.InputListener;
 import org.anidev.frcds.pc.input.Type;
 import javax.swing.DropMode;
 
+/**
+ * JPanel for the setup tab
+ */
 public class SetupPanel extends JPanel {
 	private static final DataFlavor INPUT_FLAVOR=new ActivationDataFlavor(
 			Integer.class,"Device Index");
@@ -31,6 +34,10 @@ public class SetupPanel extends JPanel {
 	private JTable inputTable;
 	private AbstractTableModel inputTableModel;
 
+	/**
+	 * Setup the setup
+	 * @param _env the InputEnvironment with the input devices
+	 */
 	public SetupPanel(InputEnvironment _env) {
 		this.env=_env;
 
@@ -62,11 +69,17 @@ public class SetupPanel extends JPanel {
 		inputPanel.add(inputScrollPane);
 
 		env.addInputListener(new InputListener() {
+			/* (non-Javadoc)
+			 * @see org.anidev.frcds.pc.input.InputListener#deviceAdded(org.anidev.frcds.pc.input.InputDevice)
+			 */
 			@Override
 			public void deviceAdded(InputDevice dev) {
 				inputTableModel.fireTableDataChanged();
 			}
 
+			/* (non-Javadoc)
+			 * @see org.anidev.frcds.pc.input.InputListener#deviceRemoved(org.anidev.frcds.pc.input.InputDevice)
+			 */
 			@Override
 			public void deviceRemoved(InputDevice dev) {
 				inputTableModel.fireTableDataChanged();
@@ -74,17 +87,29 @@ public class SetupPanel extends JPanel {
 		});
 	}
 
+	/**
+	 * table for the input devices
+	 */
 	private class InputTableModel extends AbstractTableModel {
+		/* (non-Javadoc)
+		 * @see javax.swing.table.TableModel#getRowCount()
+		 */
 		@Override
 		public int getRowCount() {
 			return 4;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.TableModel#getColumnCount()
+		 */
 		@Override
 		public int getColumnCount() {
 			return 2;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+		 */
 		@Override
 		public String getColumnName(int columnIndex) {
 			switch(columnIndex) {
@@ -96,6 +121,9 @@ public class SetupPanel extends JPanel {
 			return null;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
+		 */
 		@Override
 		public Class<?> getColumnClass(int columnIndex) {
 			switch(columnIndex) {
@@ -107,11 +135,17 @@ public class SetupPanel extends JPanel {
 			return null;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
+		 */
 		@Override
 		public boolean isCellEditable(int rowIndex,int columnIndex) {
 			return false;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.TableModel#getValueAt(int, int)
+		 */
 		@Override
 		public Object getValueAt(int rowIndex,int columnIndex) {
 			InputDevice dev=env.getDevice(rowIndex);
@@ -128,12 +162,21 @@ public class SetupPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * TransferHandler for moving the input devices
+	 */
 	private class InputTransferHandler extends TransferHandler {
+		/* (non-Javadoc)
+		 * @see javax.swing.TransferHandler#getSourceActions(javax.swing.JComponent)
+		 */
 		@Override
 		public int getSourceActions(JComponent c) {
 			return MOVE;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.TransferHandler#createTransferable(javax.swing.JComponent)
+		 */
 		@Override
 		protected Transferable createTransferable(JComponent c) {
 			if(c!=inputTable) {
@@ -142,6 +185,9 @@ public class SetupPanel extends JPanel {
 			return new InputTransferable(inputTable.getSelectedRow());
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.TransferHandler#canImport(javax.swing.TransferHandler.TransferSupport)
+		 */
 		@Override
 		public boolean canImport(TransferSupport support) {
 			boolean b=support.getComponent()==inputTable;
@@ -150,6 +196,9 @@ public class SetupPanel extends JPanel {
 			return b;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.TransferHandler#importData(javax.swing.TransferHandler.TransferSupport)
+		 */
 		@Override
 		public boolean importData(TransferSupport support) {
 			if(!canImport(support)) {
@@ -172,23 +221,38 @@ public class SetupPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * Transferable for input devices
+	 */
 	private class InputTransferable implements Transferable {
 		public int index;
 
+		/**
+		 * @param index the input device's index
+		 */
 		public InputTransferable(int index) {
 			this.index=index;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
+		 */
 		@Override
 		public DataFlavor[] getTransferDataFlavors() {
 			return new DataFlavor[] {INPUT_FLAVOR};
 		}
 
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(java.awt.datatransfer.DataFlavor)
+		 */
 		@Override
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
 			return false;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.awt.datatransfer.Transferable#getTransferData(java.awt.datatransfer.DataFlavor)
+		 */
 		@Override
 		public Object getTransferData(DataFlavor flavor) {
 			if(INPUT_FLAVOR.equals(flavor)) {
