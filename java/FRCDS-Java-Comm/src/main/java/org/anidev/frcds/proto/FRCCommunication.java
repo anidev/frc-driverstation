@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import org.anidev.frcds.proto.tods.FRCRobotControl;
 import org.anidev.frcds.proto.torobot.FRCCommonControl;
 import org.anidev.utils.Utils;
@@ -20,7 +19,6 @@ public class FRCCommunication {
 	public static final int TOROBOT_PORT=1110;
 	public static final int TODS_PORT=1150;
 	private volatile boolean closed=false;
-	private volatile int queueTimeout=40;
 	private volatile int teamID;
 	private volatile InetAddress robotAddress=null;
 	private volatile InetAddress dsAddress=null;
@@ -72,12 +70,7 @@ public class FRCCommunication {
 					"No robot address; invaid or unset team ID");
 		}
 		byte[] dsDataBytes=dsData.serialize();
-		try {
-			sendToRobotQueue.offer(dsDataBytes,queueTimeout,
-					TimeUnit.MILLISECONDS);
-		} catch(InterruptedException e) {
-			Thread.currentThread().interrupt();
-		}
+		sendToRobotQueue.add(dsDataBytes);
 	}
 
 	public void sendToDS(FRCRobotControl robotData) {
@@ -87,12 +80,7 @@ public class FRCCommunication {
 					"No DS address set; wait for DS or manually set.");
 		}
 		byte[] robotDataBytes=robotData.serialize();
-		try {
-			sendToDSQueue.offer(robotDataBytes,queueTimeout,
-					TimeUnit.MILLISECONDS);
-		} catch(InterruptedException e) {
-			Thread.currentThread().interrupt();
-		}
+		sendToDSQueue.add(robotDataBytes);
 	}
 
 	public void addRobotDataListener(FRCCommunicationListener listener) {
@@ -103,16 +91,6 @@ public class FRCCommunication {
 	public void addDSDataListener(FRCCommunicationListener listener) {
 		checkClosed();
 		dsListeners.add(listener);
-	}
-
-	public int getQueueTimeout() {
-		checkClosed();
-		return queueTimeout;
-	}
-
-	public void setQueueTimeout(int queueTimeout) {
-		checkClosed();
-		this.queueTimeout=queueTimeout;
 	}
 
 	public int getTeamID() {
