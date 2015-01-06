@@ -1,5 +1,5 @@
 package org.anidev.frcds.proto;
 
-public abstract class FRCCommunicationListener {
-	public abstract void receivedData(CommData data);
+public interface FRCCommunicationListener {
+	public void receivedData(CommData data);
 }
