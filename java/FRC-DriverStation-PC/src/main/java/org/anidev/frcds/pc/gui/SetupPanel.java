@@ -1,28 +1,33 @@
 package org.anidev.frcds.pc.gui;
 
-import java.awt.Dimension;
-import javax.activation.ActivationDataFlavor;
-import javax.swing.JPanel;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.JComponent;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.TransferHandler;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+
+import javax.activation.ActivationDataFlavor;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DropMode;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.AbstractTableModel;
+
 import org.anidev.frcds.pc.input.InputDevice;
 import org.anidev.frcds.pc.input.InputEnvironment;
 import org.anidev.frcds.pc.input.InputListener;
 import org.anidev.frcds.pc.input.Type;
-import javax.swing.DropMode;
+
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 /**
  * JPanel for the setup tab
@@ -33,6 +38,7 @@ public class SetupPanel extends JPanel {
 	private InputEnvironment env;
 	private JTable inputTable;
 	private AbstractTableModel inputTableModel;
+	private JComboBox<String> protocolMenu;
 
 	/**
 	 * Setup the setup
@@ -45,8 +51,8 @@ public class SetupPanel extends JPanel {
 		setSize(new Dimension(600,240));
 		setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("min:grow"),
-				ColumnSpec.decode("default:grow"),},new RowSpec[] {RowSpec
-				.decode("default:grow"),}));
+				ColumnSpec.decode("default:grow")},
+				new RowSpec[] {RowSpec.decode("default:grow")}));
 
 		JPanel inputPanel=new JPanel();
 		inputPanel.setBorder(new TitledBorder(null,"Input",
@@ -85,6 +91,18 @@ public class SetupPanel extends JPanel {
 				inputTableModel.fireTableDataChanged();
 			}
 		});
+		
+		protocolMenu = new JComboBox<String>();
+		protocolMenu.setModel(new DefaultComboBoxModel<String>(new String[]{"cRIO protocol", "roboRIO protocol"}));
+		
+		add(protocolMenu, "2, 1, default, default");
+	}
+	
+	/**
+	 * @return the communications protocol that was selected
+	 */
+	public String getProtocol(){
+		return protocolMenu.getSelectedItem().toString();
 	}
 
 	/**
