@@ -10,14 +10,12 @@ import org.anidev.frcds.proto.torobot.FRCCommonControl;
 import org.anidev.frcds.proto.torobot.OperationMode;
 
 public abstract class DriverStation {
-	public static final double UPDATE_HERTZ=50.0;
-	public static final double SLOW_HERTZ=1.0;
+	public static final double LOOP_FREQ=50.0;
 	protected FRCCommunication frcComm=new FRCCommunication();
 	protected FRCCommonControl dsControl=new FRCCommonControl();
 	protected FRCRobotControl lastRobotControl=null;
 	protected BatteryProvider batteryProvider=null;
-	protected Thread enabledLoop=null;
-	protected Thread commonLoop=null;
+	protected Thread mainLoop=null;
 	protected OperationMode mode=OperationMode.TELEOPERATED;
 	protected boolean enabled=false;
 	protected double elapsedTime=0.0;
@@ -69,17 +67,7 @@ public abstract class DriverStation {
 	public void setEnabled(boolean enabled) {
 		this.enabled=enabled;
 		dsControl.getControlFlags().setEnabled(enabled);
-		if(enabled) {
-			if(enabledLoop!=null&&enabledLoop.isAlive()) {
-				return;
-			}
-			enabledLoop=new Thread(new EnabledLoop(this,UPDATE_HERTZ),"FRCDS Enabled Loop");
-			enabledLoop.start();
-		} else {
-			if(enabledLoop!=null) {
-				enabledLoop.interrupt();
-			}
-			enabledLoop=null;
+		if(!enabled) {
 			setElapsedTime(0.0);
 		}
 	}
@@ -123,8 +111,8 @@ public abstract class DriverStation {
 	}
 
 	protected void startLoops() {
-		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ),"FRCDS Common Loop");
-		commonLoop.start();
+		mainLoop=new Thread(new MainLoop(this,LOOP_FREQ),"FRCDS Main Loop");
+		mainLoop.start();
 	}
 
 	protected void setEnabledImpl() {
@@ -145,7 +133,7 @@ public abstract class DriverStation {
 	protected void setLastRobotControlImpl() {
 	}
 
-	protected void doCommonLoopImpl() {
+	protected void doMainLoopImpl() {
 	}
 
 	protected void doEnabledLoopImpl() {
