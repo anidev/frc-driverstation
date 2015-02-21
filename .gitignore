@@ -1,9 +1,11 @@
+# Eclipse files
 .metadata
 *.class
 bin/
 target/
+.recommenders
 
-# Package Files #
+# Package files
 *.jar
 *.war
 *.ear
