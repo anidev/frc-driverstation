@@ -1,25 +1,26 @@
 package org.anidev.frcds.common;
 
+import org.anidev.utils.LoopControl;
+
 public class MainLoop implements Runnable {
 	private final DriverStation ds;
+	private LoopControl loop;
 	private long startTime=System.currentTimeMillis();
-	private double hertz;
-	private double delayMs;
 
 	public MainLoop(DriverStation ds,double hertz) {
 		this.ds=ds;
-		this.hertz=hertz;
-		this.delayMs=1000.0/this.hertz;
+		loop=new LoopControl(hertz);
 	}
 
 	@Override
 	public void run() {
+		loop.startLoop();
 		while(!Thread.interrupted()) {
 			doBattery();
 			ds.doMainLoopImpl();
 			doEnabled();
 			try {
-				Thread.sleep((long)delayMs);
+				loop.loopWait();
 			} catch(InterruptedException e) {
 				break;
 			}
@@ -29,7 +30,7 @@ public class MainLoop implements Runnable {
 	private void doBattery() {
 		ds.refreshBattery();
 	}
-	
+
 	private void doEnabled() {
 		doElapsedTime();
 		ds.doEnabledLoopImpl();
