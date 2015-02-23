@@ -1,14 +1,14 @@
-package org.anidev.frcds.proto.torobot;
+package org.anidev.frcds.protoold.torobot;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
 import java.util.zip.CRC32;
-import org.anidev.frcds.proto.CommData;
-import org.anidev.frcds.proto.ControlFlags;
-import org.anidev.frcds.proto.DataDir;
-import org.anidev.frcds.proto.Version;
+import org.anidev.frcds.protoold.CommData;
+import org.anidev.frcds.protoold.ControlFlags;
+import org.anidev.frcds.protoold.DataDir;
+import org.anidev.frcds.protoold.Version;
 
 public class FRCCommonControl extends CommData {
 	public static final int SIZE=1024;

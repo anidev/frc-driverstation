@@ -1,4 +1,4 @@
-package org.anidev.frcds.proto.nc;
+package org.anidev.frcds.protoold.nc;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import org.anidev.frcds.proto.DataDir;
+import org.anidev.frcds.protoold.DataDir;
 import org.anidev.utils.Utils;
 
 public class Netconsole {

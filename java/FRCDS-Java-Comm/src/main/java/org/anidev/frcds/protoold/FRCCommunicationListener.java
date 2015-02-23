@@ -1,7 +1,7 @@
-package org.anidev.frcds.proto;
+package org.anidev.frcds.protoold;
 
-import org.anidev.frcds.proto.tods.FRCRobotControl;
-import org.anidev.frcds.proto.torobot.FRCCommonControl;
+import org.anidev.frcds.protoold.tods.FRCRobotControl;
+import org.anidev.frcds.protoold.torobot.FRCCommonControl;
 
 /**
  * Listener interface for receiving data processed by the FRCCommunication

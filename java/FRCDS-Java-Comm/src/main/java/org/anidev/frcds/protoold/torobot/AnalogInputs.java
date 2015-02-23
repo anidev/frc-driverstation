@@ -1,9 +1,9 @@
-package org.anidev.frcds.proto.torobot;
+package org.anidev.frcds.protoold.torobot;
 
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
-import org.anidev.frcds.proto.CommData;
+import org.anidev.frcds.protoold.CommData;
 
 public class AnalogInputs extends CommData {
 	public static final int SIZE=8;

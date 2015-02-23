@@ -1,7 +1,7 @@
-package org.anidev.frcds.proto.tods;
+package org.anidev.frcds.protoold.tods;
 
 import java.util.Arrays;
-import org.anidev.frcds.proto.CommData;
+import org.anidev.frcds.protoold.CommData;
 
 public class DigitalOutputs extends CommData {
 	public static final int SIZE=1;

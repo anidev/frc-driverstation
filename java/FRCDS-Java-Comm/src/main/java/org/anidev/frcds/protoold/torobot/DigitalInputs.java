@@ -1,7 +1,7 @@
-package org.anidev.frcds.proto.torobot;
+package org.anidev.frcds.protoold.torobot;
 
 import java.util.Arrays;
-import org.anidev.frcds.proto.CommData;
+import org.anidev.frcds.protoold.CommData;
 
 public class DigitalInputs extends CommData {
 	public static final int SIZE=1;

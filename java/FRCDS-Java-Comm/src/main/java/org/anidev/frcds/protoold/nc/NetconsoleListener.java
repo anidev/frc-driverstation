@@ -1,4 +1,4 @@
-package org.anidev.frcds.proto.nc;
+package org.anidev.frcds.protoold.nc;
 
 public abstract class NetconsoleListener {
 	public void dataSent(NetconsoleMessage msg) {

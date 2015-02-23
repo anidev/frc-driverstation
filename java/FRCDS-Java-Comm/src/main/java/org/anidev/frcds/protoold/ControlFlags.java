@@ -1,6 +1,6 @@
-package org.anidev.frcds.proto;
+package org.anidev.frcds.protoold;
 
-import org.anidev.frcds.proto.torobot.OperationMode;
+import org.anidev.frcds.protoold.torobot.OperationMode;
 
 public class ControlFlags extends CommData {
 	public static final int SIZE=1;

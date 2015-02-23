@@ -1,4 +1,4 @@
-package org.anidev.frcds.proto.torobot;
+package org.anidev.frcds.protoold.torobot;
 
 public enum Alliance {
 	RED("Red",'R'),BLUE("Blue",'B');

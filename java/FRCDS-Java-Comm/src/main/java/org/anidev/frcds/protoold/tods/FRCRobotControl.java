@@ -1,13 +1,13 @@
-package org.anidev.frcds.proto.tods;
+package org.anidev.frcds.protoold.tods;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
-import org.anidev.frcds.proto.CommData;
-import org.anidev.frcds.proto.ControlFlags;
-import org.anidev.frcds.proto.DataDir;
-import org.anidev.frcds.proto.Version;
+import org.anidev.frcds.protoold.CommData;
+import org.anidev.frcds.protoold.ControlFlags;
+import org.anidev.frcds.protoold.DataDir;
+import org.anidev.frcds.protoold.Version;
 
 public class FRCRobotControl extends CommData {
 	public static final int SIZE=32;

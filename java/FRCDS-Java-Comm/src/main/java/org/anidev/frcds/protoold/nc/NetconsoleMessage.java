@@ -1,7 +1,7 @@
-package org.anidev.frcds.proto.nc;
+package org.anidev.frcds.protoold.nc;
 
 import java.util.Calendar;
-import org.anidev.frcds.proto.DataDir;
+import org.anidev.frcds.protoold.DataDir;
 
 public class NetconsoleMessage {
 	private final DataDir dir;
