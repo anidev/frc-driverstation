@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.activation.ActivationDataFlavor;
@@ -33,6 +35,8 @@ import com.jgoodies.forms.layout.RowSpec;
  * JPanel for the setup tab
  */
 public class SetupPanel extends JPanel {
+	public static final String ROBORIO_PROTOCOL = "2015 roboRIO protocol";
+	public static final String CRIO_PROTOCOL = "2009-2014 cRIO protocol";
 	private static final DataFlavor INPUT_FLAVOR=new ActivationDataFlavor(
 			Integer.class,"Device Index");
 	private InputEnvironment env;
@@ -50,9 +54,8 @@ public class SetupPanel extends JPanel {
 		setPreferredSize(new Dimension(600,240));
 		setSize(new Dimension(600,240));
 		setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("min:grow"),
-				ColumnSpec.decode("default:grow")},
-				new RowSpec[] {RowSpec.decode("default:grow")}));
+				ColumnSpec.decode("min:grow")},
+				new RowSpec[] {RowSpec.decode("default:grow"), RowSpec.decode("min:grow")}));
 
 		JPanel inputPanel=new JPanel();
 		inputPanel.setBorder(new TitledBorder(null,"Input",
@@ -66,8 +69,6 @@ public class SetupPanel extends JPanel {
 		inputTable.setFillsViewportHeight(true);
 		inputTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		inputTableModel=new InputTableModel();
-		// inputTable.setModel(new DefaultTableModel(new Object[][] { {"1","2"},
-		// {"3","4"},},new String[] {"New column","New column"}));
 		inputTable.setModel(inputTableModel);
 		inputTable.setTransferHandler(new InputTransferHandler());
 
@@ -92,10 +93,24 @@ public class SetupPanel extends JPanel {
 			}
 		});
 		
+		// drop down menu to switch between protocols
 		protocolMenu = new JComboBox<String>();
-		protocolMenu.setModel(new DefaultComboBoxModel<String>(new String[]{"cRIO protocol", "roboRIO protocol"}));
-		
-		add(protocolMenu, "2, 1, default, default");
+		protocolMenu.setModel(new DefaultComboBoxModel<String>(new String[]{CRIO_PROTOCOL, ROBORIO_PROTOCOL}));
+		protocolMenu.addActionListener(new ActionListener() {
+			
+			/* (non-Javadoc)
+			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+			 */
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				if(protocolMenu.getSelectedItem().equals(CRIO_PROTOCOL)){
+					// TODO put code to switch to the cRIO protocol here
+				}else if(protocolMenu.getSelectedItem().equals(ROBORIO_PROTOCOL)){
+					// TODO switch to the new roboRIO protocol here
+				}
+			}
+		});
+		add(protocolMenu, "1, 2, default, default");
 	}
 	
 	/**
