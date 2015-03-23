@@ -12,17 +12,17 @@ import org.anidev.frcds.proto.torobot.OperationMode;
 public abstract class DriverStation {
 	public static final double UPDATE_HERTZ=50.0;
 	public static final double SLOW_HERTZ=1.0;
-	protected FRCCommunication frcComm=new FRCCommunication();
-	protected FRCCommonControl dsControl=new FRCCommonControl();
-	protected FRCRobotControl lastRobotControl=null;
-	protected BatteryProvider batteryProvider=null;
-	protected Thread enabledLoop=null;
-	protected Thread commonLoop=null;
-	protected OperationMode mode=OperationMode.TELEOPERATED;
-	protected boolean enabled=false;
-	protected double elapsedTime=0.0;
-	protected double batteryPercent=-1.0;
-	protected int teamID=0;
+	private FRCCommunication frcComm=new FRCCommunication();
+	private FRCCommonControl dsControl=new FRCCommonControl();
+	private FRCRobotControl lastRobotControl=null;
+	private BatteryProvider batteryProvider=null;
+	private Thread enabledLoop=null;
+	private Thread commonLoop=null;
+	private OperationMode mode=OperationMode.TELEOPERATED;
+	private boolean enabled=false;
+	private double elapsedTime=0.0;
+	private double batteryPercent=-1.0;
+	private int teamID=0;
 
 	protected DriverStation() {
 		frcComm.addRobotDataListener(new FRCCommunicationListener() {
@@ -149,5 +149,75 @@ public abstract class DriverStation {
 	}
 
 	protected void doEnabledLoopImpl() {
+	}
+
+	/**
+	 * @return the batteryPercent
+	 */
+	protected double getBatteryPercent() {
+		return batteryPercent;
+	}
+
+	/**
+	 * @param batteryPercent the batteryPercent to set
+	 */
+	protected void setBatteryPercent(double batteryPercent) {
+		this.batteryPercent = batteryPercent;
+	}
+
+	/**
+	 * @return the frcComm
+	 */
+	protected FRCCommunication getFrcComm() {
+		return frcComm;
+	}
+
+	/**
+	 * @param frcComm the frcComm to set
+	 */
+	protected void setFrcComm(FRCCommunication frcComm) {
+		this.frcComm = frcComm;
+	}
+
+	/**
+	 * @return the dsControl
+	 */
+	protected FRCCommonControl getDsControl() {
+		return dsControl;
+	}
+
+	/**
+	 * @param dsControl the dsControl to set
+	 */
+	protected void setDsControl(FRCCommonControl dsControl) {
+		this.dsControl = dsControl;
+	}
+
+	/**
+	 * @return the enabledLoop
+	 */
+	protected Thread getEnabledLoop() {
+		return enabledLoop;
+	}
+
+	/**
+	 * @param enabledLoop the enabledLoop to set
+	 */
+	protected void setEnabledLoop(Thread enabledLoop) {
+		this.enabledLoop = enabledLoop;
+	}
+
+	/**
+	 * @return the commonLoop
+	 */
+	protected Thread getCommonLoop() {
+		return commonLoop;
+	}
+
+	/**
+	 * @param commonLoop the commonLoop to set
+	 */
+	protected void setCommonLoop(Thread commonLoop) {
+		this.commonLoop = commonLoop;
 	}
 }

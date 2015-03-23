@@ -61,7 +61,7 @@ public class PCDriverStation extends DriverStation {
 		if(frame==null) {
 			return;
 		}
-		frame.setElapsedTime(elapsedTime);
+		frame.setElapsedTime(getElapsedTime());
 	}
 
 	/* (non-Javadoc)
@@ -72,7 +72,7 @@ public class PCDriverStation extends DriverStation {
 		if(frame==null) {
 			return;
 		}
-		frame.setTeamID(teamID);
+		frame.setTeamID(getTeamID());
 	}
 
 	/* (non-Javadoc)
@@ -83,7 +83,7 @@ public class PCDriverStation extends DriverStation {
 		if(frame==null) {
 			return;
 		}
-		frame.setBatteryPercent(batteryPercent);
+		frame.setBatteryPercent(getBatteryPercent());
 	}
 
 	/* (non-Javadoc)
@@ -101,7 +101,7 @@ public class PCDriverStation extends DriverStation {
 		if(frame==null) {
 			return;
 		}
-		frame.displayControlData(lastRobotControl);
+		frame.displayControlData(getLastRobotControl());
 	}
 
 	/**
