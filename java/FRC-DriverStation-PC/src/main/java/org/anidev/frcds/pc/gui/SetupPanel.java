@@ -8,7 +8,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import javax.activation.ActivationDataFlavor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DropMode;
@@ -21,12 +20,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
-
 import org.anidev.frcds.pc.input.InputDevice;
 import org.anidev.frcds.pc.input.InputEnvironment;
 import org.anidev.frcds.pc.input.InputListener;
 import org.anidev.frcds.pc.input.Type;
-
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
@@ -35,8 +32,8 @@ import com.jgoodies.forms.layout.RowSpec;
  * JPanel for the setup tab
  */
 public class SetupPanel extends JPanel {
-	public static final String ROBORIO_PROTOCOL = "2015 roboRIO protocol";
-	public static final String CRIO_PROTOCOL = "2009-2014 cRIO protocol";
+	public static final String ROBORIO_PROTOCOL="2015 roboRIO protocol";
+	public static final String CRIO_PROTOCOL="2009-2014 cRIO protocol";
 	private static final DataFlavor INPUT_FLAVOR=new ActivationDataFlavor(
 			Integer.class,"Device Index");
 	private InputEnvironment env;
@@ -46,16 +43,18 @@ public class SetupPanel extends JPanel {
 
 	/**
 	 * Setup the setup
-	 * @param _env the InputEnvironment with the input devices
+	 * 
+	 * @param _env
+	 *            the InputEnvironment with the input devices
 	 */
 	public SetupPanel(InputEnvironment _env) {
 		this.env=_env;
 
 		setPreferredSize(new Dimension(600,240));
 		setSize(new Dimension(600,240));
-		setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("min:grow")},
-				new RowSpec[] {RowSpec.decode("default:grow"), RowSpec.decode("min:grow")}));
+		setLayout(new FormLayout(new ColumnSpec[] {ColumnSpec
+				.decode("min:grow")},new RowSpec[] {
+				RowSpec.decode("default:grow"),RowSpec.decode("min:grow")}));
 
 		JPanel inputPanel=new JPanel();
 		inputPanel.setBorder(new TitledBorder(null,"Input",
@@ -92,31 +91,32 @@ public class SetupPanel extends JPanel {
 				inputTableModel.fireTableDataChanged();
 			}
 		});
-		
+
 		// drop down menu to switch between protocols
-		protocolMenu = new JComboBox<String>();
-		protocolMenu.setModel(new DefaultComboBoxModel<String>(new String[]{CRIO_PROTOCOL, ROBORIO_PROTOCOL}));
+		protocolMenu=new JComboBox<String>();
+		protocolMenu.setModel(new DefaultComboBoxModel<String>(new String[] {
+				CRIO_PROTOCOL,ROBORIO_PROTOCOL}));
 		protocolMenu.addActionListener(new ActionListener() {
-			
 			/* (non-Javadoc)
 			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 			 */
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				if(protocolMenu.getSelectedItem().equals(CRIO_PROTOCOL)){
+				if(protocolMenu.getSelectedItem().equals(CRIO_PROTOCOL)) {
 					// TODO put code to switch to the cRIO protocol here
-				}else if(protocolMenu.getSelectedItem().equals(ROBORIO_PROTOCOL)){
+				} else if(protocolMenu.getSelectedItem().equals(
+						ROBORIO_PROTOCOL)) {
 					// TODO switch to the new roboRIO protocol here
 				}
 			}
 		});
-		add(protocolMenu, "1, 2, default, default");
+		add(protocolMenu,"1, 2, default, default");
 	}
-	
+
 	/**
 	 * @return the communications protocol that was selected
 	 */
-	public String getProtocol(){
+	public String getProtocol() {
 		return protocolMenu.getSelectedItem().toString();
 	}
 
@@ -261,7 +261,8 @@ public class SetupPanel extends JPanel {
 		public int index;
 
 		/**
-		 * @param index the input device's index
+		 * @param index
+		 *            the input device's index
 		 */
 		public InputTransferable(int index) {
 			this.index=index;

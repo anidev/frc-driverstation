@@ -73,7 +73,8 @@ public abstract class DriverStation {
 			if(enabledLoop!=null&&enabledLoop.isAlive()) {
 				return;
 			}
-			enabledLoop=new Thread(new EnabledLoop(this,UPDATE_HERTZ),"FRCDS Enabled Loop");
+			enabledLoop=new Thread(new EnabledLoop(this,UPDATE_HERTZ),
+					"FRCDS Enabled Loop");
 			enabledLoop.start();
 		} else {
 			if(enabledLoop!=null) {
@@ -123,7 +124,8 @@ public abstract class DriverStation {
 	}
 
 	protected void startLoops() {
-		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ),"FRCDS Common Loop");
+		commonLoop=new Thread(new CommonLoop(this,SLOW_HERTZ),
+				"FRCDS Common Loop");
 		commonLoop.start();
 	}
 
@@ -159,10 +161,11 @@ public abstract class DriverStation {
 	}
 
 	/**
-	 * @param batteryPercent the batteryPercent to set
+	 * @param batteryPercent
+	 *            the batteryPercent to set
 	 */
 	protected void setBatteryPercent(double batteryPercent) {
-		this.batteryPercent = batteryPercent;
+		this.batteryPercent=batteryPercent;
 	}
 
 	/**
@@ -173,10 +176,11 @@ public abstract class DriverStation {
 	}
 
 	/**
-	 * @param frcComm the frcComm to set
+	 * @param frcComm
+	 *            the frcComm to set
 	 */
 	protected void setFrcComm(FRCCommunication frcComm) {
-		this.frcComm = frcComm;
+		this.frcComm=frcComm;
 	}
 
 	/**
@@ -187,10 +191,11 @@ public abstract class DriverStation {
 	}
 
 	/**
-	 * @param dsControl the dsControl to set
+	 * @param dsControl
+	 *            the dsControl to set
 	 */
 	protected void setDsControl(FRCCommonControl dsControl) {
-		this.dsControl = dsControl;
+		this.dsControl=dsControl;
 	}
 
 	/**
@@ -201,10 +206,11 @@ public abstract class DriverStation {
 	}
 
 	/**
-	 * @param enabledLoop the enabledLoop to set
+	 * @param enabledLoop
+	 *            the enabledLoop to set
 	 */
 	protected void setEnabledLoop(Thread enabledLoop) {
-		this.enabledLoop = enabledLoop;
+		this.enabledLoop=enabledLoop;
 	}
 
 	/**
@@ -215,9 +221,10 @@ public abstract class DriverStation {
 	}
 
 	/**
-	 * @param commonLoop the commonLoop to set
+	 * @param commonLoop
+	 *            the commonLoop to set
 	 */
 	protected void setCommonLoop(Thread commonLoop) {
-		this.commonLoop = commonLoop;
+		this.commonLoop=commonLoop;
 	}
 }

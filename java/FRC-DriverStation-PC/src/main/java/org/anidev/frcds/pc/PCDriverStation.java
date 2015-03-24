@@ -22,7 +22,8 @@ public class PCDriverStation extends DriverStation {
 	}
 
 	/**
-	 * @param frame the frame to set
+	 * @param frame
+	 *            the frame to set
 	 */
 	public void setFrame(DriverStationFrame frame) {
 		this.frame=frame;
@@ -109,6 +110,7 @@ public class PCDriverStation extends DriverStation {
 	 */
 	private class InputLoop implements Runnable {
 		public static final int SLEEP_MS=5000;
+
 		/* (non-Javadoc)
 		 * @see java.lang.Runnable#run()
 		 */
