@@ -1,7 +1,7 @@
 package org.anidev.frcds.pc.nc;
 
 import javax.swing.JFrame;
-import org.anidev.frcds.proto.nc.Netconsole;
+import org.anidev.frcds.protoold.nc.Netconsole;
 import org.anidev.utils.Utils;
 
 public class NetconsoleMain {

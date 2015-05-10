@@ -1,42 +1,49 @@
 package org.anidev.frcds.analyze.gui;
 
-import java.io.File;
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+import java.io.File;
+
 import javax.swing.ButtonGroup;
-import javax.swing.JOptionPane;
-import javax.swing.SpringLayout;
-import javax.swing.JRadioButton;
 import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JSeparator;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 import javax.swing.UIDefaults;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
+
 import org.anidev.frcds.analyze.AnalyzerProviderSelector;
 import org.anidev.frcds.analyze.FileProvider;
-import org.anidev.frcds.proto.ControlFlags;
-import org.anidev.frcds.proto.torobot.*;
+import org.anidev.frcds.protoold.ControlFlags;
+import org.anidev.frcds.protoold.torobot.Alliance;
+import org.anidev.frcds.protoold.torobot.AnalogInputs;
+import org.anidev.frcds.protoold.torobot.DigitalInputs;
+import org.anidev.frcds.protoold.torobot.FRCCommonControl;
+import org.anidev.frcds.protoold.torobot.Joystick;
+
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 public class AnalyzerFrame extends JFrame {
 	private AnalyzerProviderSelector selector;

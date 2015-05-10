@@ -4,7 +4,7 @@ import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import org.anidev.frcds.pc.input.trans.BasicTranslation;
 import org.anidev.frcds.pc.input.trans.TranslationProfile;
-import org.anidev.frcds.proto.torobot.Joystick;
+import org.anidev.frcds.protoold.torobot.Joystick;
 
 /**
  * Device that gives input to the driver station

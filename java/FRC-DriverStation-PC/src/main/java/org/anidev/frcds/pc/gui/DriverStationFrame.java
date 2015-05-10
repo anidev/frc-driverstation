@@ -6,7 +6,7 @@ import org.anidev.frcds.pc.DriverStationMain;
 import org.anidev.frcds.pc.PCDriverStation;
 import org.anidev.frcds.pc.nc.NetconsoleFrame;
 import org.anidev.frcds.pc.nc.NetconsolePanel;
-import org.anidev.frcds.proto.tods.FRCRobotControl;
+import org.anidev.frcds.protoold.tods.FRCRobotControl;
 import org.anidev.utils.Utils;
 import java.awt.Dimension;
 import java.awt.Cursor;

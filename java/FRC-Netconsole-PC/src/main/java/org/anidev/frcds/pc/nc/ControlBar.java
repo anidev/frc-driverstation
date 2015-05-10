@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JButton;
-import org.anidev.frcds.proto.nc.Netconsole;
+import org.anidev.frcds.protoold.nc.Netconsole;
 import org.anidev.utils.Utils;
 import javax.swing.ButtonGroup;
 import javax.swing.JToggleButton;

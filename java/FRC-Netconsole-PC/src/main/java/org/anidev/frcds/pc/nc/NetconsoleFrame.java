@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
-import org.anidev.frcds.proto.nc.Netconsole;
+import org.anidev.frcds.protoold.nc.Netconsole;
 
 public class NetconsoleFrame extends JFrame {
 	private final Netconsole nc;

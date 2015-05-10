@@ -3,13 +3,13 @@ package org.anidev.frcds.analyze;
 import java.io.File;
 import java.io.FileInputStream;
 import org.anidev.frcds.analyze.gui.AnalyzerFrame;
-import org.anidev.frcds.proto.CommData;
-import org.anidev.frcds.proto.FRCCommunication;
-import org.anidev.frcds.proto.FRCCommunicationListener;
-import org.anidev.frcds.proto.nc.Netconsole;
-import org.anidev.frcds.proto.nc.NetconsoleListener;
-import org.anidev.frcds.proto.nc.NetconsoleMessage;
-import org.anidev.frcds.proto.torobot.FRCCommonControl;
+import org.anidev.frcds.protoold.CommData;
+import org.anidev.frcds.protoold.FRCCommunication;
+import org.anidev.frcds.protoold.FRCCommunicationListener;
+import org.anidev.frcds.protoold.nc.Netconsole;
+import org.anidev.frcds.protoold.nc.NetconsoleListener;
+import org.anidev.frcds.protoold.nc.NetconsoleMessage;
+import org.anidev.frcds.protoold.torobot.FRCCommonControl;
 
 public class AnalyzerProviderSelector {
 	private AnalyzerFrame frame=null;

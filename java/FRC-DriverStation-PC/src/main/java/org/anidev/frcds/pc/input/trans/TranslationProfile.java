@@ -2,7 +2,7 @@ package org.anidev.frcds.pc.input.trans;
 
 import java.util.Arrays;
 import java.util.List;
-import org.anidev.frcds.proto.torobot.Joystick;
+import org.anidev.frcds.protoold.torobot.Joystick;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 

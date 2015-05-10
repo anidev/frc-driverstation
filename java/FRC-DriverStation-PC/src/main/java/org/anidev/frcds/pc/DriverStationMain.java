@@ -7,7 +7,7 @@ import org.anidev.frcds.common.types.BatteryProvider;
 import org.anidev.frcds.pc.battery.linux.LinuxBatteryProvider;
 import org.anidev.frcds.pc.battery.win.WindowsBatteryProvider;
 import org.anidev.frcds.pc.gui.DriverStationFrame;
-import org.anidev.frcds.proto.nc.Netconsole;
+import org.anidev.frcds.protoold.nc.Netconsole;
 import org.anidev.utils.Utils;
 
 /**

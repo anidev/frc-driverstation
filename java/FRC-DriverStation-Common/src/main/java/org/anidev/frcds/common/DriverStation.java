@@ -1,13 +1,13 @@
 package org.anidev.frcds.common;
 
 import org.anidev.frcds.common.types.BatteryProvider;
-import org.anidev.frcds.proto.CommData;
-import org.anidev.frcds.proto.ControlFlags;
-import org.anidev.frcds.proto.FRCCommunication;
-import org.anidev.frcds.proto.FRCCommunicationListener;
-import org.anidev.frcds.proto.tods.FRCRobotControl;
-import org.anidev.frcds.proto.torobot.FRCCommonControl;
-import org.anidev.frcds.proto.torobot.OperationMode;
+import org.anidev.frcds.protoold.CommData;
+import org.anidev.frcds.protoold.ControlFlags;
+import org.anidev.frcds.protoold.FRCCommunication;
+import org.anidev.frcds.protoold.FRCCommunicationListener;
+import org.anidev.frcds.protoold.tods.FRCRobotControl;
+import org.anidev.frcds.protoold.torobot.FRCCommonControl;
+import org.anidev.frcds.protoold.torobot.OperationMode;
 
 public abstract class DriverStation {
 	public static final double LOOP_FREQ=50.0;
