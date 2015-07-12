@@ -1,26 +1,17 @@
 package org.anidev.frcds.proto2;
 
-import org.anidev.frcds.proto2.types.Alliance;
 import org.anidev.frcds.proto2.types.Joystick;
 import org.anidev.frcds.proto2.types.OperationMode;
+import org.anidev.frcds.proto2.types.TeamStation;
 
 /**
  * Data sent by the driver station to the robot.
  * 
  * @author Anirudh Bagde
  */
-public class DSData {
-	// Status data
-	private int teamID;
-	private boolean codeReset;
-	private boolean rebootRobot;
-	private boolean enabled;
-	private boolean fmsAttached;
-	private boolean eStop;
-	private OperationMode mode;
-
+public class DSData extends FRCData {
 	// Match data
-	private Alliance alliance;
+	private TeamStation station;
 	private int position;
 
 	// Control data
@@ -28,152 +19,117 @@ public class DSData {
 	private boolean[] digitalInputs;
 	private int[] analogInputs;
 
-	/**
-	 * Returns ID of the team operating this driver station.
-	 * 
-	 * @return The team ID.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#getTeamID()
 	 */
+	@Override
 	public int getTeamID() {
-		return teamID;
+		return super.getTeamID();
 	}
-
-	/**
-	 * {@link #getTeamID}
-	 * 
-	 * @param teamID
-	 *            The team ID to set.
+	
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#setTeamID(int)
 	 */
+	@Override
 	public void setTeamID(int teamID) {
-		this.teamID=teamID;
+		super.setTeamID(teamID);
 	}
 
-	/**
-	 * Specifies whether the robot code should be reset. This flag should only
-	 * be sent until the first response from the robot. See
-	 * {@link #setCodeReset} for details on how to use this.
-	 * 
-	 * @return Whether the code reset flag has been set.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#isCodeReset()
 	 */
-	public boolean isCodeResetSet() {
-		return codeReset;
+	@Override
+	public boolean isCodeReset() {
+		return super.isCodeReset();
 	}
 
-	/**
-	 * Sets the reset robot code flag, which signals the robot to reset the code. 
-         * The client should only set a DSData object with this field set once, and
-	 * then change it back to false. The protocol will take care of sending true
-	 * for as long as necessary.
-	 * 
-	 * @param resetCode
-	 *            Whether the code reset flag should be set.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#setCodeReset(boolean)
 	 */
+	@Override
 	public void setCodeReset(boolean resetCode) {
-		this.codeReset=resetCode;
+		super.setCodeReset(resetCode);
 	}
 
-	/**
-	 * Specifies whether the robot code should be rebooted. This flag should
-	 * only be sent until the first response from the robot. See
-	 * {@link #setRebootRobot} for details on how to use this.
-	 * 
-	 * @return Whether the reboot robot flag has been set.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#isRebootRobot()
 	 */
-	public boolean isRebootRobotSet() {
-		return rebootRobot;
+	@Override
+	public boolean isRebootRobot() {
+		return super.isRebootRobot();
 	}
 
-	/**
-	 * The client should only set a DSData object with this field set once, and
-	 * then change it back to false. The protocol will take care of sending true
-	 * for as long as necessary.
-	 * 
-	 * @param rebootRobot
-	 *            Whether the reboot robot flag should be set.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#setRebootRobot(boolean)
 	 */
+	@Override
 	public void setRebootRobot(boolean rebootRobot) {
-		this.rebootRobot=rebootRobot;
+		super.setRebootRobot(rebootRobot);
 	}
 
-	/**
-	 * Specifies whether the robot should be enabled or not.
-	 * @return 
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
-		return enabled;
+		return super.isEnabled();
 	}
 
-	/**
-	 * Sets the enabled flag, which should be set for as long as the robot remains
-	 * enabled. 
-	 * @param enabled
-	 *            True to enable the robot, false to disable.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#setEnabled(boolean)
 	 */
+	@Override
 	public void setEnabled(boolean enabled) {
-		this.enabled=enabled;
+		super.setEnabled(enabled);
 	}
 
-	/**
-	 * @return Whether the robot should be alerted to the presence of an FMS.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#isFmsAttached()
 	 */
+	@Override
 	public boolean isFmsAttached() {
-		return fmsAttached;
+		return super.isFmsAttached();
 	}
 
-	/**
-	 * @param fmsAttached
-	 *            True to alert the robot that an FMS is attached, false if not.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#setFmsAttached(boolean)
 	 */
+	@Override
 	public void setFmsAttached(boolean fmsAttached) {
-		this.fmsAttached=fmsAttached;
+		super.setFmsAttached(fmsAttached);
 	}
 
-	/**
-	 * @return Whether emergency stop has been activated.
+	
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#iseStop()
 	 */
+	@Override
 	public boolean iseStop() {
-		return eStop;
+		return super.iseStop();
 	}
 
-	/**
-	 * @param eStop
-	 *            True to activate emergency stop. Once set, the robot might
-	 *            need to be physically rebooted in order to deactivate
-	 *            emergency stop, even when this is set to false.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#seteStop(boolean)
 	 */
+	@Override
 	public void seteStop(boolean eStop) {
-		this.eStop=eStop;
+		super.seteStop(eStop);
 	}
 
-	/**
-	 * @return The current operation mode of the robot (teleop, autonomous,
-	 *         etc).
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#getMode()
 	 */
+	@Override
 	public OperationMode getMode() {
-		return mode;
+		return super.getMode();
 	}
 
-	/**
-	 * @param mode
-	 *            Change the current operation mode of the robot to teleop,
-	 *            autonomous, etc.
+	/* (non-Javadoc)
+	 * @see org.anidev.frcds.proto2.FRCData#setMode(org.anidev.frcds.proto2.types.OperationMode)
 	 */
+	@Override
 	public void setMode(OperationMode mode) {
-		this.mode=mode;
-	}
-
-	/**
-	 * @return The 
-	 */
-	public Alliance getAlliance() {
-		return alliance;
-	}
-
-	/**
-	 * @param alliance
-	 *            the alliance to set
-	 */
-	public void setAlliance(Alliance alliance) {
-		this.alliance=alliance;
+		super.setMode(mode);
 	}
 
 	/**
@@ -234,6 +190,20 @@ public class DSData {
 	 */
 	public void setAnalogInputs(int[] analogInputs) {
 		this.analogInputs=analogInputs;
+	}
+
+	/**
+	 * @return the station
+	 */
+	public TeamStation getStation() {
+		return station;
+	}
+
+	/**
+	 * @param station the station to set
+	 */
+	public void setStation(TeamStation station) {
+		this.station = station;
 	}
 
 }

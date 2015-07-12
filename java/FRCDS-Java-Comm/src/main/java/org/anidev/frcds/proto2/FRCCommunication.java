@@ -317,7 +317,7 @@ public abstract class FRCCommunication {
 	 * 
 	 * @return Success of data sending.
 	 */
-	protected abstract boolean sendToRobot(RobotData data);
+	protected abstract boolean sendToRobot(DSData data);
 
 	/**
 	 * Called from a dedicated thread to send data to the driver station. This
@@ -327,7 +327,7 @@ public abstract class FRCCommunication {
 	 * 
 	 * @return Success of data sending.
 	 */
-	protected abstract boolean sendToDS(DSData data);
+	protected abstract boolean sendToDS(RobotData data);
 
 	/**
 	 * Worker thread that listens for data sent from the robot, deserializes it
@@ -386,7 +386,7 @@ public abstract class FRCCommunication {
 		@Override
 		public void run() {
 			while(!Thread.interrupted()&&!closed) {
-				RobotData data=robotSendData;
+				DSData data=dsSendData;
 				sendToRobot(data);
 			}
 		}
@@ -404,7 +404,7 @@ public abstract class FRCCommunication {
 		@Override
 		public void run() {
 			while(!Thread.interrupted()&&!closed) {
-				DSData data=dsSendData;
+				RobotData data=robotSendData;
 				sendToDS(data);
 			}
 		}
