@@ -8,8 +8,10 @@ import org.anidev.frcds.proto2.types.MacAddress;
  * @author Anirudh Bagde
  */
 public class RobotData extends FRCData {
+	public static final int NUM_DIGITAL_OUTPUTS=8;
+
 	private double voltage;
-	private boolean[] digitalOutputs;
+	private boolean[] digitalOutputs=new boolean[NUM_DIGITAL_OUTPUTS];
 	private MacAddress address;
 
 	/**

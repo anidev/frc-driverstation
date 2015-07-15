@@ -10,13 +10,17 @@ import org.anidev.frcds.proto2.types.TeamStation;
  * @author Anirudh Bagde
  */
 public class DSData extends FRCData {
+	public static final int NUM_JOYSTICKS=4;
+	public static final int NUM_DIGITAL_INPUTS=8;
+	public static final int NUM_ANALOG_INPUTS=4;
+
 	// Match data
 	private TeamStation station;
 
 	// Control data
-	private Joystick[] joysticks;
-	private boolean[] digitalInputs;
-	private int[] analogInputs;
+	private Joystick[] joysticks=new Joystick[NUM_JOYSTICKS];
+	private boolean[] digitalInputs=new boolean[NUM_DIGITAL_INPUTS];
+	private int[] analogInputs=new int[NUM_ANALOG_INPUTS];
 
 	/**
 	 * Get the currently set team station that is being advertised to the robot.
