@@ -19,6 +19,15 @@ public enum Alliance {
 		return id;
 	}
 
+	/**
+	 * Return the {@code Alliance} value corresponding to the given character
+	 * ID. {@code 'R'} corresponds to red, and {@code 'B'} corresponds to blue.
+	 * 
+	 * @param id
+	 *            {@code 'R'} for red or {@code 'B'} for blue.
+	 * @return The appropriate {@code Alliance} value, or {@code null} if the
+	 *         given ID is invalid.
+	 */
 	public static Alliance find(char id) {
 		switch(Character.toUpperCase(id)) {
 		case 'R':
