@@ -1,6 +1,5 @@
 package org.anidev.frcds.proto2;
 
-import org.anidev.frcds.proto2.types.DigitalOutputs;
 import org.anidev.frcds.proto2.types.MacAddress;
 
 /**
@@ -9,51 +8,63 @@ import org.anidev.frcds.proto2.types.MacAddress;
  * @author Anirudh Bagde
  */
 public class RobotData extends FRCData {
-	
-	private int voltage;
-	private DigitalOutputs outputs;
+	private double voltage;
+	private boolean[] digitalOutputs;
 	private MacAddress address;
-	
+
 	/**
-	 * @return the voltage
+	 * Returns the currently set battery voltage as a double.
 	 */
-	public int getVoltage() {
+	public double getBatteryVoltage() {
 		return voltage;
 	}
-	
+
 	/**
-	 * @param voltage the voltage to set
+	 * Set the robot's current battery voltage.
 	 */
-	public void setVoltage(int voltage) {
-		this.voltage = voltage;
+	public void setVoltage(double voltage) {
+		this.voltage=voltage;
 	}
-	
+
 	/**
-	 * @return the outputs
+	 * Get the current value of all the digital output switches being sent to
+	 * the driver station/dashboard by the robot.
+	 * 
+	 * @return Array of digital output boolean values
 	 */
-	public DigitalOutputs getOutputs() {
-		return outputs;
+	public boolean[] getDigitalOutputs() {
+		return digitalOutputs;
 	}
-	
+
 	/**
-	 * @param outputs the outputs to set
+	 * Set the value of a specific digital output switch.
+	 * 
+	 * @param value
+	 *            New digital output value
+	 * @param index
+	 *            Index of the digital output to set
 	 */
-	public void setOutputs(DigitalOutputs outputs) {
-		this.outputs = outputs;
+	public void setOutputs(boolean value,int index) {
+		digitalOutputs[index]=value;
 	}
-	
+
 	/**
-	 * @return the address
+	 * Get the currently set MAC address. This is most likely the robot's MAC
+	 * address, though that isn't definite. By default it is set to {@code null}
+	 * , in which case the protocol will take care of filling in the correct MAC
+	 * address for the robot.
 	 */
-	public MacAddress getAddress() {
+	public MacAddress getMACAddress() {
 		return address;
 	}
-	
+
 	/**
-	 * @param address the address to set
+	 * Set the MAC address, which most likely represents the robot's MAC
+	 * address. If set to {@code null}, the protocol will fill in the correct
+	 * address before sending.
 	 */
-	public void setAddress(MacAddress address) {
-		this.address = address;
+	public void setMACAddress(MacAddress address) {
+		this.address=address;
 	}
-	
+
 }

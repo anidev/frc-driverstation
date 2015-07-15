@@ -8,7 +8,6 @@ import org.anidev.frcds.proto2.types.OperationMode;
  * @author Michael Murphey
  */
 public abstract class FRCData {
-
 	private int teamID;
 	private int packetIndex;
 	private boolean codeReset;
