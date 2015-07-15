@@ -9,7 +9,6 @@ import org.anidev.frcds.proto2.types.OperationMode;
  */
 public abstract class FRCData {
 	private int teamID;
-	private int packetIndex;
 	private boolean codeReset;
 	private boolean rebootRobot;
 	private boolean enabled;
@@ -152,20 +151,4 @@ public abstract class FRCData {
 	protected void setMode(OperationMode mode) {
 		this.mode=mode;
 	}
-
-	/**
-	 * @return the packetIndex
-	 */
-	public int getPacketIndex() {
-		return packetIndex;
-	}
-
-	/**
-	 * @param packetIndex
-	 *            the packetIndex to set
-	 */
-	public void setPacketIndex(int packetIndex) {
-		this.packetIndex=packetIndex;
-	}
-
 }
