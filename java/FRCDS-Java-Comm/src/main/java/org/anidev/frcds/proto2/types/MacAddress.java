@@ -8,14 +8,16 @@ import java.util.Arrays;
  * MAC address on the network
  */
 public class MacAddress {
-	public static final int SIZE=6;
 	private byte[] macAddress=new byte[] {0,0,0,0,0,0};
 
+	/**
+	 * Initializes to MAC address of the first network interface found.
+	 */
 	public MacAddress() {
 		try {
 			macAddress=NetworkInterface.getNetworkInterfaces().nextElement()
 					.getHardwareAddress();
-		} catch (SocketException e) {
+		} catch(SocketException e) {
 			e.printStackTrace();
 		}
 	}
@@ -59,5 +61,4 @@ public class MacAddress {
 		}
 		return true;
 	}
-
 }
