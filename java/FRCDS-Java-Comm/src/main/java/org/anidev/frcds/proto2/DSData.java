@@ -12,7 +12,6 @@ import org.anidev.frcds.proto2.types.TeamStation;
 public class DSData extends FRCData {
 	// Match data
 	private TeamStation station;
-	private int position;
 
 	// Control data
 	private Joystick[] joysticks;
@@ -26,7 +25,7 @@ public class DSData extends FRCData {
 	public int getTeamID() {
 		return super.getTeamID();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.anidev.frcds.proto2.FRCData#setTeamID(int)
 	 */
@@ -99,7 +98,6 @@ public class DSData extends FRCData {
 		super.setFmsAttached(fmsAttached);
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see org.anidev.frcds.proto2.FRCData#iseStop()
 	 */
@@ -136,7 +134,7 @@ public class DSData extends FRCData {
 	 * @return the position
 	 */
 	public int getPosition() {
-		return position;
+		return station.getPosition();
 	}
 
 	/**
@@ -144,7 +142,7 @@ public class DSData extends FRCData {
 	 *            the position to set
 	 */
 	public void setPosition(int position) {
-		this.position=position;
+		this.station=station.withPosition(position);
 	}
 
 	/**
@@ -200,10 +198,11 @@ public class DSData extends FRCData {
 	}
 
 	/**
-	 * @param station the station to set
+	 * @param station
+	 *            the station to set
 	 */
 	public void setStation(TeamStation station) {
-		this.station = station;
+		this.station=station;
 	}
 
 }
