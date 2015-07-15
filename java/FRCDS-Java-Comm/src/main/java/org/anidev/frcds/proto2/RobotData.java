@@ -12,7 +12,7 @@ public class RobotData extends FRCData {
 
 	private double voltage;
 	private boolean[] digitalOutputs=new boolean[NUM_DIGITAL_OUTPUTS];
-	private MacAddress address;
+	private MacAddress address=new MacAddress();
 
 	/**
 	 * Returns the currently set battery voltage as a double.

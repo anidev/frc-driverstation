@@ -15,7 +15,7 @@ public class DSData extends FRCData {
 	public static final int NUM_ANALOG_INPUTS=4;
 
 	// Match data
-	private TeamStation station;
+	private TeamStation station=TeamStation.RED1;
 
 	// Control data
 	private Joystick[] joysticks=new Joystick[NUM_JOYSTICKS];

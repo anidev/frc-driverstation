@@ -14,7 +14,7 @@ public abstract class FRCData {
 	private boolean enabled;
 	private boolean fmsAttached;
 	private boolean eStop;
-	private OperationMode mode;
+	private OperationMode mode=OperationMode.AUTONOMOUS;
 
 	/**
 	 * Returns ID of the team operating this driver station.
