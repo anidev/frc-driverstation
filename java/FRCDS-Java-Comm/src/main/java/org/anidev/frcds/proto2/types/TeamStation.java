@@ -1,7 +1,5 @@
 package org.anidev.frcds.proto2.types;
 
-import org.anidev.frcds.protoold.torobot.Alliance;
-
 /**
  * Team station, which consists of the alliance and position (1, 2, 3).
  */
