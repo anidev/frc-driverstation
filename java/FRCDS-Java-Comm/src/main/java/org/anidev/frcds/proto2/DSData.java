@@ -1,7 +1,6 @@
 package org.anidev.frcds.proto2;
 
 import org.anidev.frcds.proto2.types.Joystick;
-import org.anidev.frcds.proto2.types.OperationMode;
 import org.anidev.frcds.proto2.types.TeamStation;
 
 /**
