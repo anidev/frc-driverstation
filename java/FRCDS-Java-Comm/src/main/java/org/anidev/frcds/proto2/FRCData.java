@@ -19,7 +19,7 @@ public abstract class FRCData {
 	/**
 	 * Returns ID of the team operating this driver station.
 	 */
-	protected int getTeamID() {
+	public int getTeamID() {
 		return teamID;
 	}
 
@@ -29,7 +29,7 @@ public abstract class FRCData {
 	 * @param teamID
 	 *            The team ID to set.
 	 */
-	protected void setTeamID(int teamID) {
+	public void setTeamID(int teamID) {
 		this.teamID=teamID;
 	}
 
@@ -40,7 +40,7 @@ public abstract class FRCData {
 	 * 
 	 * @return Whether the code reset flag has been set.
 	 */
-	protected boolean isCodeReset() {
+	public boolean isCodeReset() {
 		return codeReset;
 	}
 
@@ -53,7 +53,7 @@ public abstract class FRCData {
 	 * @param resetCode
 	 *            Whether the code reset flag should be set.
 	 */
-	protected void setCodeReset(boolean codeReset) {
+	public void setCodeReset(boolean codeReset) {
 		this.codeReset=codeReset;
 	}
 
@@ -64,7 +64,7 @@ public abstract class FRCData {
 	 * 
 	 * @return Whether the reboot robot flag has been set.
 	 */
-	protected boolean isRebootRobot() {
+	public boolean isRebootRobot() {
 		return rebootRobot;
 	}
 
@@ -76,14 +76,14 @@ public abstract class FRCData {
 	 * @param rebootRobot
 	 *            Whether the reboot robot flag should be set.
 	 */
-	protected void setRebootRobot(boolean rebootRobot) {
+	public void setRebootRobot(boolean rebootRobot) {
 		this.rebootRobot=rebootRobot;
 	}
 
 	/**
 	 * Specifies whether the robot should be enabled or not.
 	 */
-	protected boolean isEnabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 
@@ -94,14 +94,14 @@ public abstract class FRCData {
 	 * @param enabled
 	 *            True to enable the robot, false to disable.
 	 */
-	protected void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) {
 		this.enabled=enabled;
 	}
 
 	/**
 	 * Specifies if the robot should be alerted to the presence of an FMS.
 	 */
-	protected boolean isFmsAttached() {
+	public boolean isFmsAttached() {
 		return fmsAttached;
 	}
 
@@ -111,14 +111,14 @@ public abstract class FRCData {
 	 * @param fmsAttached
 	 *            True to alert the robot that an FMS is attached, false if not.
 	 */
-	protected void setFmsAttached(boolean fmsAttached) {
+	public void setFmsAttached(boolean fmsAttached) {
 		this.fmsAttached=fmsAttached;
 	}
 
 	/**
 	 * Specifies if the emergency stop has been activated.
 	 */
-	protected boolean isEStop() {
+	public boolean isEStop() {
 		return eStop;
 	}
 
@@ -130,14 +130,14 @@ public abstract class FRCData {
 	 * @param eStop
 	 *            True to activate, false to deactivate
 	 */
-	protected void setEStop(boolean eStop) {
+	public void setEStop(boolean eStop) {
 		this.eStop=eStop;
 	}
 
 	/**
 	 * Get the current operation mode of the robot (teleop, autonomous, etc).
 	 */
-	protected OperationMode getMode() {
+	public OperationMode getMode() {
 		return mode;
 	}
 
@@ -148,7 +148,7 @@ public abstract class FRCData {
 	 * @param mode
 	 *            New robot operation mode
 	 */
-	protected void setMode(OperationMode mode) {
+	public void setMode(OperationMode mode) {
 		this.mode=mode;
 	}
 }
