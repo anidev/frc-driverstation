@@ -3,7 +3,7 @@ package org.anidev.frcds.proto2.types;
 import org.anidev.frcds.protoold.torobot.Alliance;
 
 /**
- * Where the driver station is (i.e. Red 3)
+ * Team station, which consists of the alliance and position (1, 2, 3).
  */
 public enum TeamStation {
 	RED1(Alliance.RED,1),
@@ -17,8 +17,10 @@ public enum TeamStation {
 	private int position;
 
 	/**
-	 * @param alliance the team's alliance
-	 * @param position the teams position
+	 * @param alliance
+	 *            Team alliance color
+	 * @param position
+	 *            Team position (1, 2, 3)
 	 */
 	private TeamStation(Alliance alliance,int position) {
 		this.alliance=alliance;
@@ -26,22 +28,19 @@ public enum TeamStation {
 	}
 
 	/**
-	 * @return which alliance the driver station is on
+	 * @return Which alliance the driver station is on.
 	 */
 	public Alliance getAlliance() {
 		return alliance;
 	}
 
 	/**
-	 * @return the team position
+	 * @return Position of team.
 	 */
 	public int getPosition() {
 		return position;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Enum#toString()
-	 */
+
 	@Override
 	public String toString() {
 		return alliance.getName()+" "+position;
