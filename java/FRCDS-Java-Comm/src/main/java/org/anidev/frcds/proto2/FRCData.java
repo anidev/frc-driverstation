@@ -17,26 +17,24 @@ public abstract class FRCData {
 	private boolean fmsAttached;
 	private boolean eStop;
 	private OperationMode mode;
-	
+
 	/**
 	 * Returns ID of the team operating this driver station.
-	 * 
-	 * @return The team ID.
 	 */
 	protected int getTeamID() {
 		return teamID;
 	}
-	
+
 	/**
-	 * {@link #getTeamID}
+	 * Sets ID of team.
 	 * 
 	 * @param teamID
 	 *            The team ID to set.
 	 */
 	protected void setTeamID(int teamID) {
-		this.teamID = teamID;
+		this.teamID=teamID;
 	}
-	
+
 	/**
 	 * Specifies whether the robot code should be reset. This flag should only
 	 * be sent until the first response from the robot. See
@@ -47,20 +45,20 @@ public abstract class FRCData {
 	protected boolean isCodeReset() {
 		return codeReset;
 	}
-	
+
 	/**
-	 * Sets the reset robot code flag, which signals the robot to reset the code. 
-         * The client should only set a DSData object with this field set once, and
-	 * then change it back to false. The protocol will take care of sending true
-	 * for as long as necessary.
+	 * Sets the reset robot code flag, which signals the robot to reset the
+	 * code. This should only be set to true once. {@link FRCCommunication} will
+	 * reset this back to false automatically, and the protocol will take care
+	 * of sending true for as long as necessary.
 	 * 
 	 * @param resetCode
 	 *            Whether the code reset flag should be set.
 	 */
 	protected void setCodeReset(boolean codeReset) {
-		this.codeReset = codeReset;
+		this.codeReset=codeReset;
 	}
-	
+
 	/**
 	 * Specifies whether the robot code should be rebooted. This flag should
 	 * only be sent until the first response from the robot. See
@@ -71,84 +69,89 @@ public abstract class FRCData {
 	protected boolean isRebootRobot() {
 		return rebootRobot;
 	}
-	
+
 	/**
-	 * The client should only set a DSData object with this field set once, and
-	 * then change it back to false. The protocol will take care of sending true
-	 * for as long as necessary.
+	 * The client should only set a DSData object with this field set once.
+	 * {@link FRCCommunication} will reset this back to false automatically, and
+	 * the protocol will take care of sending true for as long as necessary.
 	 * 
 	 * @param rebootRobot
 	 *            Whether the reboot robot flag should be set.
 	 */
 	protected void setRebootRobot(boolean rebootRobot) {
-		this.rebootRobot = rebootRobot;
+		this.rebootRobot=rebootRobot;
 	}
-	
+
 	/**
 	 * Specifies whether the robot should be enabled or not.
-	 * @return whether the robot should be enabled or not
 	 */
 	protected boolean isEnabled() {
 		return enabled;
 	}
-	
+
 	/**
-	 * Sets the enabled flag, which should be set for as long as the robot remains
-	 * enabled. 
+	 * Sets the enabled flag, which should be set for as long as the robot
+	 * remains enabled.
+	 * 
 	 * @param enabled
 	 *            True to enable the robot, false to disable.
 	 */
 	protected void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+		this.enabled=enabled;
 	}
-	
+
 	/**
-	 * @return Whether the robot should be alerted to the presence of an FMS.
+	 * Specifies if the robot should be alerted to the presence of an FMS.
 	 */
 	protected boolean isFmsAttached() {
 		return fmsAttached;
 	}
-	
+
 	/**
+	 * Specify whether an FMS is present for the match.
+	 * 
 	 * @param fmsAttached
 	 *            True to alert the robot that an FMS is attached, false if not.
 	 */
 	protected void setFmsAttached(boolean fmsAttached) {
-		this.fmsAttached = fmsAttached;
+		this.fmsAttached=fmsAttached;
 	}
-	
+
 	/**
-	 * @return Whether emergency stop has been activated.
+	 * Specifies if the emergency stop has been activated.
 	 */
-	protected boolean iseStop() {
+	protected boolean isEStop() {
 		return eStop;
 	}
-	
+
 	/**
+	 * Activate or deactivate emergency stop. Once set, the robot might need to
+	 * be physically rebooted in order to deactivate emergency stop, even when
+	 * this is set back to false.
+	 * 
 	 * @param eStop
-	 *            True to activate emergency stop. Once set, the robot might
-	 *            need to be physically rebooted in order to deactivate
-	 *            emergency stop, even when this is set to false.
+	 *            True to activate, false to deactivate
 	 */
-	protected void seteStop(boolean eStop) {
-		this.eStop = eStop;
+	protected void setEStop(boolean eStop) {
+		this.eStop=eStop;
 	}
-	
+
 	/**
-	 * @return The current operation mode of the robot (teleop, autonomous,
-	 *         etc).
+	 * Get the current operation mode of the robot (teleop, autonomous, etc).
 	 */
 	protected OperationMode getMode() {
 		return mode;
 	}
-	
+
 	/**
+	 * Change the current operation mode of the robot to teleop, autonomous,
+	 * etc.
+	 * 
 	 * @param mode
-	 *            Change the current operation mode of the robot to teleop,
-	 *            autonomous, etc.
+	 *            New robot operation mode
 	 */
 	protected void setMode(OperationMode mode) {
-		this.mode = mode;
+		this.mode=mode;
 	}
 
 	/**
@@ -159,10 +162,11 @@ public abstract class FRCData {
 	}
 
 	/**
-	 * @param packetIndex the packetIndex to set
+	 * @param packetIndex
+	 *            the packetIndex to set
 	 */
 	public void setPacketIndex(int packetIndex) {
-		this.packetIndex = packetIndex;
+		this.packetIndex=packetIndex;
 	}
 
 }
