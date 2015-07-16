@@ -1,9 +1,12 @@
 # Eclipse files
+.project
 .metadata
+.classpath
+.settings/
+.recommenders/
 *.class
 bin/
 target/
-.recommenders
 
 # Package files
 *.jar
