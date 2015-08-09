@@ -15,12 +15,15 @@ public class DSData extends FRCData {
 	public static final int NUM_ANALOG_INPUTS=4;
 
 	// Match data
-	private TeamStation station=TeamStation.RED1;
+	private TeamStation station=TeamStation.RED3;
 
 	// Control data
 	private Joystick[] joysticks=new Joystick[NUM_JOYSTICKS];
 	private boolean[] digitalInputs=new boolean[NUM_DIGITAL_INPUTS];
 	private int[] analogInputs=new int[NUM_ANALOG_INPUTS];
+	
+	private long crioChecksum;
+	private int[] fpgaChecksum = {0,0,0,0};
 
 	/**
 	 * Get the currently set team station that is being advertised to the robot.
@@ -154,5 +157,33 @@ public class DSData extends FRCData {
 	 */
 	public void setAnalogInput(int value,int index) {
 		analogInputs[index]=value;
+	}
+
+	/**
+	 * @return the crioChecksum
+	 */
+	public long getCrioChecksum() {
+		return crioChecksum;
+	}
+
+	/**
+	 * @param crioChecksum the crioChecksum to set
+	 */
+	public void setCrioChecksum(long crioChecksum) {
+		this.crioChecksum = crioChecksum;
+	}
+
+	/**
+	 * @return the fpgaChecksum
+	 */
+	public int[] getFpgaChecksum() {
+		return fpgaChecksum;
+	}
+
+	/**
+	 * @param fpgaChecksum the fpgaChecksum to set
+	 */
+	public void setFpgaChecksum(int[] fpgaChecksum) {
+		this.fpgaChecksum = fpgaChecksum;
 	}
 }
