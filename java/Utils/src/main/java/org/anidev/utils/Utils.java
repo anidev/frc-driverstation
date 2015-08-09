@@ -175,4 +175,42 @@ public class Utils {
 		byte[] addrBytes=new byte[] {10,(byte)teamUpper,(byte)teamLower,0};
 		return addrBytes;
 	}
+	
+	public static int boolToInt(boolean bool) {
+		return(bool?1:0);
+	}
+
+	public static boolean intToBool(int bool) {
+		return(bool>0?true:false);
+	}
+
+	public static int[] bitsToInts(boolean[] bits) {
+		int numInts=(int)Math.ceil(bits.length/8.0);
+		int[] data=new int[numInts];
+		for(int i=0;i<numInts;i++) {
+			for(int b=0;b<Math.min(bits.length-8*i,8);b++) {
+				data[i]+=(boolToInt(bits[i*8+b])<<(7-b));
+			}
+		}
+		return data;
+	}
+
+	public static boolean[] intsToBits(int[] ints) {
+		boolean[] bools=new boolean[ints.length*8];
+		for(int i=0;i<ints.length;i++) {
+			for(int b=0;b<8;b++) {
+				bools[i*8+b]=intToBool(0x1&(ints[i]>>(7-b)));
+			}
+		}
+		return bools;
+	}
+	
+	public static boolean[] reverseBits(boolean[] bits) {
+		for(int i=0;i<bits.length/2;i++) {
+			boolean temp=bits[i];
+			bits[i]=bits[bits.length-1-i];
+			bits[bits.length-1-i]=temp;
+		}
+		return bits;
+	}
 }
